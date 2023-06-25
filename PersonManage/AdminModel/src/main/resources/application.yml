@@ -1,0 +1,40 @@
+server:
+  port: 7777
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+spring:
+  redis:
+    host: 8.130.94.62
+    port: 6379
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: -1
+        max-idle: 8
+        min-idle: 0
+    timeout: 0
+#  security:
+#    user:
+#      name: root
+#      password: 12345678
+  datasource:
+    url: jdbc:mysql://8.130.94.62:3306/personmanage?serverTimezone=UTC&characterEncoding=utf-8
+    username: sliverkiss
+    password: 12345678
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 5MB
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: deFlag
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      id-type: auto
