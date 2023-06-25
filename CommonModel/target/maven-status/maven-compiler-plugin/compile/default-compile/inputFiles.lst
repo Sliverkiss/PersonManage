@@ -1,0 +1,15 @@
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/constants/SystemConstants.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/handler/security/AccessDeniedHandlerImpl.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/config/MybatisPlusConfig.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/domain/ResponseResult.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/utils/JwtUtil.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/handler/security/AuthenticationEntryPointImpl.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/utils/BeanCopyUtils.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/exception/SystemException.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/config/FastJsonRedisSerializer.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/handler/exception/GlobalExceptionHandler.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/config/WebConfig.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/enums/AppHttpCodeEnum.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/utils/RedisCache.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/config/RedisConfig.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/utils/WebUtils.java
