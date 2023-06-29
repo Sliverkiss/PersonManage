@@ -1,5 +1,5 @@
 server:
-  port: 7777
+  port: 9090
   servlet:
     encoding:
       charset: UTF-8
@@ -21,8 +21,8 @@ spring:
 #      name: root
 #      password: 12345678
   datasource:
-    url: jdbc:mysql://8.130.94.62:3306/personmanage?serverTimezone=UTC&characterEncoding=utf-8
-    username: sliverkiss
+    url: jdbc:mysql://localhost:3306/personManage?serverTimezone=UTC&characterEncoding=utf-8
+    username: root
     password: 12345678
     driver-class-name: com.mysql.cj.jdbc.Driver
   servlet:
