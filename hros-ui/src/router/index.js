@@ -1,6 +1,7 @@
 import {createRouter, createWebHistory} from 'vue-router'
 
 import NotFound from '@/views/error/404.vue'
+// import {useUser} from '@/stores/user.js'
 
 const routes = [
     {
@@ -30,7 +31,20 @@ const routes = [
             path: '/index/home',
             name: 'Index/home',
             component: () => import('@/components/index/Home.vue')
-        }]
+        }, {
+            path: '/index/userInfo',
+            name: 'Index/userInfo',
+            component: () => import('@/components/userInfo/userInfo.vue')
+        }, {
+            path: '/index/employeeManagement',
+            name: 'Index/employeeManagement',
+            component: () => import('@/components/employee/EmployeeManagement.vue')
+        },
+            {
+                path: '/index/contract',
+                name: 'Index/contract',
+                component: () => import('@/components/employee/contract.vue')
+            }]
     },
     {
         path: '/:pathMatch(.*)*',
@@ -45,9 +59,13 @@ const router = createRouter({
     routes: routes
 })
 
+// const userStore = useUser();
+
 // //路由守卫
-// router.beforeEach((guard) => {
-//     beforeEach.checkAuth(guard,router);
+// router.beforeEach((to, from, next) => {
+//     if (to.path == '/login') next()
+//     if (!userStore && to.path != '/login') return next('/login')
+//     next()
 // })
 
 

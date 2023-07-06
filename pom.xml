@@ -37,6 +37,12 @@
                 <artifactId>fastjson</artifactId>
                 <version>1.2.33</version>
             </dependency>
+            <!--实体类转换-->
+            <dependency>
+                <groupId>xin.altitude.cms</groupId>
+                <artifactId>ucode-cms-common</artifactId>
+                <version>1.4.1</version>
+            </dependency>
             <!--jwt依赖 -->
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>

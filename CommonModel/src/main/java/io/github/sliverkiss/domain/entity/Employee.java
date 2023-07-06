@@ -1,22 +1,29 @@
 package io.github.sliverkiss.domain.entity;
 
-import java.util.Date;
+
 
 import java.io.Serializable;
 
+import java.util.Date;
+import java.util.Optional;
+
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.github.sliverkiss.utils.DateUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
- * 员工(Employee)表实体类
+ * 员工表(Employee)表实体类
  *
  * @author tistzach
- * @since 2023-06-27 14:55:32
+ * @since 2023-07-05 11:45:05
  */
 @SuppressWarnings("serial")
 @Data
@@ -24,29 +31,59 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors(chain = true)
 @TableName("employee")
-public class Employee  {
+public class Employee extends DateUtil {
     @TableId
     private Integer id;
 
-    //姓名
-    private String name;
-    //职务
-    private String position;
-    //所属部门
-    private Integer departmentId;
-    //入职日期
+    // 人员信息id
+    private Integer personalId;
+    // 入职日期
+    @JSONField(format = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date hireDate;
-    //联系电话
-    private String phone;
-    //邮箱
-    private String email;
-    //地址
-    private String address;
-    //在职状态
-    private String state;
-
-    //删除标志（0代表未删除）
+    // 所属部门
+    private Integer departmentId;
+    // 职务
+    private String post;
+    // 职称
+    private String level;
+    // 在职状态
+    private String workState;
+    // 合同起始日期
+    @JSONField(format = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date startContract;
+    // 合同终止日期
+    @JSONField(format = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date endContract;
+    // 合同期限
+    private Integer contractTerm;
+    // 聘用形式
+    private String engageForm;
+    // 删除标记
     @TableLogic
     private Integer delFlag;
+
+
+    public Employee(Employee employee) {
+        Optional.ofNullable ( employee ).ifPresent ( e -> {
+            this.id = e.getId ();
+            this.personalId = e.getPersonalId ();
+            this.hireDate = e.getHireDate ();
+            this.departmentId = e.getDepartmentId ();
+            this.post = e.getPost ();
+            this.level = e.getLevel ();
+            this.workState = e.getWorkState ();
+            this.startContract = e.getStartContract ();
+            this.endContract = e.getEndContract ();
+            this.contractTerm = e.getContractTerm ();
+            this.engageForm = e.getEngageForm ();
+        } );
+    }
+
 
 }

@@ -38,6 +38,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+        <dependency>
+            <groupId>xin.altitude.cms</groupId>
+            <artifactId>ucode-cms-common</artifactId>
+        </dependency>
         <!--mybatis-plus -->
         <dependency>
             <groupId>com.baomidou</groupId>

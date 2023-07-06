@@ -11,10 +11,11 @@ import './bootstrap/js/bootstrap.bundle'
 import './bootstrap/css/bootstrap.min.css'
 import * as ElIcons from '@element-plus/icons-vue'
 import 'element-plus/dist/index.css'
-import {createPinia} from 'pinia'
+import store from './stores'
+
 
 const app = createApp(App);
-const pinia=createPinia();
-for(const iconName in ElIcons){
-    app.component(iconName,ElIcons[iconName])}
-app.use(router).use(pinia).use(ElementPlus).mount('#app')
+for (const iconName in ElIcons) {
+    app.component(iconName, ElIcons[iconName])
+}
+app.use(router).use(store).use(ElementPlus).mount('#app')

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
  * 用户(User)表服务实现类
  *
  * @author tistzach
- * @since 2023-06-27 14:57:36
+ * @since 2023-07-03 13:12:53
  */
 @Service("userService")
 public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserService {

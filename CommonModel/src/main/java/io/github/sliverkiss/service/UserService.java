@@ -7,7 +7,7 @@ import io.github.sliverkiss.domain.entity.User;
  * 用户(User)表服务接口
  *
  * @author tistzach
- * @since 2023-06-27 14:57:36
+ * @since 2023-07-03 13:12:53
  */
 public interface UserService extends IService<User> {
 

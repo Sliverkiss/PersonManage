@@ -7,12 +7,12 @@
     <div style="width:100px">
       <el-dropdown>
         <span class="el-dropdown-link mt-3 p-2  text-center">
-            名称<ArrowDown width="15px"/>
+            {{userStore.user.username}}<ArrowDown width="15px"/>
           </span>
         <template v-slot:dropdown>
           <el-dropdown-menu>
             <div class="px-2 py-3 bg-light rounded-top">
-              <h5 class="h6 text-center mb-0">二勿载</h5>
+              <h5 class="h6 text-center mb-0">{{userStore.user.username}}</h5>
             </div>
             <el-dropdown-item>个人资料
               <el-icon class="ms-4">
@@ -31,13 +31,9 @@
   </div>
 </template>
 
-<script>
-import {ArrowDown, UserFilled, Switch, OfficeBuilding} from '@element-plus/icons-vue'
-
-export default {
-  name: "Header",
-  components: {OfficeBuilding, ArrowDown, UserFilled, Switch}
-}
+<script setup>
+import {useUser} from '@/stores/user.js'
+const userStore =useUser();
 </script>
 
 <style>

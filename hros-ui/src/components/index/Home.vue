@@ -100,7 +100,18 @@
                 </div>
               </div>
             </template>
-            <div v-for="o in 4" :key="o" class="text item ">{{ 'List item ' + o }}</div>
+            <div class="block-content">
+              <div class="row items-push text-center">
+                <div class="col-6">
+                  <div class="mb-1"><User class="m-1 " width="30px" /></div>
+                  <div class="fs-sm fw-medium text-muted">办公室</div>
+                </div>
+                <div class="col-6">
+                  <div class="mb-1"><ChatDotRound class="m-1 " width="30px"/></div>
+                  <div class="fs-sm fw-medium text-muted">部门通讯</div>
+                </div>
+              </div>
+            </div>
           </el-card>
         </div>
       </div>
@@ -110,6 +121,8 @@
 
 <script setup>
 import Foot from '@/components/footer/Foot.vue'
+import {useUser} from '@/stores/user.js'
+const userStore =useUser();
 </script>
 
 <style scoped>
@@ -138,7 +151,7 @@ import Foot from '@/components/footer/Foot.vue'
 
 .notice-card {
   border-radius: 0.875rem 1rem;
-  background-color: #f6f7f9;
+  background-color: white;
   font-size: 15px;
 }
 </style>

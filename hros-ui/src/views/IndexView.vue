@@ -37,15 +37,15 @@ const handleOpen = (key: string, keyPath: string[]) => {
 const handleClose = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
 }
-//请求获取后端数据
-const load = () => {
-  request.get('/user').then(res => {
-    // {"code":"200","msg":"","data":null}
-    state.tableData = res.data
-  })
-}
-//初始化获取数据
-load()
+// //请求获取后端数据
+// const load = () => {
+//   request.get('/user').then(res => {
+//     // {"code":"200","msg":"","data":null}
+//     state.tableData = res.data
+//   })
+// }
+// //初始化获取数据
+// load()
 
 
 //编辑数据
@@ -61,7 +61,7 @@ body,
 .el-container {
   padding: 0;
   margin: 0;
-  height: 100vh;
+  height: calc(100vh - 60px);
 }
 
 /* 背景颜色 */

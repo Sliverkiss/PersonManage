@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
  * 部门(Department)表服务实现类
  *
  * @author tistzach
- * @since 2023-06-27 14:48:50
+ * @since 2023-07-06 12:50:06
  */
 @Service("departmentService")
 public class DepartmentServiceImpl extends ServiceImpl<DepartmentDao, Department> implements DepartmentService {

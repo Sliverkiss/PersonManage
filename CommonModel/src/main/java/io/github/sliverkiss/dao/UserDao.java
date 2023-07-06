@@ -8,10 +8,10 @@ import org.apache.ibatis.annotations.Mapper;
  * 用户(User)表数据库访问层
  *
  * @author tistzach
- * @since 2023-06-27 14:57:36
+ * @since 2023-07-03 13:12:51
  */
 @Mapper
-public interface UserDao extends MyMapper<User> {
+public interface UserDao extends BaseMapper<User> {
 
 }
 

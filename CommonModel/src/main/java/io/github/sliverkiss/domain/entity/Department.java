@@ -2,8 +2,6 @@ package io.github.sliverkiss.domain.entity;
 
 
 import java.io.Serializable;
-
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +13,7 @@ import lombok.experimental.Accessors;
  * 部门(Department)表实体类
  *
  * @author tistzach
- * @since 2023-06-27 14:48:50
+ * @since 2023-07-06 12:50:04
  */
 @SuppressWarnings("serial")
 @Data
@@ -30,10 +28,16 @@ public class Department  {
     //部门名称
     private String departmentName;
     //上级部门编号
-    private Integer managerId;
+    private Integer parentId;
+    //部门位置
+    private String location;
+    //负责人
+    private String manager;
+    //部门电话
+    private String phone;
     //删除标志（0代表未删除）
-    @TableLogic
     private Integer delFlag;
+
 
 
 }
