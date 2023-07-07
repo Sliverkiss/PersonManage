@@ -31,7 +31,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @NoArgsConstructor
 @Accessors(chain = true)
 @TableName("employee")
-public class Employee extends DateUtil {
+public class Employee {
     @TableId
     private Integer id;
 
@@ -41,7 +41,7 @@ public class Employee extends DateUtil {
     @JSONField(format = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date hireDate;
+    private String hireDate;
     // 所属部门
     private Integer departmentId;
     // 职务
@@ -54,12 +54,12 @@ public class Employee extends DateUtil {
     @JSONField(format = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date startContract;
+    private String startContract;
     // 合同终止日期
     @JSONField(format = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date endContract;
+    private String endContract;
     // 合同期限
     private Integer contractTerm;
     // 聘用形式

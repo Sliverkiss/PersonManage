@@ -19,6 +19,9 @@ export const useUser=defineStore('user',{
         //设置用户信息
         setUser(val){
              this.user = val;
+        },
+        getUser() {
+            return this.user;
         }
     },
     //开启数据缓存

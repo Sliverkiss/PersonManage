@@ -55,6 +55,7 @@
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>3.4.3</version>
             </dependency>
+
             <!--阿里云OSS -->
             <dependency>
                 <groupId>com.aliyun.oss</groupId>

@@ -11,6 +11,7 @@ import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * @author SliverKiss
@@ -30,7 +31,7 @@ public class EmployeeVo extends Employee{
     @JSONField(format = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date birthday;
+    private String birthday;
     //身份证号
     private String idCard;
     //婚姻状况
@@ -60,4 +61,27 @@ public class EmployeeVo extends Employee{
         super(employee);
     }
 
+    /**
+     * 优化属性注入的代码，添加个人信息
+     *
+     * @param personal 个人
+     */
+    public void addPersonalInfo(Personal personal){
+        Optional.ofNullable ( personal ).ifPresent ( e -> {
+            this.name=e.getName();
+            this.gender = e.getGender();
+            this.birthday = e.getBirthday();
+            this.idCard = e.getIdCard();
+            this.wedlock = e.getWedlock();
+            this.nation = e.getNation();
+            this.naticePlace = e.getNaticePlace();
+            this.politic = e.getPolitic();
+            this.phone = e.getPhone();
+            this.email = e.getEmail();
+            this.address = e.getAddress();
+            this.tiptopDegree = e.getTiptopDegree();
+            this.specialty = e.getSpecialty();
+            this.school = e.getSchool();
+        });
+    }
 }

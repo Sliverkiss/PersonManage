@@ -11,7 +11,7 @@
               </div>
               <div style="flex:1"></div>
               <div class="" style="width:120px">
-                <el-button type="success" plain @click="dialogFormVisible = true">
+                <el-button type="success" plain @click="dialogFormVisible= true">
                   <el-icon>
                     <Plus/>
                   </el-icon>
@@ -42,47 +42,30 @@
               </div>
               <div class="row">
                 <div class="col-sm-12 p-3">
-                  <el-auto-resizer>
-                    <el-table :data="state.tableData" stripe class="text-center">
-                      <el-table-column prop="id" label="UID"></el-table-column>
-                      <el-table-column prop="name" label="名称"></el-table-column>
-                      <el-table-column prop="phone" label="手机号"></el-table-column>
-                      <el-table-column prop="wedlock" label="婚姻情况"></el-table-column>
-                      <el-table-column prop="birthday" label="出生日期"></el-table-column>
-                      <el-table-column prop="nation" label="民族"></el-table-column>
-                      <el-table-column prop="naticePlace" label="籍贯"></el-table-column>
-                      <el-table-column prop="email" label="邮箱"></el-table-column>
-                      <el-table-column prop="address" label="地址"></el-table-column>
-                      <el-table-column prop="gender" label="性别"></el-table-column>
-                      <el-table-column prop="idCard" label="身份证号"></el-table-column>
-                      <el-table-column prop="tiptopDegree" label="学历"></el-table-column>
-                      <el-table-column prop="specialty" label="专业"></el-table-column>
-                      <el-table-column prop="school" label="毕业院校"></el-table-column>
-                      <el-table-column prop="politic" label="政治面貌"></el-table-column>
-                      <el-table-column prop="post" label="职务"></el-table-column>
-                      <el-table-column prop="level" label="职称"></el-table-column>
-                      <el-table-column prop="hireDate" label="入职日期"></el-table-column>
-                      <el-table-column prop="startContract" label="合同起始日期"></el-table-column>
-                      <el-table-column prop="endContract" label="合同终止日期"></el-table-column>
-                      <el-table-column prop="contractTerm" label="合同年限"></el-table-column>
-                      <el-table-column prop="engageForm" label="合同类型"></el-table-column>
-                      <el-table-column prop="workState" label="工作状态"></el-table-column>
-                      <el-table-column fixed="right" label="操作" width="120">
-                        <template #default>
-                          <el-button size="small" @click="handleClick" style="background-color:#66b1ff">
-                            <el-icon>
-                              <Edit style="color:#213d5b"/>
-                            </el-icon>
-                          </el-button>
-                          <el-button type="danger" size="small">
-                            <el-icon>
-                              <Delete style="color:#582e2e"/>
-                            </el-icon>
-                          </el-button>
-                        </template>
-                      </el-table-column>
-                    </el-table>
-                  </el-auto-resizer>
+                  <el-table :data="state.tableData" stripe class="text-center">
+                    <template v-for="(col,index) in toRaw(employeeStore.employeeMap)" :key="index">
+                      <el-table-column :prop="col.key" :label="col.value" align="center"
+                                       :width="flexWidth(col.key,state.tableData,col.value)"></el-table-column>
+                    </template>
+                    <el-table-column fixed="right" align="center" label="操作" width="120">
+                      <template #default="scope" @confirm="EditEmployee(scope.row)">
+                        <el-button size="small"  style="background-color:#66b1ff">
+                          <el-icon>
+                            <Edit style="color:#213d5b"/>
+                          </el-icon>
+                        </el-button>
+                        <el-popconfirm @confirm="DelEmployee(scope.row.id)"  title="确认删除?" confirm-button-text="确认" cancel-button-text="取消">
+                          <template #reference>
+                            <el-button type="danger" size="small">
+                              <el-icon>
+                                <Delete style="color:#582e2e"/>
+                              </el-icon>
+                            </el-button>
+                          </template>
+                        </el-popconfirm>
+                      </template>
+                    </el-table-column>
+                  </el-table>
                 </div>
               </div>
               <div class="row">
@@ -112,7 +95,6 @@
                style="border-radius: 0.875rem 1rem;">
       <h6 class="mb-3">基本信息</h6>
       <el-form :model="state.formData" class="" status-icon :rules="rules" ref="ruleFormRef">
-
         <el-row :gutter="24">
           <el-col :span="8">
             <el-form-item prop="name" label="姓名:">
@@ -184,6 +166,8 @@
                       v-model="state.formData.birthday"
                       type="date"
                       placeholder=""
+                      format="YYYY/MM/DD"
+                      value-format="YYYY-MM-DD"
                       style="width:245px"
                       :size="10"/>
                 </div>
@@ -205,7 +189,7 @@
         </el-row>
         <el-row :gutter=24>
           <el-col :span="10">
-            <el-form-item  prop="specialty" label="所学专业:">
+            <el-form-item prop="specialty" label="所学专业:">
               <el-input v-model="state.formData.specialty"></el-input>
             </el-form-item>
           </el-col>
@@ -239,8 +223,15 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item prop="departmentName"  label="部门:">
-              <el-input v-model="state.formData.departmentName"></el-input>
+            <el-form-item prop="departmentName" label="部门:">
+              <el-select v-model="state.formData.departmentName" style="width:255px">
+                <el-option
+                    v-for="department in toRaw(departmentStore.departmentList)"
+                    :key="department.id"
+                    :label="department.departmentName"
+                    :value="department.departmentName"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -255,6 +246,8 @@
                   <el-date-picker
                       v-model="state.formData.startContract"
                       type="date"
+                      format="YYYY/MM/DD"
+                      value-format="YYYY-MM-DD"
                       placeholder=""
                       style="width:165px"
                       :size="10"/>
@@ -268,17 +261,210 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item prop="endContract" label="合同终止日期:">
+            <el-form-item prop="endContract" label="合同年限:">
+              <el-select v-model="state.formData.contractTerm" placeholder="Select">
+                <el-option
+                    v-for="(item,index) in 5"
+                    :key="index"
+                    :label="item+'年'"
+                    :value="item"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+
+      <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="save" type="primary">登记</el-button>
+        <el-button @click="clearFormData">
+          取消
+        </el-button>
+      </span>
+      </template>
+    </el-dialog>
+  </div>
+  <div>
+    <el-dialog v-model="dialogUpdateVisible" title="修改员工资料" align-center center class=""
+               style="border-radius: 0.875rem 1rem;">
+      <h6 class="mb-3">基本信息</h6>
+      <el-form :model="state.updateData" class="" status-icon :rules="rules" ref="ruleFormRef">
+        <el-row :gutter="24">
+          <el-col :span="8">
+            <el-form-item prop="name" label="姓名:">
+              <el-input v-model="state.updateData.name"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item prop="gender" label="性别:">
+              <el-select v-model="state.updateData.gender" placeholder="">
+                <el-option label="男" value="男"/>
+                <el-option label="女" value="女"/>
+                <el-option label="其他" value="其他"/>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item prop="tiptopDegree" label="最高学历">
+              <el-select v-model="state.updateData.tiptopDegree" placeholder="">
+                <el-option label="博士" value="博士"/>
+                <el-option label="硕士" value="硕士"/>
+                <el-option label="本科" value="本科"/>
+                <el-option label="大专" value="大专"/>
+                <el-option label="高中" value="高中"/>
+                <el-option label="初中" value="初中"/>
+                <el-option label="小学" value="小学"/>
+                <el-option label="其他" value="其他"/>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="24">
+          <el-col :span="8">
+            <el-form-item prop="nation" label="民族:">
+              <el-input v-model="state.updateData.nation"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item prop="naticePlace" label="籍贯:">
+              <el-input v-model="state.updateData.naticePlace"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item prop="wedlock" label="婚姻状况:">
+              <el-select v-model="state.updateData.wedlock" placeholder="">
+                <el-option label="已婚" value="已婚"/>
+                <el-option label="未婚" value="未婚"/>
+                <el-option label="离异" value="离异"/>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="24">
+          <el-col :span="10">
+            <el-form-item prop="politic" label="政治面貌:">
+              <el-select v-model="state.updateData.politic" placeholder="">
+                <el-option label="中共党员" value="中共党员"/>
+                <el-option label="中共预备党员" value="中共预备党员"/>
+                <el-option label="共青团员" value="共青团员"/>
+                <el-option label="群众" value="群众"/>
+                <el-option label="其他" value="其他"/>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="14">
+            <el-form-item prop="birthday" label="出生日期:">
+              <div class="demo-date-picker">
+                <div class="block">
+                  <el-date-picker
+                      v-model="state.updateData.birthday"
+                      type="date"
+                      placeholder=""
+                      format="YYYY/MM/DD"
+                      value-format="YYYY-MM-DD"
+                      style="width:245px"
+                      :size="10"/>
+                </div>
+              </div>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="24">
+          <el-col :span="10">
+            <el-form-item prop="school" label="毕业院校:">
+              <el-input v-model="state.updateData.school"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="14">
+            <el-form-item prop="phone" label="联系电话:">
+              <el-input v-model.number="state.updateData.phone"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter=24>
+          <el-col :span="10">
+            <el-form-item prop="specialty" label="所学专业:">
+              <el-input v-model="state.updateData.specialty"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="14">
+            <el-form-item prop="email" label="邮箱:">
+              <el-input v-model="state.updateData.email"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="24">
+          <el-col :span="10">
+            <el-form-item prop="idCard" label="身份证号:">
+              <el-input v-model="state.updateData.idCard"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="14">
+            <el-form-item prop="address" label="地址:">
+              <el-input v-model="state.updateData.address"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-divider/>
+        <h6 class="mb-3">工作信息</h6>
+        <el-row :gutter="24">
+          <el-col :span="10">
+            <el-form-item prop="engageForm" label="合同类型:">
+              <el-select v-model="state.updateData.engageForm" placeholder="">
+                <el-option label="劳务合同" value="劳务合同"/>
+                <el-option label="外聘合同" value="外聘合同"/>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="departmentName" label="部门:">
+              <el-select v-model="state.updateData.departmentName" style="width:255px">
+                <el-option
+                    v-for="department in toRaw(departmentStore.departmentList)"
+                    :key="department.id"
+                    :label="department.departmentName"
+                    :value="department.departmentName"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
+            <el-form-item prop="post" label="岗位:">
+              <el-input v-model="state.updateData.post"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="startContract" label="合同起始日期:">
               <div class="demo-date-picker">
                 <div class="block" style="width:50px">
                   <el-date-picker
-                      v-model="state.formData.endContract"
+                      v-model="state.updateData.startContract"
                       type="date"
+                      format="YYYY/MM/DD"
+                      value-format="YYYY-MM-DD"
                       placeholder=""
                       style="width:165px"
                       :size="10"/>
                 </div>
               </div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
+            <el-form-item label="职称:" prop="level">
+              <el-input v-model="state.updateData.level"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="endContract" label="合同年限:">
+              <el-select v-model="state.updateData.contractTerm" placeholder="Select">
+                <el-option
+                    v-for="(item,index) in 5"
+                    :key="index"
+                    :label="item+'年'"
+                    :value="item"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -298,11 +484,18 @@
 
 <script setup>
 import request from "@/request.js";
-import {getCurrentInstance, reactive, ref} from "vue";
+import {getCurrentInstance, reactive, ref, toRaw} from "vue";
 import {ElMessage, ElNotification} from "element-plus";
+import {flexWidth, formatDate} from '@/utils/tableUtils.js'
+import {useEmployee} from "@/stores/employee.js";
+import {useDepartment} from "@/stores/department.js"
+
+const departmentStore = useDepartment();
+const employeeStore = useEmployee();
 //前端规则校验
-const {proxy}=getCurrentInstance();
+const {proxy} = getCurrentInstance();
 const dialogFormVisible = ref(false)
+const dialogUpdateVisible = ref(false);
 const rules = reactive({
   name: [
     {required: true, message: '请输入姓名', trigger: 'blur'}
@@ -311,11 +504,11 @@ const rules = reactive({
     {required: true, message: '请选择性别', trigger: 'blur'}
   ],
   birthday: [
-    {type:'date',required: true, message: '请输入生日', trigger: 'blur'}
+    {type: 'date', required: true, message: '请输入生日', trigger: 'blur'}
   ],
   idCard: [
     {required: true, message: '请输入身份证号', trigger: 'blur'},
-    { min: 18, max: 18, message: '身份证号长度必须为18位', trigger: 'blur' },
+    {min: 18, max: 18, message: '身份证号长度必须为18位', trigger: 'blur'},
   ],
   wedlock: [
     {required: true, message: '请选择婚姻状况', trigger: 'change'}
@@ -330,9 +523,8 @@ const rules = reactive({
     {required: true, message: '请选择政治面貌', trigger: 'change'}
   ],
   phone: [
-    {required: true, message: '请输入联系电话', trigger: 'blur'},
-    { type: 'number', message: '联系电话只能输入数字' },
-    { min: 11, max: 11, message: '联系电话必须为11位', trigger: 'blur' },
+    {type: 'number', required: true, message: '请输入联系电话', trigger: 'blur'},
+    {type: 'number', message: '联系电话只能输入数字'},
   ],
   email: [
     {required: true, message: '请输入邮箱', trigger: 'blur'}
@@ -353,10 +545,10 @@ const rules = reactive({
     {required: true, message: '请输入部门名称', trigger: 'blur'}
   ],
   startContract: [
-    {type:'date',required: true, message: '请选择合同起始日期', trigger: 'change'}
+    {type: 'date', required: true, message: '请选择合同起始日期', trigger: 'change'}
   ],
-  endContract: [
-    {type:'date',required: true, message: '请选择合同终止日期', trigger: 'change'}
+  contractTerm: [
+    {required: true, message: '请选择合同年限', trigger: 'change'}
   ],
   engageForm: [
     {required: true, message: '请选择合同类型', trigger: 'change'}
@@ -367,62 +559,16 @@ const rules = reactive({
 const state = reactive({
   tableData: [],
   //入职登记信息
-  formData: {
-    name: '',
-    gender: '',
-    birthday: '',
-    idCard: '',
-    wedlock: '',
-    nation: '',
-    naticePlace: '',
-    politic: '',
-    phone: '',
-    email: '',
-    address: '',
-    tiptopDegree: '',
-    specialty: '',
-    school: '',
-    departmentName: '',
-    post: '',
-    level: '',
-    workState: '',
-    startContract: '',
-    endContract: '',
-    contractTerm: '',
-    engageForm: '',
-    departmentList: [1, 2, 3, 4, 5]
-  }
-
+  formData: {},
+  updateData: {},
+  departmentList: [],
 })
 
-const clearFormData=()=>{
-  let clearData={
-    name: '',
-        gender: '',
-        birthday: '',
-        idCard: '',
-        wedlock: '',
-        nation: '',
-        naticePlace: '',
-        politic: '',
-        phone: '',
-        email: '',
-        address: '',
-        tiptopDegree: '',
-        specialty: '',
-        school: '',
-        departmentName: '',
-        post: '',
-        level: '',
-        workState: '',
-        startContract: '',
-        endContract: '',
-        contractTerm: '',
-        engageForm: '',
-        departmentList: [1, 2, 3, 4, 5]
-  }
-  state.formData=clearData;
+const clearFormData = () => {
+  let clearData = {}
+  state.formData = clearData;
   dialogFormVisible.value = false;
+  dialogUpdateVisible.value = false;
 }
 //加载后端员工数据
 const load = () => {
@@ -432,18 +578,28 @@ const load = () => {
     }
   })
 }
-load();
+const selectDepartmentList = () => {
+  request.get('admin/department/list').then(res => {
+    try {
+      if (res.code === 200) {
+        departmentStore.setDepartmentList(res.data.records);
+      }
+    } catch (e) {
+      ElMessage.error(e);
+    }
+  })
+}
 
 //入职登记调用接口
-const save=()=>{
+const save = () => {
   //表单校检
-  proxy.$refs.ruleFormRef.validate((valid)=>{
-    if (valid){
+  proxy.$refs.ruleFormRef.validate((valid) => {
+    if (valid) {
       //发送后台请求
-      request.post('admin/employee/save',{
+      request.post('admin/employee/save', {
         name: state.formData.name,
         gender: state.formData.gender,
-        birthday: state.formData.birthday,
+        birthday: state.formData.birthday.toString(),
         idCard: state.formData.idCard,
         wedlock: state.formData.wedlock,
         nation: state.formData.nation,
@@ -459,27 +615,44 @@ const save=()=>{
         post: state.formData.post,
         level: state.formData.level,
         workState: state.formData.workState,
-        startContract: state.formData.startContract,
-        endContract: state.formData.endContract,
+        startContract: state.formData.startContract.toString(),
+        endContract: state.formData.endContract.toString(),
         contractTerm: state.formData.contractTerm,
         engageForm: state.formData.engageForm,
-      }).then(res =>{
-        if (res.code =='200'){
+      }).then(res => {
+        if (res.code == '200') {
           ElNotification.success('入职登记成功！')
-        }else {
+        } else {
           ElMessage.error('系统服务异常，请稍后再试~')
         }
+      }).finally(() => {
+        clearFormData();
+        load();
       })
-      clearFormData()
-    }else{
+    } else {
       ElMessage.error('入职登记信息填写错误')
     }
   })
 
 }
-
-
-
+//打开修改员工资料视图
+const EditEmployee = (row) => {
+  dialogUpdateVisible.value = true;
+  state.updateData = JSON.parse(JSON.stringify(row));
+}
+//删除员工资料
+const DelEmployee =(id)=>{
+  request.delete('admin/employee/delete/'+id).then((res) => {
+    if (res.code==200){
+      ElNotification.success(res.msg);
+    }else {
+      ElMessage.error(res.msg);
+    }
+  })
+}
+//数据初始化
+selectDepartmentList();
+load();
 </script>
 
 <style scoped>

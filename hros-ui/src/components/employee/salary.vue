@@ -1,5 +1,5 @@
 <template>
-
+薪资管理
 </template>
 
 <script>

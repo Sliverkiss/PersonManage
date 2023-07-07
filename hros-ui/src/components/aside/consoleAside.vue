@@ -7,14 +7,14 @@
       </el-icon>
       <span>用户中心</span>
     </el-menu-item>
-    <el-menu-item index="2">
+    <el-menu-item index="/console/home">
       <el-icon>
         <Platform/>
       </el-icon>
       <span>系统后台</span>
     </el-menu-item>
     <p class="m-0 ms-4 mt-3" style="font-size:13px;color:#6C6E72">功能</p>
-    <el-sub-menu>
+    <el-sub-menu index='/console/employee'>
       <template #title>
         <el-icon>
           <location/>
@@ -22,12 +22,12 @@
         <span>员工管理</span>
       </template>
       <div class="asidecolor">
-        <el-menu-item index="/index/employeeManagement">员工资料管理</el-menu-item>
-        <el-menu-item index="/index/contract"> 员工合同管理</el-menu-item>
-        <el-menu-item>员工薪资管理</el-menu-item>
+        <el-menu-item index="/console/employee/info">员工资料管理</el-menu-item>
+        <el-menu-item index="/console/employee/contract"> 员工合同管理</el-menu-item>
+        <el-menu-item index="/console/employee/salary">员工薪资管理</el-menu-item>
       </div>
     </el-sub-menu>
-    <el-sub-menu index="4">
+    <el-sub-menu index="/console/department">
       <template #title>
         <el-icon>
           <AlarmClock/>
@@ -35,12 +35,12 @@
         <span>岗位管理</span>
       </template>
       <div class="asidecolor">
-        <el-menu-item index="4-1">部门岗位管理</el-menu-item>
-        <el-menu-item index="4-2">调岗审核管理</el-menu-item>
-        <el-menu-item>离职复职管理</el-menu-item>
+        <el-menu-item index="/console/department/info">部门岗位管理</el-menu-item>
+        <el-menu-item index="/console/department/transfer">调岗审核管理</el-menu-item>
+        <el-menu-item index="/console/department/reinstatement">离职复职管理</el-menu-item>
       </div>
     </el-sub-menu>
-    <el-sub-menu>
+    <el-sub-menu index="/console/indicator">
       <template #title>
         <el-icon>
           <SwitchFilled/>
@@ -48,11 +48,11 @@
         <span>绩效考核管理</span>
       </template>
       <div class="asidecolor">
-        <el-menu-item>考核指标管理</el-menu-item>
-        <el-menu-item>绩效考核列表</el-menu-item>
+        <el-menu-item index="/console/indicator/info">考核指标管理</el-menu-item>
+        <el-menu-item index="/console/indicator/performance">绩效考核列表</el-menu-item>
       </div>
     </el-sub-menu>
-    <el-sub-menu index="6">
+    <el-sub-menu index="/console/trainning">
       <template #title>
         <el-icon>
           <SwitchFilled/>
@@ -60,11 +60,11 @@
         <span>培训管理</span>
       </template>
       <div class="asidecolor">
-        <el-menu-item>培训计划管理</el-menu-item>
-        <el-menu-item>培训记录管理</el-menu-item>
+        <el-menu-item index="/console/trainning/info">培训计划管理</el-menu-item>
+        <el-menu-item index="/console/trainning/record">培训计划管理</el-menu-item>
       </div>
     </el-sub-menu>
-    <el-menu-item index="">
+    <el-menu-item index="/i">
       <el-icon>
         <HomeFilled/>
       </el-icon>

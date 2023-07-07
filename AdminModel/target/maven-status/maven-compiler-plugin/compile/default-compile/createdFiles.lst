@@ -1,1 +1,5 @@
+io/github/sliverkiss/controller/ContractController.class
+io/github/sliverkiss/controller/EmployeeController.class
+io/github/sliverkiss/controller/DepartmentController.class
+io/github/sliverkiss/controller/RenewController.class
 io/github/sliverkiss/PersonManageApplication.class

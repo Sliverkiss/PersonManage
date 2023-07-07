@@ -1,6 +1,7 @@
 package io.github.sliverkiss.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.Department;
 
 /**
@@ -11,5 +12,6 @@ import io.github.sliverkiss.domain.entity.Department;
  */
 public interface DepartmentService extends IService<Department> {
 
+    public ResponseResult selectDepartmentList();
 }
 

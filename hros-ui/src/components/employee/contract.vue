@@ -29,10 +29,11 @@
             <div class="row">
               <div class="col-sm-12 p-3">
                 <el-auto-resizer>
-                  <el-table  stripe class="text-center">
+                  <el-table :data="state.tableData" stripe class="text-center">
+                    <template v-for="(col,index) in toRaw(contractStore.contractMap)" :key="index">
+                      <el-table-column :prop="col.key" :label="col.value"  align="center" :width="flexWidth(col.key,state.tableData,col.value)"></el-table-column>
+                    </template>
 
-
-                    <el-table-column prop="workState" label="工作状态"></el-table-column>
                     <el-table-column fixed="right" label="操作" width="120">
                       <template #default>
                         <el-button size="small" @click="handleClick" style="background-color:#66b1ff">
@@ -73,10 +74,28 @@
 </div>
 </template>
 
-<script>
-export default {
-  name: "contract"
+<script setup>
+
+
+//加载后端合同数据
+import request from "@/request.js";
+import {flexWidth, formatDate} from '@/utils/tableUtils.js'
+import {reactive} from "vue";
+import {useContract} from "@/stores/employee.js";
+import {toRaw} from 'vue'
+const contractStore=useContract();
+
+const state = reactive({
+  tableData: [],
+})
+const load = () => {
+  request.get('/admin/contract/list').then(res => {
+    if (res.code === 200) {
+      state.tableData = res.data?.records
+    }
+  })
 }
+load()
 </script>
 
 <style scoped>

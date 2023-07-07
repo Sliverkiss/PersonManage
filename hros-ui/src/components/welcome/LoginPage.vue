@@ -85,7 +85,7 @@ const login = () => {
         ElNotification.success('登录成功！');
         //将登录信息存储到store中
         userStore.setUser(res.data);
-        router.push('/index/home');
+        userStore.getUser().role==0? router.push('/index/home'):router.push('/console/')
       }
     })
   }

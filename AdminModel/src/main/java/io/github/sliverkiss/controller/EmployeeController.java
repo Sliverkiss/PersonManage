@@ -34,4 +34,9 @@ public class EmployeeController {
     public ResponseResult saveEmployee(@RequestBody EmployeeVo employeeVo) {
         return employeeService.saveEmployee(employeeVo);
     }
+
+    @DeleteMapping("employee/delete/{id}")
+    public ResponseResult deleteEmployee(@PathVariable Integer id){
+        return employeeService.deleteEmployee(id);
+    }
 }

@@ -2,6 +2,8 @@ package io.github.sliverkiss.domain.entity;
 
 
 import java.io.Serializable;
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -38,6 +40,15 @@ public class Department  {
     //删除标志（0代表未删除）
     private Integer delFlag;
 
-
+    public Department(Department department) {
+        Optional.ofNullable ( department ).ifPresent ( e -> {
+            this.id = e.getId ();
+            this.departmentName = e.getDepartmentName();
+            this.parentId = e.getParentId();
+            this.location = e.getLocation();
+            this.manager = e.getManager();
+            this.phone = e.getPhone();
+        } );
+    }
 
 }

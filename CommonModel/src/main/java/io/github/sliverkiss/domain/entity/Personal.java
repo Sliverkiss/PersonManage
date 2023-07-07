@@ -27,7 +27,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @NoArgsConstructor
 @Accessors(chain = true)
 @TableName("personal")
-public class Personal  extends DateUtil {
+public class Personal{
     @TableId
     private Integer id;
     //姓名
@@ -38,7 +38,7 @@ public class Personal  extends DateUtil {
     @JSONField(format = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date birthday;
+    private String birthday;
     //身份证号
     private String idCard;
     //婚姻状况
