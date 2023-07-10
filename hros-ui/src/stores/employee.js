@@ -76,10 +76,7 @@ export const useEmployee = defineStore('employee', {
                 }, {
                     key: 'engageForm',
                     value: '合同类型'
-                }, {
-                    key: 'workState',
-                    value: '在职状态'
-                },
+                }
             ]
         }
     },
@@ -107,16 +104,19 @@ export const useContract = defineStore('contract', {
         return{
             contractMap:[
                 {
-                    key: 'personalId',
+                    key: 'employeeId',
                     value: 'UID'
                 },{
                     key: 'name',
                     value: '姓名'
+                },{
+                    key: 'departmentName',
+                    value: '所在部门'
                 }, {
                     key: 'renewalAge',
                     value: '续约年数'
                 }, {
-                    key: 'departmenComment',
+                    key: 'departmentComment',
                     value: '部门意见'
                 }, {
                     key: 'approvedDate',
@@ -124,9 +124,6 @@ export const useContract = defineStore('contract', {
                 }, {
                     key: 'director',
                     value: '审核人'
-                }, {
-                    key: 'state',
-                    value: '审核状态'
                 }
             ]
         }

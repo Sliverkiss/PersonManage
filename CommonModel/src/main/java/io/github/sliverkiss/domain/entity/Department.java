@@ -4,11 +4,13 @@ package io.github.sliverkiss.domain.entity;
 import java.io.Serializable;
 import java.util.Optional;
 
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 /**
@@ -37,7 +39,7 @@ public class Department  {
     private String manager;
     //部门电话
     private String phone;
-    //删除标志（0代表未删除）
+    @TableLogic
     private Integer delFlag;
 
     public Department(Department department) {

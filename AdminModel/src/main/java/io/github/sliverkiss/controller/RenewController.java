@@ -1,10 +1,10 @@
 package io.github.sliverkiss.controller;
 
+import io.github.sliverkiss.domain.DTO.EmployeeQueryDTO;
+import io.github.sliverkiss.domain.DTO.RenewalQueryDTO;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.service.RenewalService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -20,8 +20,13 @@ public class RenewController {
     @Resource
     private RenewalService renewalService;
 
-    @GetMapping("/renewal/list")
-    public ResponseResult selectRenewalPage(){
-        return renewalService.selectRenewalPage();
+    @GetMapping("/renewal/page")
+    public ResponseResult selectRenewalPage(RenewalQueryDTO renewalQueryDTO){
+        return renewalService.selectRenewalPage(renewalQueryDTO);
+    }
+
+    @DeleteMapping("/renewal/delete/{id}")
+    public ResponseResult deleteRenewal(@PathVariable("id") Integer id){
+        return renewalService.deleteRenewal(id);
     }
 }

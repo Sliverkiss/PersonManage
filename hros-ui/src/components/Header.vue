@@ -19,7 +19,7 @@
                 <UserFilled/>
               </el-icon>
             </el-dropdown-item>
-            <el-dropdown-item>注销登录
+            <el-dropdown-item @click="logout">注销登录
               <el-icon class="ms-4">
                 <SwitchButton/>
               </el-icon>
@@ -33,7 +33,13 @@
 
 <script setup>
 import {useUser} from '@/stores/user.js'
+import {useRouter} from "vue-router";
+const router = useRouter();
 const userStore =useUser();
+
+const logout=()=>{
+  router.push('/login')
+}
 </script>
 
 <style>

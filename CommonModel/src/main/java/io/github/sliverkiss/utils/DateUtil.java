@@ -85,4 +85,24 @@ public class DateUtil {
         int day = (int) ((to.getTimeInMillis() - from.getTimeInMillis() / (24 * 3600 * 1000)));
         return new DateUtil (day,month,year);
     }
+
+    /**
+     * 根据起始日期和合同期限计算截止日期
+     *
+     * @param startContract 起始日期
+     * @param contractTerm  合同期限
+     *
+     * @return {@link String}
+     */
+    public static String endContract(String startContract,Integer contractTerm){
+        // 设置时间格式
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyy-MM-dd");
+        Date startDate=strToDate(startContract);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startDate);
+        calendar.add(Calendar.YEAR, contractTerm);
+        Date endDate=calendar.getTime();
+        String endContract=simpleDateFormat.format(endDate);
+        return endContract;
+    }
 }

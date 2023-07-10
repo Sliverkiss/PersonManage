@@ -9,7 +9,7 @@ const routes = [
         name: 'Welcome',
         component: import('@/views/WelcomeView.vue'),
         children: [{
-            path: '',
+            path: '/login',
             name: '登录页面',
             component: () => import('@/components/welcome/LoginPage.vue')
         }, {

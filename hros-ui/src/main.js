@@ -10,7 +10,6 @@ import './assets/css/global.css'
 import './bootstrap/js/bootstrap.bundle'
 import './bootstrap/css/bootstrap.min.css'
 import * as ElIcons from '@element-plus/icons-vue'
-import 'element-plus/dist/index.css'
 import store from './stores'
 
 

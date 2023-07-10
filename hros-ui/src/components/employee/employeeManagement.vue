@@ -30,9 +30,23 @@
             <div id="usersList_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
               <div class="row">
                 <div class="col-sm-12 col-md-12">
-                  <el-input style="width:160px" placeholder="请输入员工编号"></el-input>
-                  <el-input style="width:160px;margin-left:10px" placeholder="请输入姓名"></el-input>
-                  <el-button type="primary" class="ms-2">
+                  <el-input v-model="employeeId" style="width:120px" placeholder="请输入员工编号" clearable></el-input>
+                  <el-input v-model="name" style="width:120px;margin-left:10px" placeholder="请输入姓名"
+                            clearable></el-input>
+                  <el-select v-model="DepartmentId" style="width:120px;margin-left:10px" placeholder="请选择部门"
+                             clearable>
+                    <el-option
+                        v-for="department in toRaw(departmentStore.departmentList)"
+                        :key="department.id"
+                        :label="department.departmentName"
+                        :value="department.id"
+                    />
+                  </el-select>
+                  <el-input v-model="post" style="width:120px;margin-left:10px" placeholder="请输入岗位"
+                            clearable></el-input>
+                  <el-input v-model="hireDate" style="width:120px;margin-left:10px" placeholder="请输入入职日期"
+                            clearable></el-input>
+                  <el-button type="primary" class="ms-2" @click="load">
                     <el-icon>
                       <Search/>
                     </el-icon>
@@ -47,14 +61,25 @@
                       <el-table-column :prop="col.key" :label="col.value" align="center"
                                        :width="flexWidth(col.key,state.tableData,col.value)"></el-table-column>
                     </template>
+                    <el-table-column prop="workState" label="在职状态" align="center">
+                      <template #default="scope">
+                        <el-tag
+                            :type="scope.row.workState === '在职' ? '' :'退休'?'warning': 'danger'"
+                            disable-transitions
+                        >{{ scope.row.workState }}
+                        </el-tag
+                        >
+                      </template>
+                    </el-table-column>
                     <el-table-column fixed="right" align="center" label="操作" width="120">
-                      <template #default="scope" @confirm="EditEmployee(scope.row)">
-                        <el-button size="small"  style="background-color:#66b1ff">
+                      <template #default="scope">
+                        <el-button size="small" style="background-color:#66b1ff" @click="EditEmployee(scope.row)">
                           <el-icon>
                             <Edit style="color:#213d5b"/>
                           </el-icon>
                         </el-button>
-                        <el-popconfirm @confirm="DelEmployee(scope.row.id)"  title="确认删除?" confirm-button-text="确认" cancel-button-text="取消">
+                        <el-popconfirm @confirm="DelEmployee(scope.row.id)" title="确认删除?" confirm-button-text="确认"
+                                       cancel-button-text="取消">
                           <template #reference>
                             <el-button type="danger" size="small">
                               <el-icon>
@@ -71,14 +96,18 @@
               <div class="row">
                 <div class="col-sm-12 col-md-4">
                   <div class="dataTables_info" id="usersList_info" role="status" aria-live="polite"><span
-                      class="text-muted ">共有 5 条 / 1 页</span></div>
+                      class="text-muted ">共有 {{ total }} 条 / {{ currentPage }} 页</span></div>
                 </div>
                 <div class="col-sm-12 col-md-7">
                   <el-pagination
                       background
-                      page-size="10"
-                      layout="prev, pager, next"
-                      :total="50">
+                      :page-sizes="[1,10,20,30]"
+                      layout="prev,pager,next"
+                      v-model::current-page="currentPage"
+                      v-model:page-size="pageSize"
+                      @size-change="handleSizeChange"
+                      @current-change="handleCurrentChange"
+                      :total="total">
                   </el-pagination>
                 </div>
               </div>
@@ -224,7 +253,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item prop="departmentName" label="部门:">
-              <el-select v-model="state.formData.departmentName" style="width:255px">
+              <el-select v-model="state.formData.departmentName" style="width:220px">
                 <el-option
                     v-for="department in toRaw(departmentStore.departmentList)"
                     :key="department.id"
@@ -261,7 +290,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item prop="endContract" label="合同年限:">
+            <el-form-item prop="contractTerm" label="合同年限:">
               <el-select v-model="state.formData.contractTerm" placeholder="Select">
                 <el-option
                     v-for="(item,index) in 5"
@@ -285,6 +314,7 @@
       </template>
     </el-dialog>
   </div>
+  <!--  修改员工资料表单-->
   <div>
     <el-dialog v-model="dialogUpdateVisible" title="修改员工资料" align-center center class=""
                style="border-radius: 0.875rem 1rem;">
@@ -411,7 +441,7 @@
         <el-row :gutter="24">
           <el-col :span="10">
             <el-form-item prop="engageForm" label="合同类型:">
-              <el-select v-model="state.updateData.engageForm" placeholder="">
+              <el-select v-model="state.updateData.engageForm" placeholder="" disabled>
                 <el-option label="劳务合同" value="劳务合同"/>
                 <el-option label="外聘合同" value="外聘合同"/>
               </el-select>
@@ -419,7 +449,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item prop="departmentName" label="部门:">
-              <el-select v-model="state.updateData.departmentName" style="width:255px">
+              <el-select v-model="state.updateData.departmentName" style="width:220px">
                 <el-option
                     v-for="department in toRaw(departmentStore.departmentList)"
                     :key="department.id"
@@ -441,6 +471,7 @@
                   <el-date-picker
                       v-model="state.updateData.startContract"
                       type="date"
+                      disabled
                       format="YYYY/MM/DD"
                       value-format="YYYY-MM-DD"
                       placeholder=""
@@ -456,8 +487,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item prop="endContract" label="合同年限:">
-              <el-select v-model="state.updateData.contractTerm" placeholder="Select">
+            <el-form-item prop="contractTerm" label="合同年限:">
+              <el-select v-model="state.updateData.contractTerm" placeholder="Select" disabled>
                 <el-option
                     v-for="(item,index) in 5"
                     :key="index"
@@ -472,7 +503,7 @@
 
       <template #footer>
       <span class="dialog-footer">
-        <el-button @click="save" type="primary">登记</el-button>
+        <el-button @click="update" type="primary">保存</el-button>
         <el-button @click="clearFormData">
           取消
         </el-button>
@@ -486,7 +517,7 @@
 import request from "@/request.js";
 import {getCurrentInstance, reactive, ref, toRaw} from "vue";
 import {ElMessage, ElNotification} from "element-plus";
-import {flexWidth, formatDate} from '@/utils/tableUtils.js'
+import {flexWidth} from '@/utils/tableUtils.js'
 import {useEmployee} from "@/stores/employee.js";
 import {useDepartment} from "@/stores/department.js"
 
@@ -554,8 +585,6 @@ const rules = reactive({
     {required: true, message: '请选择合同类型', trigger: 'change'}
   ]
 })
-
-
 const state = reactive({
   tableData: [],
   //入职登记信息
@@ -563,6 +592,24 @@ const state = reactive({
   updateData: {},
   departmentList: [],
 })
+//分页数据
+const currentPage = ref(1);
+const pageSize = ref(2);
+const total = ref(10);
+const employeeId = ref('');
+const name = ref('');
+const DepartmentId = ref('');
+const post = ref('');
+const hireDate = ref('');
+
+const handleSizeChange = (val) => {
+  pageSize.value = val;
+  load();
+}
+const handleCurrentChange = (val) => {
+  currentPage.value = val;
+  load()
+}
 
 const clearFormData = () => {
   let clearData = {}
@@ -572,12 +619,31 @@ const clearFormData = () => {
 }
 //加载后端员工数据
 const load = () => {
-  request.get('/admin/employee/list').then(res => {
+  request.get('/admin/employee/page', {
+    params: {
+      currentPage: currentPage.value,
+      pageSize: pageSize.value,
+      name: name.value,
+      employeeId: employeeId.value,
+      DepartmentId: DepartmentId.value,
+      post: post.value,
+      hireDate: hireDate.value,
+    }
+  }).then(res => {
     if (res.code === 200) {
       state.tableData = res.data?.records
+      total.value = res.data.total - 0;
+      if (res.data.records.length == 0) {
+        ElMessage.warning('查找结果不存在～');
+      }
+    } else {
+      state.tableData = [];
+      total.value = 0
+      ElMessage.warning(res.msg);
     }
   })
 }
+
 const selectDepartmentList = () => {
   request.get('admin/department/list').then(res => {
     try {
@@ -596,36 +662,12 @@ const save = () => {
   proxy.$refs.ruleFormRef.validate((valid) => {
     if (valid) {
       //发送后台请求
-      request.post('admin/employee/save', {
-        name: state.formData.name,
-        gender: state.formData.gender,
-        birthday: state.formData.birthday.toString(),
-        idCard: state.formData.idCard,
-        wedlock: state.formData.wedlock,
-        nation: state.formData.nation,
-        naticePlace: state.formData.naticePlace,
-        politic: state.formData.politic,
-        phone: state.formData.phone,
-        email: state.formData.email,
-        address: state.formData.address,
-        tiptopDegree: state.formData.tiptopDegree,
-        specialty: state.formData.specialty,
-        school: state.formData.school,
-        departmentName: state.formData.departmentName,
-        post: state.formData.post,
-        level: state.formData.level,
-        workState: state.formData.workState,
-        startContract: state.formData.startContract.toString(),
-        endContract: state.formData.endContract.toString(),
-        contractTerm: state.formData.contractTerm,
-        engageForm: state.formData.engageForm,
-      }).then(res => {
+      request.post('admin/employee/save', state.formData).then(res => {
         if (res.code == '200') {
           ElNotification.success('入职登记成功！')
         } else {
           ElMessage.error('系统服务异常，请稍后再试~')
         }
-      }).finally(() => {
         clearFormData();
         load();
       })
@@ -640,13 +682,36 @@ const EditEmployee = (row) => {
   dialogUpdateVisible.value = true;
   state.updateData = JSON.parse(JSON.stringify(row));
 }
-//删除员工资料
-const DelEmployee =(id)=>{
-  request.delete('admin/employee/delete/'+id).then((res) => {
-    if (res.code==200){
-      ElNotification.success(res.msg);
-    }else {
+//修改员工资料
+const update = () => {
+  request.post('admin/employee/update', state.updateData).then((res) => {
+    try {
+      if (res.code == 200) {
+        ElNotification.success(res.msg);
+      } else {
+        ElMessage.error(res.msg);
+      }
+    } catch {
       ElMessage.error(res.msg);
+    } finally {
+      clearFormData();
+      load();
+    }
+  })
+}
+//删除员工资料
+const DelEmployee = (id) => {
+  request.delete('admin/employee/delete/' + id).then((res) => {
+    try {
+      if (res.code == 200) {
+        ElNotification.success(res.msg);
+      } else {
+        ElMessage.error(res.msg);
+      }
+    } catch {
+      ElMessage.error(res.msg);
+    } finally {
+      load();
     }
   })
 }

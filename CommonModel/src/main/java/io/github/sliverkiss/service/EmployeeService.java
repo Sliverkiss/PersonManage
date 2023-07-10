@@ -1,9 +1,12 @@
 package io.github.sliverkiss.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.IService;
+import io.github.sliverkiss.domain.DTO.EmployeeQueryDTO;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.Employee;
 import io.github.sliverkiss.domain.vo.EmployeeVo;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * 员工表(Employee)表服务接口
@@ -14,20 +17,29 @@ import io.github.sliverkiss.domain.vo.EmployeeVo;
 public interface EmployeeService extends IService<Employee> {
 
     /**
-     * 获取员工列表
+     * 员工检索，实现员工信息的多方位检索，包活员工编号、入职日期、部门、岗位和姓名检索
      *
      * @return {@link ResponseResult}
      */
-    public ResponseResult selectEmployeePage();
+    public ResponseResult selectEmployeePage(EmployeeQueryDTO employeeQueryDTO );
 
     /**
      * 入职登记
      *
-     * @param employeeVo 员工签证官
+     * @param employeeVo 员工资料视图
      *
      * @return {@link ResponseResult}
      */
     public ResponseResult saveEmployee(EmployeeVo employeeVo);
+
+    /**
+     * 更新员工资料信息
+     *
+     * @param employeeVo 员工资料视图
+     *
+     * @return {@link ResponseResult}
+     */
+    public ResponseResult updateEmployee(EmployeeVo employeeVo);
 
     /**
      * 删除员工

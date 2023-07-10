@@ -8,12 +8,11 @@ import java.util.Date;
 import java.util.Optional;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.github.sliverkiss.utils.DateUtil;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.experimental.Accessors;
@@ -32,7 +31,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Accessors(chain = true)
 @TableName("employee")
 public class Employee {
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Integer id;
 
     // 人员信息id

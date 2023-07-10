@@ -16,6 +16,9 @@ public enum AppHttpCodeEnum {
     NEED_LOGIN ( 401, "需要登录后操作啦，亲~~~" ),
     NO_OPERATOR_AUTH ( 403, "无权限操作啦，亲~~~" ),
     SYSTEM_ERROR ( 500, "出现错误啦，亲~~~" ),
+
+    FIND_NOT_FOUND ( 500, "查找结果不存在～"),
+    DELETE_FAILED(500,"删除失败，删除对象不存在～"),
     USERNAME_EXIST ( 501, "用户名已存在啦，亲~~~" ),
     PHONENUMBER_EXIST ( 502, "手机号已存在啦，亲~~~" ),
     EMAIL_EXIST ( 503, "邮箱已存在" ),

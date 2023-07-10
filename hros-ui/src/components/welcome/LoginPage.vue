@@ -20,7 +20,7 @@
         <el-form-item>
         <div class="form-floating mb-4">
           <input v-model='user.password' class="form-control" id="password" name="password" placeholder="输入你的密码"
-                 type="password" style="margin-right:120px">
+                 type="password" style="margin-right:120px"/>
           <label class="form-label" for="password">密码</label>
         </div>
         </el-form-item>

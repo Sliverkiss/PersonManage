@@ -5,12 +5,17 @@ import java.util.Date;
 import java.io.Serializable;
 import java.util.Optional;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.ToString;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * 续约申请表(Renewal)表实体类
@@ -27,26 +32,29 @@ import lombok.experimental.Accessors;
 public class Renewal  {
     @TableId
     private Integer id;
-
-    //员工编号
-    private Integer personalId;
+    //员工信息编号
+    private Integer employeeId;
     //续约年数
     private Integer renewalAge;
     //部门意见
     private String departmentComment;
     //审核日期
-    private Date approvedDate;
+    @JSONField(format = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private String approvedDate;
     //审核负责人
     private String director;
     //审核状态
     private String state;
-    
+
+    @TableLogic
     private Integer delFlag;
 
     public Renewal(Renewal renewal) {
         Optional.ofNullable ( renewal ).ifPresent ( e -> {
             this.id = e.getId ();
-            this.personalId = e.getPersonalId ();
+            this.employeeId = e.getEmployeeId ();
            this.renewalAge = e.getRenewalAge();
            this.departmentComment = e.getDepartmentComment();
            this.approvedDate = e.getApprovedDate();

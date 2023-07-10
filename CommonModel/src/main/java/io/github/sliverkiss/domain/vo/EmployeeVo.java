@@ -7,6 +7,7 @@ import io.github.sliverkiss.domain.entity.Personal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -21,6 +22,7 @@ import java.util.Optional;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(callSuper=true)
 @Accessors(chain = true)
 public class EmployeeVo extends Employee{
     //姓名
@@ -84,4 +86,6 @@ public class EmployeeVo extends Employee{
             this.school = e.getSchool();
         });
     }
+
+
 }

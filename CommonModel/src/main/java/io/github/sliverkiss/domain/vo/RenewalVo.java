@@ -18,8 +18,11 @@ import java.util.Optional;
 @NoArgsConstructor
 @Accessors(chain = true)
 public class RenewalVo extends Renewal {
+
     //姓名
     private String name;
+
+    private String departmentName;
 
     public RenewalVo(Renewal renewal) {
       super(renewal);

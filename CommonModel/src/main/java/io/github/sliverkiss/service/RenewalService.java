@@ -1,6 +1,8 @@
 package io.github.sliverkiss.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import io.github.sliverkiss.domain.DTO.EmployeeQueryDTO;
+import io.github.sliverkiss.domain.DTO.RenewalQueryDTO;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.Renewal;
 
@@ -12,6 +14,8 @@ import io.github.sliverkiss.domain.entity.Renewal;
  */
 public interface RenewalService extends IService<Renewal> {
 
-    public ResponseResult selectRenewalPage();
+    public ResponseResult selectRenewalPage(RenewalQueryDTO renewalQueryDTO);
+
+    public ResponseResult deleteRenewal(Integer id);
 }
 

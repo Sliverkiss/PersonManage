@@ -2,7 +2,9 @@ package io.github.sliverkiss.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import io.github.sliverkiss.constants.UserContants;
 import io.github.sliverkiss.dao.UserDao;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.User;
@@ -39,4 +41,12 @@ public class UserLoginServiceImpl implements UserLoginService {
 
     }
 
+    public ResponseResult register(User user) {
+        if (StringUtils.isBlank ( user.getPassword () )){
+            user.setPassword( UserContants.DEFAULT_PASS);
+        }
+        // user.setPassword ( SecureUtil.md5(user.getPassword()) )
+        userService.save(user);
+        return ResponseResult.okResult();
+    }
 }

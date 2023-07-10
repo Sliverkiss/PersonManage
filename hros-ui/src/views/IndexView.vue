@@ -20,12 +20,9 @@
 
 <script setup lang="ts">
 
-import {reactive} from "vue";
-import request from "../request.js";
+import {reactive, ref} from "vue";
 import Header from '../components/Header.vue'
 import Aside from '../components/Aside.vue'
-import {ref} from 'vue'
-import Foot from '../components/footer/Foot.vue'
 
 const state = reactive({
   tableData: []
