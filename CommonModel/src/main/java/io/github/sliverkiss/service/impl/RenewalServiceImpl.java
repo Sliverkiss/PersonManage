@@ -25,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 import xin.altitude.cms.common.util.EntityUtils;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -72,12 +74,12 @@ public class RenewalServiceImpl extends ServiceImpl<RenewalDao, Renewal> impleme
         List<Integer> personalIds = personalDao.selectList ( personalWrapper )
                 .stream ().map ( Personal::getId ).collect ( Collectors.toList () );
         // 模糊查询部门名称
-        List<Integer> departmentIds= departmentDao.selectList ( Wrappers.lambdaQuery ( Department.class )
-                .eq ( Department::getId, departmentId ) ).stream ().map(Department::getId).collect(Collectors.toList());
+        List<Integer> departmentIds = departmentDao.selectList ( Wrappers.lambdaQuery ( Department.class )
+                .eq ( Department::getId, departmentId ) ).stream ().map ( Department::getId ).collect ( Collectors.toList () );
         // 多条件模糊查询员工工作表，包括personalId、departmentId、employeeId
         List<Integer> employeeIds = employeeDao.selectList ( Wrappers.lambdaQuery ( Employee.class )
-                         .in ( personalIds.size () > 0, Employee::getPersonalId, personalIds )
-                         .like ( StringUtils.isNotBlank ( employeeId ), Employee::getId, employeeId )
+                        .in ( personalIds.size () > 0, Employee::getPersonalId, personalIds )
+                        .like ( StringUtils.isNotBlank ( employeeId ), Employee::getId, employeeId )
                         .in ( departmentIds.size () > 0, Employee::getDepartmentId, departmentId ) )
                 .stream ().map ( Employee::getId ).collect ( Collectors.toList () );
 
@@ -129,19 +131,45 @@ public class RenewalServiceImpl extends ServiceImpl<RenewalDao, Renewal> impleme
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResponseResult deleteRenewal(Integer id){
-        if (id!=null){
-            try{
-                this.removeById(id);
-                return ResponseResult.okResult();
-            }catch(Exception e){
-                throw new SystemException(AppHttpCodeEnum.DELETE_FAILED);
+    public ResponseResult deleteRenewal(Integer id) {
+        if (id != null) {
+            try {
+                this.removeById ( id );
+                return ResponseResult.okResult ();
+            } catch (Exception e) {
+                throw new SystemException ( AppHttpCodeEnum.DELETE_FAILED );
             }
-        }else {
-            return ResponseResult.errorResult (AppHttpCodeEnum.DELETE_FAILED);
+        } else {
+            return ResponseResult.errorResult ( AppHttpCodeEnum.DELETE_FAILED );
         }
+    }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult saveRenewal(Renewal renewal) {
+        // 获取当前日期并注入renewal
+        String approvedDate = new SimpleDateFormat ( "yyy-MM-dd" ).format ( new Date () );
+        Optional.ofNullable ( renewal ).ifPresent ( e -> e.setApprovedDate ( approvedDate ) );
+        try {
+            this.save ( renewal );
+            return ResponseResult.okResult ();
+        } catch (Exception e) {
+            throw new SystemException ( AppHttpCodeEnum.SYSTEM_ERROR );
+        }
+    }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult updateRenewal(Renewal renewal) {
+        // 获取当前日期并注入renewal
+        String approvedDate = new SimpleDateFormat ( "yyy-MM-dd" ).format ( new Date () );
+        Optional.ofNullable ( renewal ).ifPresent ( e -> e.setApprovedDate ( approvedDate ) );
+        try {
+            this.update ( renewal, Wrappers.lambdaQuery ( Renewal.class ).eq ( Renewal::getId, renewal.getId () ) );
+            return ResponseResult.okResult ( AppHttpCodeEnum.SUCCESS );
+        } catch (Exception e) {
+            throw new SystemException ( AppHttpCodeEnum.SYSTEM_ERROR );
+        }
     }
 }
 

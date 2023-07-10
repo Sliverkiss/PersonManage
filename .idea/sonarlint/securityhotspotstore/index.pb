@@ -355,8 +355,6 @@ VCommonModel/src/main/java/io/github/sliverkiss/service/impl/DepartmentServiceIm
 +hros-ui/src/components/trainning/record.vue,8/e/8eb6edddaa4b2ec21c1b2e0bcee63e467b46a955
 ^
 .hros-ui/src/components/trainning/trainning.vue,2/2/22645d163f5d804f5ac005d382c7ace340e448ab
-J
-hros-ui/src/stores/user.js,d/9/d9d0201a28888a298d944a1bef6327ddf934daa2
 ^
 .hros-ui/src/components/indicator/indicator.vue,b/2/b2a3457b6f26143f967121fc1e9926fa5fe2fd6c
 P

@@ -675,7 +675,6 @@ const save = () => {
       ElMessage.error('入职登记信息填写错误')
     }
   })
-
 }
 //打开修改员工资料视图
 const EditEmployee = (row) => {

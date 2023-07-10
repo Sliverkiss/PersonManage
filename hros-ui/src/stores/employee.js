@@ -104,12 +104,15 @@ export const useContract = defineStore('contract', {
         return{
             contractMap:[
                 {
+                    key: 'id',
+                    value: '序号'
+                }, {
                     key: 'employeeId',
                     value: 'UID'
-                },{
+                }, {
                     key: 'name',
                     value: '姓名'
-                },{
+                }, {
                     key: 'departmentName',
                     value: '所在部门'
                 }, {
