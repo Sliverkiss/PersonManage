@@ -120,7 +120,7 @@
   </div>
   <!--  入职登记表单-->
   <div>
-    <el-dialog v-model="dialogFormVisible" title="入职登记" align-center center class=""
+    <el-dialog v-model="dialogFormVisible" title="入职登记" align-center center class="" width=650
                style="border-radius: 0.875rem 1rem;">
       <h6 class="mb-3">基本信息</h6>
       <el-form :model="state.formData" class="" status-icon :rules="rules" ref="ruleFormRef">

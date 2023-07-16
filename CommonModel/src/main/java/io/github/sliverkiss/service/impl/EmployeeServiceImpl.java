@@ -84,14 +84,14 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
         } else {
             // 如果 员工编号不为空，则按员工编号模糊查询
             try {
-                LambdaQueryWrapper<Employee> employeelWrapper = Wrappers.lambdaQuery ( Employee.class )
+                LambdaQueryWrapper<Employee> employeeWrapper = Wrappers.lambdaQuery ( Employee.class )
                         .like ( StringUtils.isNotBlank ( employeeId ), Employee::getId, employeeId )
                         .like ( StringUtils.isNotBlank ( post ), Employee::getPost, post )
                         .in ( personalIds.size () > 0, Employee::getPersonalId, personalIds )
                         .eq ( departmentList.size () > 0, Employee::getDepartmentId, departmentId )
                         .like ( StringUtils.isNotBlank ( hireDate ), Employee::getId, hireDate );
                 // 将 条件查询结果用page包装起来
-                Page<Employee> employeePage = this.page ( page, employeelWrapper );
+                Page<Employee> employeePage = this.page ( page, employeeWrapper );
                 IPage<EmployeeVo> employeeVoIPage = EntityUtils.toPage ( employeePage, EmployeeVo::new );
                 // 分页模糊查询
                 // 注入personal属性

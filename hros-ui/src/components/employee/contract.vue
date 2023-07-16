@@ -59,10 +59,8 @@
                       <template #default="scope">
                         <el-tag
                             :type="scope.row.state === '通过' ? '' :'审核中'?'warning': 'danger'"
-                            disable-transitions
-                        >{{ scope.row.state }}
-                        </el-tag
-                        >
+                            disable-transitions>{{ scope.row.state }}
+                        </el-tag>
                       </template>
                     </el-table-column>
                     <el-table-column fixed="right" align="center" label="操作" width="120">

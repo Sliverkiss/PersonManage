@@ -148,3 +148,63 @@ export const useContract = defineStore('contract', {
         }]
     }
 })
+
+export const useSalary = defineStore('salary', {
+    state: () => {
+        return {
+            salaryMap: [
+                {
+                    key: 'id',
+                    value: '序号'
+                }, {
+                    key: 'employeeId',
+                    value: 'UID'
+                }, {
+                    key: 'name',
+                    value: '姓名'
+                }, {
+                    key: 'departmentName',
+                    value: '所在部门'
+                }, {
+                    key: 'salaryDate',
+                    value: '工资月份'
+                }, {
+                    key: 'baseSalary',
+                    value: '基础工资'
+                }, {
+                    key: 'performance',
+                    value: '绩效奖金'
+                }, {
+                    key: 'deduLeave',
+                    value: '请假扣款'
+                }, {
+                    key: 'deduLate',
+                    value: '迟到扣款'
+                }, {
+                    key: 'insure',
+                    value: '五险一金'
+                }, {
+                    key: 'netSalary',
+                    value: '净工资'
+                }, {
+                    key: 'payDate',
+                    value: '创建时间'
+                }
+            ]
+        }
+    }, actions: {
+        //设置用户信息
+
+        setContractMap(val) {
+            this.contractMap = val;
+        }
+    },
+    //开启数据缓存
+    persist: {
+        enabled: false,
+        strategies: [{
+            key: 'contractList',
+            storage: localStorage,
+        }]
+    }
+})

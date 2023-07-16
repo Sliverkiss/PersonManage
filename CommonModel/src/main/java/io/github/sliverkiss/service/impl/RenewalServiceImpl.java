@@ -129,6 +129,13 @@ public class RenewalServiceImpl extends ServiceImpl<RenewalDao, Renewal> impleme
         }
     }
 
+    /**
+     * 删除合同记录
+     *
+     * @param id id
+     *
+     * @return {@link ResponseResult}
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult deleteRenewal(Integer id) {
@@ -144,6 +151,13 @@ public class RenewalServiceImpl extends ServiceImpl<RenewalDao, Renewal> impleme
         }
     }
 
+    /**
+     * 续约处理
+     *
+     * @param renewal 更新
+     *
+     * @return {@link ResponseResult}
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult saveRenewal(Renewal renewal) {
@@ -158,6 +172,13 @@ public class RenewalServiceImpl extends ServiceImpl<RenewalDao, Renewal> impleme
         }
     }
 
+    /**
+     * 修改续约合同
+     *
+     * @param renewal 更新
+     *
+     * @return {@link ResponseResult}
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult updateRenewal(Renewal renewal) {
