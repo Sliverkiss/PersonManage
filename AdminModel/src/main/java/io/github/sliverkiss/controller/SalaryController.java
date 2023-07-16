@@ -2,10 +2,9 @@ package io.github.sliverkiss.controller;
 
 import io.github.sliverkiss.domain.DTO.SalaryDTO;
 import io.github.sliverkiss.domain.ResponseResult;
+import io.github.sliverkiss.domain.entity.Salary;
 import io.github.sliverkiss.service.SalaryService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -25,4 +24,10 @@ public class SalaryController {
     public ResponseResult selectRenewalPage(SalaryDTO salaryDTO) {
         return salaryService.selectSalaryPage ( salaryDTO );
     }
+
+    @PostMapping("/employee/salary/save")
+    public ResponseResult ResponseResult(@RequestBody Salary salary) {
+        return salaryService.saveSalary ( salary );
+    }
+
 }

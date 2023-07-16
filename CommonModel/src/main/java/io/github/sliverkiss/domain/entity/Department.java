@@ -1,17 +1,16 @@
 package io.github.sliverkiss.domain.entity;
 
 
-import java.io.Serializable;
-import java.util.Optional;
-
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.ToString;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.util.Optional;
 
 /**
  * 部门(Department)表实体类
@@ -25,17 +24,17 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors(chain = true)
 @TableName("department")
-public class Department  {
+public class Department implements Serializable {
     @TableId
     private Integer id;
 
-    //部门名称
+    // 部门名称
     private String departmentName;
-    //上级部门编号
+    // 上级部门编号
     private Integer parentId;
-    //部门位置
+    // 部门位置
     private String location;
-    //负责人
+    // 负责人
     private String manager;
     //部门电话
     private String phone;

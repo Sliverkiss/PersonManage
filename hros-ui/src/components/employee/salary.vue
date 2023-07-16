@@ -38,12 +38,13 @@
                     <!--修改删除-->
                     <el-table-column fixed="right" align="center" label="操作" width="120">
                       <template #default="scope">
-                        <el-button size="small" style="background-color:#66b1ff" @click="Edit(scope.row)">
+                        <el-button size="small" style="background-color:#66b1ff" @click="EditSalary(scope.row)">
                           <el-icon>
                             <Edit style="color:#213d5b"/>
                           </el-icon>
                         </el-button>
-                        <el-popconfirm @confirm="Delete(scope.row.id)" title="确认删除?" confirm-button-text="确认"
+                        <el-popconfirm @confirm="DeleteSalary(scope.row.id)" title="确认删除?"
+                                       confirm-button-text="确认"
                                        cancel-button-text="取消">
                           <template #reference>
                             <el-button type="danger" size="small">
@@ -83,6 +84,78 @@
     </div>
     <Foot/>
   </div>
+  <!--  新增薪资表单-->
+  <div>
+    <el-dialog v-model="dialogFormVisible" title="新增薪资" align-center center class="" width="680"
+               style="border-radius: 0.875rem 1rem;">
+      <el-form :model="state.formData" class="" status-icon :rules="rules" ref="ruleFormRef">
+        <el-row :gutter="24">
+          <el-col :span="12">
+            <el-form-item prop="employeeId" size="large" label="员工编号：">
+              <el-input v-model="state.formData.employeeId" placeholder="请输入员工编号"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="salaryDate" size="large" label="工资月份：">
+              <div class="demo-date-picker">
+                <div class="block">
+                  <el-date-picker
+                      v-model="state.formData.salaryDate"
+                      type="month"
+                      format="YYYY/MM"
+                      value-format="YYYY-MM"
+                      placeholder=""
+                      :size="10"/>
+                </div>
+              </div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="baseSalary" size="large" label="基础工资：">
+              <el-input v-model="state.formData.baseSalary" placeholder="请输入绩效奖金"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="performance" size="large" label="绩效奖金：">
+              <el-input v-model="state.formData.performance" placeholder="请输入绩效奖金"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="deduLeave" size="large" label="请假扣款：">
+              <el-input v-model="state.formData.deduLeave" placeholder="请输入请假扣款"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="deduLate" size="large" label="迟到扣款：">
+              <el-input v-model="state.formData.deduLate" placeholder="请输入迟到扣款"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="insure" size="large" label="五险一金：">
+              <el-input v-model="state.formData.insure" placeholder="请输入五险一金"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="status" size="large" label="发放状态：">
+              <el-select v-model="state.formData.status" placeholder="请选择发放状态" style="width:2250px">
+                <el-option label="已发放" value="已发放"/>
+                <el-option label="未发放" value="未发放"/>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+
+      <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="save" type="primary">新增</el-button>
+        <el-button @click="clearFormData">
+          取消
+        </el-button>
+      </span>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 
 <script setup>
@@ -109,9 +182,6 @@ const rules = reactive({
   employeeId: [
     {required: true, message: '请输入员工编号', trigger: 'blur'},
     {min: 1, max: 11, message: '员工编号范围在1～11位之间', trigger: 'blur'}
-  ],
-  renewalAge: [
-    {required: true, message: '请选择续约年数', trigger: 'blur'},
   ],
   state: [
     {required: true, message: '请选择审核结果', trigger: 'blur'},
@@ -150,7 +220,7 @@ const clearFormData = () => {
   dialogFormVisible.value = false;
   dialogUpdateVisible.value = false;
 }
-const Edit = (row) => {
+const EditSalary = (row) => {
   dialogUpdateVisible.value = true;
   state.updateData = JSON.parse(JSON.stringify(row));
 }
@@ -159,11 +229,10 @@ const save = () => {
   //表单校检
   proxy.$refs.ruleFormRef.validate((valid) => {
     if (valid) {
-      state.formData.director = userStore.getUser().username
       //发送后台请求
-      request.post('admin/renewal/save', state.formData).then(res => {
+      request.post('admin/employee/salary/save', state.formData).then(res => {
         if (res.code == '200') {
-          ElNotification.success('续约申请成功！')
+          ElNotification.success('新增薪资成功！')
         } else {
           ElMessage.error('系统服务异常，请稍后再试~')
         }
@@ -171,7 +240,7 @@ const save = () => {
         load();
       })
     } else {
-      ElMessage.error('续约申请信息填写错误')
+      ElMessage.error('薪资信息填写错误')
     }
   })
 }
@@ -193,7 +262,7 @@ const update = () => {
   })
 }
 //删除员工资料
-const Delete = (id) => {
+const DeleteSalary = (id) => {
   request.delete('admin/employee/salary/delete' + id).then((res) => {
     try {
       if (res.code == 200) {
@@ -238,6 +307,7 @@ const load = () => {
     }
   })
 }
+load()
 </script>
 
 <style scoped>

@@ -1,22 +1,20 @@
 package io.github.sliverkiss.domain.entity;
 
 
-
-import java.io.Serializable;
-
-import java.util.Date;
-import java.util.Optional;
-
 import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import io.github.sliverkiss.utils.DateUtil;
-import lombok.*;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.io.Serializable;
+import java.util.Optional;
 
 /**
  * 员工表(Employee)表实体类
@@ -30,7 +28,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @NoArgsConstructor
 @Accessors(chain = true)
 @TableName("employee")
-public class Employee {
+public class Employee implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;
 

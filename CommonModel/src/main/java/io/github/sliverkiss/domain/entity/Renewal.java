@@ -1,21 +1,18 @@
 package io.github.sliverkiss.domain.entity;
 
-import java.util.Date;
-
-import java.io.Serializable;
-import java.util.Optional;
-
 import com.alibaba.fastjson.annotation.JSONField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.io.Serializable;
+import java.util.Optional;
 
 /**
  * 续约申请表(Renewal)表实体类
@@ -29,16 +26,16 @@ import org.springframework.format.annotation.DateTimeFormat;
 @NoArgsConstructor
 @Accessors(chain = true)
 @TableName("renewal")
-public class Renewal  {
+public class Renewal implements Serializable {
     @TableId
     private Integer id;
-    //员工信息编号
+    // 员工信息编号
     private Integer employeeId;
-    //续约年数
+    // 续约年数
     private Integer renewalAge;
-    //部门意见
+    // 部门意见
     private String departmentComment;
-    //审核日期
+    // 审核日期
     @JSONField(format = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")

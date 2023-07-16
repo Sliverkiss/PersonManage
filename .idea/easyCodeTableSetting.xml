@@ -392,56 +392,56 @@
                     <option name="custom" value="false" />
                     <option name="ext" value="{}" />
                     <option name="name" value="baseSalary" />
-                    <option name="type" value="java.lang.Integer" />
+                    <option name="type" value="java.lang.Double" />
                   </ColumnInfoDTO>
                   <ColumnInfoDTO>
                     <option name="comment" value="绩效奖金" />
                     <option name="custom" value="false" />
                     <option name="ext" value="{}" />
                     <option name="name" value="performance" />
-                    <option name="type" value="java.lang.Integer" />
+                    <option name="type" value="java.lang.Double" />
                   </ColumnInfoDTO>
                   <ColumnInfoDTO>
                     <option name="comment" value="请假扣款" />
                     <option name="custom" value="false" />
                     <option name="ext" value="{}" />
                     <option name="name" value="deduLeave" />
-                    <option name="type" value="java.lang.Integer" />
+                    <option name="type" value="java.lang.Double" />
                   </ColumnInfoDTO>
                   <ColumnInfoDTO>
                     <option name="comment" value="迟到扣款" />
                     <option name="custom" value="false" />
                     <option name="ext" value="{}" />
                     <option name="name" value="deduLate" />
-                    <option name="type" value="java.lang.Integer" />
+                    <option name="type" value="java.lang.Double" />
                   </ColumnInfoDTO>
                   <ColumnInfoDTO>
                     <option name="comment" value="五险一金" />
                     <option name="custom" value="false" />
                     <option name="ext" value="{}" />
                     <option name="name" value="insure" />
-                    <option name="type" value="java.lang.Integer" />
+                    <option name="type" value="java.lang.Double" />
                   </ColumnInfoDTO>
                   <ColumnInfoDTO>
                     <option name="comment" value="净工资" />
                     <option name="custom" value="false" />
                     <option name="ext" value="{}" />
                     <option name="name" value="netSalary" />
-                    <option name="type" value="java.lang.Integer" />
+                    <option name="type" value="java.lang.Double" />
                   </ColumnInfoDTO>
                   <ColumnInfoDTO>
                     <option name="comment" value="创建时间" />
                     <option name="custom" value="false" />
                     <option name="ext" value="{}" />
                     <option name="name" value="payDate" />
-                    <option name="type" value="java.lang.Integer" />
+                    <option name="type" value="java.lang.String" />
                   </ColumnInfoDTO>
                   <ColumnInfoDTO>
                     <option name="comment" value="发放状态" />
                     <option name="custom" value="false" />
                     <option name="ext" value="{}" />
                     <option name="name" value="status" />
-                    <option name="type" value="java.lang.Integer" />
+                    <option name="type" value="java.lang.String" />
                   </ColumnInfoDTO>
                   <ColumnInfoDTO>
                     <option name="custom" value="false" />
@@ -454,8 +454,8 @@
               <option name="name" value="Salary" />
               <option name="preName" value="" />
               <option name="saveModelName" value="CommonModel" />
-              <option name="savePackageName" value="io.github.sliverkiss" />
-              <option name="savePath" value="./CommonModel/src/main/java/io/github/sliverkiss" />
+              <option name="savePackageName" value="io.github.sliverkiss.domain" />
+              <option name="savePath" value="./CommonModel/src/main/java/io/github/sliverkiss/domain" />
               <option name="templateGroupName" value="MybatisPlus" />
             </TableInfoDTO>
           </value>
