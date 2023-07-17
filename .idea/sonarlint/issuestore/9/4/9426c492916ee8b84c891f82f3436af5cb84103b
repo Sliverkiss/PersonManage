@@ -1,0 +1,16 @@
+
+Bjavascript:S1186¾" Unexpected empty arrow function.(î÷òÏúÿÿÿÿ
+bjavascript:S905Ë"FExpected an assignment or function call and instead saw an expression.(ŒˆÓÅ
+qjavascript:S3776¨"TRefactor this function to reduce its Cognitive Complexity from 19 to the 15 allowed.(ûÛˆ†
+<javascript:S1874º"'initEvent' is deprecated.(íù„Èüÿÿÿÿ
+cjavascript:S1874Í"A'pageYOffset' is deprecated. This is a legacy alias of `scrollY`.(ƒƒØÝøÿÿÿÿ
+^javascript:S1874Î"A'pageXOffset' is deprecated. This is a legacy alias of `scrollX`.(·‡­Á
+vjavascript:S3776ƒ
+"TRefactor this function to reduce its Cognitive Complexity from 17 to the 15 allowed.(×þÞÀýÿÿÿÿ
+njavascript:S4138ê
+"LExpected a `for-of` loop instead of a `for` loop with this simple iteration.(³àª¡øÿÿÿÿ
+vjavascript:S3776Ú"TRefactor this function to reduce its Cognitive Complexity from 27 to the 15 allowed.(Óÿî¿üÿÿÿÿ
+vjavascript:S3776Š"TRefactor this function to reduce its Cognitive Complexity from 16 to the 15 allowed.(ò»ž’ùÿÿÿÿ
+vjavascript:S4144ÿ"YUpdate this function so that its implementation is not identical to the one on line 2893.(’ý¼¸
+vjavascript:S3776ð"TRefactor this function to reduce its Cognitive Complexity from 17 to the 15 allowed.(Í×—÷þÿÿÿÿ
+vjavascript:S4144Ú"YUpdate this function so that its implementation is not identical to the one on line 2190.(¶ÿðÊ

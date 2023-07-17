@@ -1,0 +1,9 @@
+
+…
+java:S1488i"cImmediately return this expression instead of assigning it to the temporary variable "endContract".(’µ Àùÿÿÿÿ8Û—úš“1
+>
+java:S1110U"!Remove these useless parentheses.(¼ÔÕÂ8¾åùš“1
+H
+java:S1128"+Remove this unused import 'lombok.Builder'.(§’Ğß8Áåùš“1
+J
+java:S1128"(Remove this unused import 'lombok.Data'.(÷í«ÿÿÿÿÿ8Áåùš“1

@@ -24,8 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import xin.altitude.cms.common.util.EntityUtils;
 
 import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -95,41 +93,21 @@ public class SalaryServiceImpl extends ServiceImpl<SalaryDao, Salary> implements
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResponseResult saveSalary(Salary salary) {
-        // 获取当前日期并注入renewal
-        String payDate = new SimpleDateFormat ( "yyy-MM-dd" ).format ( new Date () );
-        Double netSalary = this.netSalary ( salary );
-        // 注入属性：支付日期、净工资
-        Optional.ofNullable ( salary ).ifPresent ( e -> {
-            e.setPayDate ( payDate ).setNetSalary ( netSalary );
-        } );
-        try {
-            this.save ( salary );
-            return ResponseResult.okResult ();
-        } catch (Exception e) {
-            throw new SystemException ( AppHttpCodeEnum.SYSTEM_ERROR );
-        }
+    public ResponseResult saveEntity(Salary salary) {
+        this.save ( salary );
+        return ResponseResult.okResult ();
     }
 
     @Override
-    public ResponseResult deleteSalary(Integer id) {
+    public ResponseResult updateEntity(Salary entity) {
+
         return null;
+
     }
 
     @Override
-    public ResponseResult updateSalary(Salary salary) {
+    public ResponseResult deleteEntity(Integer id) {
         return null;
-    }
-
-    /**
-     * 计算净工资
-     *
-     * @param salary 工资
-     *
-     * @return {@link Double}
-     */
-    public Double netSalary(Salary salary) {
-        return salary.getBaseSalary () + salary.getPerformance () - salary.getDeduLeave () - salary.getDeduLate () - salary.getInsure ();
     }
 }
 

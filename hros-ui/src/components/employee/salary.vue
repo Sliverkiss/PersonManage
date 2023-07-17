@@ -86,7 +86,7 @@
   </div>
   <!--  新增薪资表单-->
   <div>
-    <el-dialog v-model="dialogFormVisible" title="新增薪资" align-center center class="" width="680"
+    <el-dialog v-model="dialogFormVisible" title="新增薪资" align-center center class="" width="700"
                style="border-radius: 0.875rem 1rem;">
       <el-form :model="state.formData" class="" status-icon :rules="rules" ref="ruleFormRef">
         <el-row :gutter="24">
@@ -112,27 +112,27 @@
           </el-col>
           <el-col :span="12">
             <el-form-item prop="baseSalary" size="large" label="基础工资：">
-              <el-input v-model="state.formData.baseSalary" placeholder="请输入绩效奖金"></el-input>
+              <el-input v-model.number="state.formData.baseSalary" placeholder="请输入基础工资"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item prop="performance" size="large" label="绩效奖金：">
-              <el-input v-model="state.formData.performance" placeholder="请输入绩效奖金"></el-input>
+              <el-input v-model.number="state.formData.performance" placeholder="请输入绩效奖金"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item prop="deduLeave" size="large" label="请假扣款：">
-              <el-input v-model="state.formData.deduLeave" placeholder="请输入请假扣款"></el-input>
+              <el-input v-model.number="state.formData.deduLeave" placeholder="请输入请假扣款"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item prop="deduLate" size="large" label="迟到扣款：">
-              <el-input v-model="state.formData.deduLate" placeholder="请输入迟到扣款"></el-input>
+              <el-input v-model.number="state.formData.deduLate" placeholder="请输入迟到扣款"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item prop="insure" size="large" label="五险一金：">
-              <el-input v-model="state.formData.insure" placeholder="请输入五险一金"></el-input>
+              <el-input v-model.number="state.formData.insure" placeholder="请输入五险一金"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -181,11 +181,29 @@ const state = reactive({
 const rules = reactive({
   employeeId: [
     {required: true, message: '请输入员工编号', trigger: 'blur'},
-    {min: 1, max: 11, message: '员工编号范围在1～11位之间', trigger: 'blur'}
+    {min: 1, max: 11, message: '员工编号范围在1～11位之间', trigger: 'blur'},
   ],
-  state: [
-    {required: true, message: '请选择审核结果', trigger: 'blur'},
-  ]
+  status: [
+    {required: true, message: '请选择发放状态', trigger: 'blur'},
+  ],
+  salaryDate: [
+    {required: true, message: '请选择工资月份', trigger: 'blur'},
+  ],
+  baseSalary: [
+    {type: 'number', required: true, message: '只能输入数字类型', trigger: 'blur'},
+  ],
+  performance: [
+    {type: 'number', required: false, message: '只能输入数字类型', trigger: 'blur'},
+  ],
+  deduLeave: [
+    {type: 'number', required: false, message: '只能输入数字类型', trigger: 'blur'},
+  ],
+  deduLate: [
+    {type: 'number', required: false, message: '只能输入数字类型', trigger: 'blur'},
+  ],
+  insure: [
+    {type: 'number', required: false, message: '只能输入数字类型', trigger: 'blur'},
+  ],
 })
 
 //打开新增续约视图
@@ -263,7 +281,7 @@ const update = () => {
 }
 //删除员工资料
 const DeleteSalary = (id) => {
-  request.delete('admin/employee/salary/delete' + id).then((res) => {
+  request.delete('admin/employee/salary/delete/' + id).then((res) => {
     try {
       if (res.code == 200) {
         ElNotification.success(res.msg);
