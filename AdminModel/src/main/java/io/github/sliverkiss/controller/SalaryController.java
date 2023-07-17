@@ -36,6 +36,11 @@ public class SalaryController extends BaseController<SalaryServiceImpl, Salary> 
         } );
     }
 
+    @Override
+    public void beforeUpdate(Salary salary) throws Exception {
+        beforeSave ( salary );
+    }
+
     /**
      * 计算净工资
      *

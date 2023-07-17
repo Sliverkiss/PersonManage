@@ -53,10 +53,21 @@ public abstract class BaseController<S extends ICrudService<T>, T extends BaseEn
         }
     }
 
+    @PutMapping("/update")
+    @ApiOperation(value = "修改", notes = "ID存在修改，不存在添加")
+    public ResponseResult update(@RequestBody T entity) {
+        try {
+            beforeUpdate ( entity );
+            return service.updateEntity ( entity );
+        } catch (Exception e) {
+            throw new SystemException ( AppHttpCodeEnum.SYSTEM_ERROR );
+        }
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseResult delete(@PathVariable Integer id) {
         try {
-            service.removeById ( id );
+            service.deleteEntity ( id );
         } catch (Exception e) {
             throw new SystemException ( AppHttpCodeEnum.SYSTEM_ERROR );
         }
@@ -71,6 +82,10 @@ public abstract class BaseController<S extends ICrudService<T>, T extends BaseEn
      * @throws Exception
      */
     public void beforeSave(T entity) throws Exception {
+
+    }
+
+    public void beforeUpdate(T entity) throws Exception {
 
     }
 
@@ -94,6 +109,5 @@ public abstract class BaseController<S extends ICrudService<T>, T extends BaseEn
     public T info(@PathVariable Long id) {
         return service.getById ( id );
     }
-
 
 }

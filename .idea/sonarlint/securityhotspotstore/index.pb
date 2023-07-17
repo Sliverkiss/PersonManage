@@ -381,8 +381,6 @@ P
 ,.idea/inspectionProfiles/Project_Default.xml,4/9/496a238a6afa168dbaf6efd37bb459331589579c
 w
 GCommonModel/src/main/java/io/github/sliverkiss/utils/BeanCopyUtils.java,1/4/14d4fb0c97d8aa532852812e0c31548aeb5b4378
-\
-,hros-ui/src/components/employee/contract.vue,b/d/bde8f478b5c8fde8ded491035a9139beacc30aa3
 f
 6hros-ui/src/components/employee/employeeManagement.vue,4/1/414d03dbb126bd3aaba66b695aa2273b0084e28e
 w
@@ -431,8 +429,6 @@ CCommonModel/src/main/java/io/github/sliverkiss/dao/EmployeeDao.java,c/2/c2082e
 RCommonModel/src/main/java/io/github/sliverkiss/controller/UserLoginController.java,6/5/65134ac97a158a7185f9ee4bf07062194870a63a
 }
 MCommonModel/src/main/java/io/github/sliverkiss/service/DepartmentService.java,8/f/8fb71407b510a9dd9e7a0710e3e73bcee4756820
-{
-KCommonModel/src/main/java/io/github/sliverkiss/service/PersonalService.java,f/8/f87a93c24b0aaf57c44916f2f12bde8b74fdf34c
 …
 UCommonModel/src/main/java/io/github/sliverkiss/service/impl/UserLoginServiceImpl.java,4/1/41db18f72e6884681c101bda70632926a91e74b8
 €

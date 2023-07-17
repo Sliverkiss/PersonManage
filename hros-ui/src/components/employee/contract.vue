@@ -197,7 +197,7 @@
   </div>
   <!--  续约审核表单-->
   <div>
-    <el-dialog v-model="dialogUpdateVisible" title="续约审核" align-center center class="" width="350"
+    <el-dialog v-model="dialogUpdateVisible" title="续约修改" align-center center class="" width="350"
                style="border-radius: 0.875rem 1rem;">
       <el-form :model="state.updateData" class="" status-icon :rules="rules" ref="ruleFormRef">
         <el-form-item prop="contractTerm" size="large" label="员工编号：">

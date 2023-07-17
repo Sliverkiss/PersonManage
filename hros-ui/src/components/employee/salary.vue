@@ -155,6 +155,77 @@
       </span>
       </template>
     </el-dialog>
+    <!--修改薪资信息-->
+    <div>
+      <el-dialog v-model="dialogUpdateVisible" title="薪资修改" align-center center class="" width="700"
+                 style="border-radius: 0.875rem 1rem;">
+        <el-form :model="state.updateData" class="" status-icon :rules="rules" ref="ruleFormRef">
+          <el-row :gutter="24">
+            <el-col :span="12">
+              <el-form-item prop="employeeId" size="large" label="员工编号：">
+                <el-input v-model="state.updateData.employeeId" placeholder="请输入员工编号" disabled></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item prop="salaryDate" size="large" label="工资月份：">
+                <div class="demo-date-picker">
+                  <div class="block">
+                    <el-date-picker
+                        v-model="state.updateData.salaryDate"
+                        type="month"
+                        format="YYYY/MM"
+                        value-format="YYYY-MM"
+                        placeholder=""
+                        :size="10"/>
+                  </div>
+                </div>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item prop="baseSalary" size="large" label="基础工资：">
+                <el-input v-model.number="state.updateData.baseSalary" placeholder="请输入基础工资"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item prop="performance" size="large" label="绩效奖金：">
+                <el-input v-model.number="state.updateData.performance" placeholder="请输入绩效奖金"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item prop="deduLeave" size="large" label="请假扣款：">
+                <el-input v-model.number="state.updateData.deduLeave" placeholder="请输入请假扣款"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item prop="deduLate" size="large" label="迟到扣款：">
+                <el-input v-model.number="state.updateData.deduLate" placeholder="请输入迟到扣款"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item prop="insure" size="large" label="五险一金：">
+                <el-input v-model.number="state.updateData.insure" placeholder="请输入五险一金"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item prop="status" size="large" label="发放状态：">
+                <el-select v-model="state.updateData.status" placeholder="请选择发放状态" style="width:2250px">
+                  <el-option label="已发放" value="已发放"/>
+                  <el-option label="未发放" value="未发放"/>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+        <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="update" type="primary">修改</el-button>
+        <el-button @click="clearFormData">
+          取消
+        </el-button>
+      </span>
+        </template>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -264,7 +335,7 @@ const save = () => {
 }
 //修改员工资料
 const update = () => {
-  request.put('admin/renewal/update', state.updateData).then((res) => {
+  request.put('admin/employee/salary/update', state.updateData).then((res) => {
     try {
       if (res.code == 200) {
         ElNotification.success(res.msg);

@@ -99,15 +99,25 @@ public class SalaryServiceImpl extends ServiceImpl<SalaryDao, Salary> implements
     }
 
     @Override
-    public ResponseResult updateEntity(Salary entity) {
-
-        return null;
-
+    // @SneakyThrows
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseResult updateEntity(Salary salary) {
+        try {
+            this.update ( salary, Wrappers.<Salary>lambdaQuery ().eq ( Salary::getId, salary.getId () ) );
+        } catch (Exception e) {
+            throw new SystemException ( AppHttpCodeEnum.SYSTEM_ERROR );
+        }
+        return ResponseResult.okResult ();
     }
 
     @Override
     public ResponseResult deleteEntity(Integer id) {
-        return null;
+        try {
+            this.removeById ( id );
+        } catch (Exception e) {
+            throw new SystemException ( AppHttpCodeEnum.SYSTEM_ERROR );
+        }
+        return ResponseResult.okResult ();
     }
 }
 
