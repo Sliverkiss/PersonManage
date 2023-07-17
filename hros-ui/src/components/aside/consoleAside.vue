@@ -1,18 +1,5 @@
 <template>
   <div>
-    <p class="m-0 ms-4 mt-3" style="font-size:13px;color:#6C6E72">控制台</p>
-    <el-menu-item index="/index/home">
-      <el-icon>
-        <HomeFilled/>
-      </el-icon>
-      <span>用户中心</span>
-    </el-menu-item>
-    <el-menu-item index="/console/home">
-      <el-icon>
-        <Platform/>
-      </el-icon>
-      <span>系统后台</span>
-    </el-menu-item>
     <p class="m-0 ms-4 mt-3" style="font-size:13px;color:#6C6E72">功能</p>
     <el-sub-menu index='/console/employee'>
       <template #title>
@@ -87,10 +74,8 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "consoleAside"
-}
+<script setup>
+
 </script>
 
 <style scoped>

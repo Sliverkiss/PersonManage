@@ -303,12 +303,6 @@ _
 /hros-ui/src/components/welcome/RegisterPage.vue,0/9/09e4861d1308a33ebcbe441cfedb6c04c0afd36f
 E
 hros-ui/src/style.css,b/4/b46e37640348940930b5aad8de500ac2c8324fb0
-P
- hros-ui/src/components/Login.vue,3/9/39c49ae48354fc99f837f47176477aa71cc25f0b
-Z
-*hros-ui/src/components/aside/userAside.vue,c/9/c9944f4ae22dfcb9c377296f35927d9399b4d677
-U
-%hros-ui/src/components/index/Home.vue,5/d/5de90c258af9e8e088eeab0f34ba35ac1f64082f
 c
 3hros-ui/src/components/department/reinstatement.vue,0/2/02bdba7a0adcec69a7b8cc80c226bf69102ccc96
 ^
@@ -355,8 +349,6 @@ N
 hros-ui/src/utils/dateUtils.js,1/9/199dba1290fbb8149da16f96ebf76dff9dd19543
 v
 FCommonModel/src/test/java/io/github/sliverkiss/utils/DateUtilTest.java,b/c/bc7d2276b77dfc4c4ae5fbe22465a193cf1695c2
-O
-hros-ui/src/views/IndexView.vue,b/e/be277785704636bc9540a0b9594cbe5b65bd53ec
 Q
 !hros-ui/src/components/Header.vue,3/8/38a0e95ec6efacf1bcb021eb811a6900e3a6abf9
 F
@@ -365,24 +357,8 @@ s
 CCommonModel/src/main/java/io/github/sliverkiss/utils/CheckUtil.java,7/2/729a1e84b84c264299fcb4ce9da61a1a33eca964
 r
 BCommonModel/src/main/java/io/github/sliverkiss/utils/DateUtil.java,c/b/cb539d3e125367e0083053983a5b3b6d9323b094
-\
-,hros-ui/src/components/welcome/LoginPage.vue,5/3/53e4db9017ff2f3beb10305a99f23bcb3fd728ed
-J
-hros-ui/src/stores/user.js,d/9/d9d0201a28888a298d944a1bef6327ddf934daa2
-K
-hros-ui/src/router/index.js,4/0/40e282f9f1b7bf2b6d603dd6e0aa73052cf4679c
-P
- hros-ui/src/components/Aside.vue,f/e/fefe050d36fb8713767173dc5a491e72f19a6c04
-]
--hros-ui/src/components/aside/consoleAside.vue,9/b/9b1e927b281a44e069a380a88e083876583ce83a
-P
- hros-ui/src/stores/department.js,4/d/4d29e72a0b9a55d468e3a4e96d23d34a8be8d531
-\
-,.idea/inspectionProfiles/Project_Default.xml,4/9/496a238a6afa168dbaf6efd37bb459331589579c
 w
 GCommonModel/src/main/java/io/github/sliverkiss/utils/BeanCopyUtils.java,1/4/14d4fb0c97d8aa532852812e0c31548aeb5b4378
-f
-6hros-ui/src/components/employee/employeeManagement.vue,4/1/414d03dbb126bd3aaba66b695aa2273b0084e28e
 x
 HCommonModel/src/main/java/io/github/sliverkiss/domain/DTO/SalaryDTO.java,9/2/92c8de38db910384312950c2442c100ed6993479
 x
@@ -391,8 +367,6 @@ K
 hros-ui/src/stores/index.js,2/a/2a010df741fab438fbdaddd094333fd45e1915f4
 w
 GCommonModel/src/main/java/io/github/sliverkiss/domain/vo/RenewalVo.java,a/3/a3af30563cec9d76f4c457ef7935103f53c3b8b8
-N
-hros-ui/src/stores/employee.js,1/9/19ef7f6fe85fc6d1ed47bc907c288297d1e7b580
 z
 JAdminModel/src/main/java/io/github/sliverkiss/PersonManageApplication.java,a/f/afb084c49206d1d9c1d2dcffd6421791263a3ae5
 ~
@@ -413,12 +387,8 @@ z
 JCommonModel/src/main/java/io/github/sliverkiss/domain/vo/DepartmentVo.java,b/c/bc3fd75fcbf841fdb16bc946740936b6a37bde42
 ‚
 RAdminModel/src/main/java/io/github/sliverkiss/controller/DepartmentController.java,6/d/6d9b1ee979cd008711700d42402d4e6231195aaf
-{
-KCommonModel/src/main/java/io/github/sliverkiss/service/EmployeeService.java,c/c/ccf842b981ffd2bf93cb26855ee774a31eed62f0
 |
 LCommonModel/src/main/java/io/github/sliverkiss/domain/entity/BaseEntity.java,4/b/4b2bd516b24830255fdc835decc928e1cdc1c8d1
-†
-VCommonModel/src/main/java/io/github/sliverkiss/service/impl/DepartmentServiceImpl.java,0/2/0242cfce5b2c5d2b2b833900a9d005fd9e951481
 „
 TCommonModel/src/main/java/io/github/sliverkiss/service/impl/EmployeeServiceImpl.java,3/9/3943d37ef003cae14df06a89f8079fea8abde8ad
 z

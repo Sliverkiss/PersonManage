@@ -1,7 +1,0 @@
-
-[
-java:S11550">Use isEmpty() to check whether the collection is empty or not.(ô†²„8÷ï¿î•1
-d
-java:S1128"HRemove this unused import 'io.github.sliverkiss.domain.entity.Personal'.(úÜ–;8˜Ùƒõ•1
-Z
-java:S1128"8Remove this unused import 'java.util.stream.Collectors'.(Óóº´úÿÿÿÿ8™Ùƒõ•1

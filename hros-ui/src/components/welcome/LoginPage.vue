@@ -58,7 +58,10 @@ import {reactive} from "vue";
 import {ElMessage, ElNotification} from 'element-plus'
 import request from "@/request.js";
 import {useUser} from '@/stores/user.js'
-const userStore =useUser();
+import {useAside} from '@/stores/aside.js'
+
+const userStore = useUser();
+const asideStore = useAside();
 
 const router = useRouter();
 const user = reactive({
@@ -85,7 +88,16 @@ const login = () => {
         ElNotification.success('登录成功！');
         //将登录信息存储到store中
         userStore.setUser(res.data);
-        userStore.getUser().role==0? router.push('/index/home'):router.push('/console/')
+        //判断开关侧边栏,跳转路由
+        if (userStore.getUser().role == 0) {
+          asideStore.setIndexAside(true);
+          asideStore.setConsoleAside(false);
+          router.push('/index/home');
+        } else {
+          asideStore.setConsoleAside(true);
+          asideStore.setIndexAside(false);
+          router.push('/console/home')
+        }
       }
     })
   }
