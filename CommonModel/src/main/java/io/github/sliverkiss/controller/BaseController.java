@@ -8,9 +8,8 @@ import io.github.sliverkiss.enums.AppHttpCodeEnum;
 import io.github.sliverkiss.exception.SystemException;
 import io.github.sliverkiss.service.ICrudService;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.Resource;
 
 /**
  * @author SliverKiss
@@ -20,7 +19,7 @@ import javax.annotation.Resource;
 
 public abstract class BaseController<S extends ICrudService<T>, T extends BaseEntity> {
 
-    @Resource
+    @Autowired
     protected S service;
 
     protected Logger log = LoggerFactory.getLogger ( this.getClass () );

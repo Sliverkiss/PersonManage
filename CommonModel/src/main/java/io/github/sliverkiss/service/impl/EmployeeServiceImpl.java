@@ -269,5 +269,14 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
         return ResponseResult.okResult ( contractVoIPage );
     }
 
+    @Override
+    public List<EmployeeVo> getEmployeeVoList() {
+        EmployeeQueryDTO employeeQueryDTO = new EmployeeQueryDTO ();
+        employeeQueryDTO.setCurrentPage ( 1 );
+        employeeQueryDTO.setPageSize ( 100 );
+        IPage<EmployeeVo> page = (IPage<EmployeeVo>) this.selectEmployeePage ( employeeQueryDTO ).getData ();
+        List<EmployeeVo> list = page.getRecords ();
+        return list;
+    }
 }
 

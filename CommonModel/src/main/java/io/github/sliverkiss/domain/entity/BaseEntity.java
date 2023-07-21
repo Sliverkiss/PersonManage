@@ -1,6 +1,7 @@
 package io.github.sliverkiss.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -12,6 +13,10 @@ import java.io.Serializable;
  */
 @Data
 public class BaseEntity implements Serializable {
+
     @TableField(exist = false)
     private static final long serialVersionUID = 3363479821720052532L;
+
+    @TableLogic
+    private Integer delFlag;
 }

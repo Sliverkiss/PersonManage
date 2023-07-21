@@ -20,6 +20,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("admin/employee/salary")
 public class SalaryController extends BaseController<SalaryServiceImpl, Salary> {
+
     @GetMapping("/page")
     public ResponseResult selectRenewalPage(SalaryDTO salaryDTO) {
         return service.selectSalaryPage ( salaryDTO );

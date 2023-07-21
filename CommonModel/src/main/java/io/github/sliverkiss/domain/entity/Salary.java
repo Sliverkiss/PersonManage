@@ -2,7 +2,6 @@ package io.github.sliverkiss.domain.entity;
 
 
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,7 +26,6 @@ import java.util.Optional;
 public class Salary extends BaseEntity implements Serializable {
     @TableId
     private Integer id;
-
     // 员工编号
     private Integer employeeId;
     // 工资月份
@@ -48,8 +46,6 @@ public class Salary extends BaseEntity implements Serializable {
     private String payDate;
     // 发放状态
     private String status;
-    @TableLogic
-    private Integer delFlag;
 
     public Salary(Salary salary) {
         Optional.ofNullable ( salary ).ifPresent ( e -> {

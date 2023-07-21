@@ -1,10 +1,10 @@
 package io.github.sliverkiss.domain.entity;
 
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -28,13 +28,15 @@ import java.util.Optional;
 @NoArgsConstructor
 @Accessors(chain = true)
 @TableName("employee")
-public class Employee implements Serializable {
+public class Employee extends BaseEntity implements Serializable {
     @TableId(type = IdType.AUTO)
+    @ExcelProperty(value = "员工编号", index = 0)
     private Integer id;
 
     // 人员信息id
     private Integer personalId;
     // 入职日期
+    @ExcelProperty(value = "入职日期", index = 16)
     @JSONField(format = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -42,28 +44,32 @@ public class Employee implements Serializable {
     // 所属部门
     private Integer departmentId;
     // 职务
+    @ExcelProperty(value = "职务", index = 17)
     private String post;
     // 职称
+    @ExcelProperty(value = "职称", index = 18)
     private String level;
     // 在职状态
+    @ExcelProperty(value = "邮箱", index = 19)
     private String workState;
     // 合同起始日期
+    @ExcelProperty(value = "合同起始日期", index = 20)
     @JSONField(format = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private String startContract;
     // 合同终止日期
+    @ExcelProperty(value = "合同终止日期", index = 21)
     @JSONField(format = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private String endContract;
     // 合同期限
+    @ExcelProperty(value = "合同期限（年）", index = 22)
     private Integer contractTerm;
     // 聘用形式
+    @ExcelProperty(value = "聘用形式", index = 23)
     private String engageForm;
-    // 删除标记
-    @TableLogic
-    private Integer delFlag;
 
 
     public Employee(Employee employee) {

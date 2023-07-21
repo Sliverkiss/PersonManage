@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author SliverKiss
@@ -20,8 +19,8 @@ import java.util.Set;
 @Accessors(chain = true)
 public class DepartmentVo extends Department {
 
-    //上级部门
-    private Department parent;
+    // 上级部门
+    private Department parentDepartment;
 
     //岗位列表
     private List<String> postList;

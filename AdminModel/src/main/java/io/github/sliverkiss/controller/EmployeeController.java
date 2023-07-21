@@ -1,18 +1,17 @@
 package io.github.sliverkiss.controller;
 
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.github.sliverkiss.domain.ResponseResult;
-import io.github.sliverkiss.domain.entity.Employee;
-import io.github.sliverkiss.domain.vo.EmployeeVo;
 import io.github.sliverkiss.domain.DTO.EmployeeQueryDTO;
+import io.github.sliverkiss.domain.ResponseResult;
+import io.github.sliverkiss.domain.vo.EmployeeVo;
 import io.github.sliverkiss.service.EmployeeService;
 import org.springframework.web.bind.annotation.*;
-import xin.altitude.cms.common.util.EntityUtils;
 
 import javax.annotation.Resource;
-import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletResponse;
+import java.net.URLEncoder;
+import java.util.List;
 
 /**
  * @author SliverKiss
@@ -50,4 +49,14 @@ public class EmployeeController {
         return employeeService.updateEmployee ( employeeVo );
     }
 
+    @GetMapping("employee/download")
+    public void downloadEmployee(HttpServletResponse response) throws Exception {
+        response.setContentType ( "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" );
+        response.setCharacterEncoding ( "utf-8" );
+        // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
+        String fileName = URLEncoder.encode ( "员工信息表", "UTF-8" ).replaceAll ( "\\+", "%20" );
+        response.setHeader ( "Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx" );
+        List<EmployeeVo> list = employeeService.getEmployeeVoList ();
+        EasyExcel.write ( response.getOutputStream (), EmployeeVo.class ).sheet ( "sheet1" ).doWrite ( list );
+    }
 }

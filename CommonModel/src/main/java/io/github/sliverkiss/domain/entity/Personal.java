@@ -2,7 +2,6 @@ package io.github.sliverkiss.domain.entity;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -25,7 +24,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Accessors(chain = true)
 @TableName("personal")
-public class Personal implements Serializable {
+public class Personal extends BaseEntity implements Serializable {
     @TableId
     private Integer id;
     // 姓名
@@ -59,9 +58,5 @@ public class Personal implements Serializable {
     private String specialty;
     //毕业院校
     private String school;
-    @TableLogic
-    private Integer delFlag;
-
-
 
 }

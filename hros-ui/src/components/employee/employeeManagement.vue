@@ -18,7 +18,7 @@
                   <span>入职登记</span></el-button>
               </div>
               <div class="" style="width:120px">
-                <el-button type="success" plain>
+                <el-button type="success" plain @click="downloadList">
                   <el-icon>
                     <Document/>
                   </el-icon>
@@ -520,6 +520,7 @@ import {ElMessage, ElNotification} from "element-plus";
 import {flexWidth} from '@/utils/tableUtils.js'
 import {useEmployee} from "@/stores/employee.js";
 import {useDepartment} from "@/stores/department.js"
+import axios from "axios";
 
 const departmentStore = useDepartment();
 const employeeStore = useEmployee();
@@ -653,6 +654,30 @@ const selectDepartmentList = () => {
     } catch (e) {
       ElMessage.error(e);
     }
+  })
+}
+
+const downloadList = () => {
+  axios({ // 用axios发送get请求
+    method: 'get',
+    url: 'http://localhost:9090/admin/employee/download', // 请求地址
+    responseType: 'blob', // 表明返回服务器返回的数据类型
+    // data:patient.patient,  //提交的数据
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }).then(res => {// 处理返回的文件流
+    //new Blob([res])中不加data就会返回下图中[objece objece]内容（少取一层）
+    const blob = new Blob([res.data], {type: "application/vnd.ms-excel"});
+    const fileName = '员工信息表.xlsx';//下载文件名称
+    const elink = document.createElement('a');
+    elink.download = fileName;
+    elink.style.display = 'none';
+    elink.href = URL.createObjectURL(blob);
+    document.body.appendChild(elink);
+    elink.click();
+    URL.revokeObjectURL(elink.href); // 释放URL 对象
+    document.body.removeChild(elink);
   })
 }
 

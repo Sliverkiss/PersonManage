@@ -1,23 +1,0 @@
-
-L
-java:S3740"/Provide the parametrized type for this generic.(ƒËš­8ëß¦“1
-L
-java:S3740#"/Provide the parametrized type for this generic.(¨¤İ©8íß¦“1
-L
-java:S3740*"/Provide the parametrized type for this generic.(¾‡ß«8îß¦“1
-L
-java:S3740/"/Provide the parametrized type for this generic.(Â¼¨¾8ïß¦“1
-b
-java:S3252%"EUse static access with "com.alibaba.fastjson.JSON" for "parseObject".(¥«¢„8à¦“1
-b
-java:S32521"EUse static access with "com.alibaba.fastjson.JSON" for "parseObject".(¥«¢„8’à¦“1
-k
-java:S1128"IRemove this unused import 'com.baomidou.mybatisplus.core.metadata.IPage'.(¯à½ıÿÿÿÿ8¥á¦“1
-y
-java:S1128"WRemove this unused import 'com.baomidou.mybatisplus.extension.plugins.pagination.Page'.(±Ù¥Éúÿÿÿÿ8¦á¦“1
-e
-java:S1128"HRemove this unused import 'io.github.sliverkiss.domain.entity.Employee'.(²ø§«8§á¦“1
-g
-java:S1128"ERemove this unused import 'xin.altitude.cms.common.util.EntityUtils'.(»§Ãµøÿÿÿÿ8§á¦“1
-Z
-java:S1128"8Remove this unused import 'java.util.stream.Collectors'.(Óóº´úÿÿÿÿ8§á¦“1

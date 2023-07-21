@@ -200,10 +200,10 @@
     <el-dialog v-model="dialogUpdateVisible" title="续约修改" align-center center class="" width="350"
                style="border-radius: 0.875rem 1rem;">
       <el-form :model="state.updateData" class="" status-icon :rules="rules" ref="ruleFormRef">
-        <el-form-item prop="contractTerm" size="large" label="员工编号：">
+        <el-form-item prop="employeeId" size="large" label="员工编号：">
           <el-input v-model="state.updateData.employeeId" placeholder="请输入员工编号" disabled></el-input>
         </el-form-item>
-        <el-form-item prop="contractTerm" size="large" label="续约年数：">
+        <el-form-item prop="renewalAge" size="large" label="续约年数：">
           <el-select v-model="state.updateData.renewalAge" placeholder="请选择续约年数" style="width:225px" disabled>
             <el-option
                 v-for="(item,index) in 5"
@@ -213,11 +213,11 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item prop="contractTerm" size="large" label="部门意见：">
+        <el-form-item prop="departmentComment" size="large" label="部门意见：">
           <el-input v-model="state.updateData.departmentComment" type="textarea"
                     placeholder="请输入部门意见"></el-input>
         </el-form-item>
-        <el-form-item prop="contractTerm" size="large" label="审核结果：">
+        <el-form-item prop="state" size="large" label="审核结果：">
           <el-select v-model="state.updateData.state" placeholder="请选择审核结果" style="width:2250px">
             <el-option label="通过" value="通过"/>
             <el-option label="审核中" value="审核中"/>
@@ -311,7 +311,7 @@ const save = () => {
     if (valid) {
       state.formData.director = userStore.getUser().username
       //发送后台请求
-      request.post('admin/renewal/save', state.formData).then(res => {
+      request.post('admin/employee/renewal/save', state.formData).then(res => {
         if (res.code == '200') {
           ElNotification.success('续约申请成功！')
         } else {
@@ -327,7 +327,7 @@ const save = () => {
 }
 //修改员工资料
 const update = () => {
-  request.put('admin/renewal/update', state.updateData).then((res) => {
+  request.put('admin/employee/renewal/update', state.updateData).then((res) => {
     try {
       if (res.code == 200) {
         ElNotification.success(res.msg);
@@ -345,7 +345,7 @@ const update = () => {
 
 //
 const load = () => {
-  request.get('/admin/renewal/page', {
+  request.get('/admin/employee/renewal/page', {
     params: {
       currentPage: currentPage.value,
       pageSize: pageSize.value,
@@ -374,7 +374,7 @@ const load = () => {
 }
 //删除员工资料
 const DelRenewal = (id) => {
-  request.delete('admin/renewal/delete/' + id).then((res) => {
+  request.delete('admin/employee/renewal/delete/' + id).then((res) => {
     try {
       if (res.code == 200) {
         ElNotification.success(res.msg);

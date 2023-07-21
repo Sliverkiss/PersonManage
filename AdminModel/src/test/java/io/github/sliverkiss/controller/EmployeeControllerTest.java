@@ -1,7 +1,9 @@
 package io.github.sliverkiss.controller;
 
+import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.github.sliverkiss.domain.DTO.EmployeeQueryDTO;
 import io.github.sliverkiss.domain.entity.Employee;
 import io.github.sliverkiss.domain.vo.EmployeeVo;
 import io.github.sliverkiss.service.EmployeeService;
@@ -12,10 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import xin.altitude.cms.common.util.EntityUtils;
 
 import javax.annotation.Resource;
-
+import java.util.List;
 import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author SliverKiss
@@ -36,11 +36,23 @@ class EmployeeControllerTest {
     }
 
     @Test
-    public void test2(){
+    public void test2() {
         Page<Employee> page = new Page<> ( 1, 5 );
         Page<Employee> employeePage = employeeService.page ( page );
         IPage<EmployeeVo> employeeVoIPage = EntityUtils.toPage ( employeePage, EmployeeVo::new );
-        employeeVoIPage.getRecords().stream ().map ( Employee::getDepartmentId ).collect( Collectors.toList());
-        log.warn (employeeVoIPage.toString());
+        employeeVoIPage.getRecords ().stream ().map ( Employee::getDepartmentId ).collect ( Collectors.toList () );
+        log.warn ( employeeVoIPage.toString () );
+    }
+
+    @Test
+    void selectEmployeePage() {
+        EmployeeQueryDTO employeeQueryDTO = new EmployeeQueryDTO ();
+        employeeQueryDTO.setCurrentPage ( 1 );
+        employeeQueryDTO.setPageSize ( 100 );
+        IPage<EmployeeVo> page = (IPage<EmployeeVo>) employeeService.selectEmployeePage ( employeeQueryDTO ).getData ();
+        List<EmployeeVo> list = page.getRecords ();
+        System.out.println ( list );
+        String fileName = "EsayText.xlsx";
+        EasyExcel.write ( fileName, EmployeeVo.class ).sheet ( "员工信息" ).doWrite ( list );
     }
 }

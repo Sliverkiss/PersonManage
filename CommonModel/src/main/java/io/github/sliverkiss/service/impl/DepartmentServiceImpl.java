@@ -10,7 +10,6 @@ import io.github.sliverkiss.dao.EmployeeDao;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.Department;
 import io.github.sliverkiss.domain.entity.Employee;
-import io.github.sliverkiss.domain.entity.Personal;
 import io.github.sliverkiss.domain.vo.DepartmentVo;
 import io.github.sliverkiss.enums.AppHttpCodeEnum;
 import io.github.sliverkiss.service.DepartmentService;
@@ -21,7 +20,6 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
 
@@ -53,8 +51,8 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentDao, Department
                 // 属性注入
                 departmentVoIPage.getRecords ().forEach ( departmentVo -> {
                     Department department = this.getById ( departmentVo.getParentId () );
-                    List<String> postList=collect.get(departmentVo.getId());
-                    departmentVo.setPostList ( postList ).setParent ( department );
+                    List<String> postList = collect.get ( departmentVo.getId () );
+                    departmentVo.setPostList ( postList ).setParentDepartment ( department );
                 } );
             }
             return ResponseResult.okResult ( departmentVoIPage );
@@ -62,6 +60,21 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentDao, Department
             return ResponseResult.errorResult ( AppHttpCodeEnum.SYSTEM_ERROR.getCode (), e.getMessage () );
         }
 
+    }
+
+    @Override
+    public ResponseResult saveEntity(Department entity) {
+        return null;
+    }
+
+    @Override
+    public ResponseResult updateEntity(Department entity) {
+        return null;
+    }
+
+    @Override
+    public ResponseResult deleteEntity(Integer id) {
+        return null;
     }
 }
 

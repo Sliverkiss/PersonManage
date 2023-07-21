@@ -21,12 +21,9 @@ import io.github.sliverkiss.enums.AppHttpCodeEnum;
 import io.github.sliverkiss.exception.SystemException;
 import io.github.sliverkiss.service.RenewalService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import xin.altitude.cms.common.util.EntityUtils;
 
 import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -129,67 +126,12 @@ public class RenewalServiceImpl extends ServiceImpl<RenewalDao, Renewal> impleme
         }
     }
 
-    /**
-     * 删除合同记录
-     *
-     * @param id id
-     *
-     * @return {@link ResponseResult}
-     */
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public ResponseResult deleteRenewal(Integer id) {
-        if (id != null) {
-            try {
-                this.removeById ( id );
-                return ResponseResult.okResult ();
-            } catch (Exception e) {
-                throw new SystemException ( AppHttpCodeEnum.DELETE_FAILED );
-            }
-        } else {
-            return ResponseResult.errorResult ( AppHttpCodeEnum.DELETE_FAILED );
-        }
-    }
+    public void beforeSave(Renewal renewal) {
+        // 判断续约申请是否通过
+        if (renewal.getState ().equals ( "通过" )) {
+            Employee employe = employeeDao.selectById ( renewal.getEmployeeId () );
 
-    /**
-     * 续约处理
-     *
-     * @param renewal 更新
-     *
-     * @return {@link ResponseResult}
-     */
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public ResponseResult saveRenewal(Renewal renewal) {
-        // 获取当前日期并注入renewal
-        String approvedDate = new SimpleDateFormat ( "yyy-MM-dd" ).format ( new Date () );
-        Optional.ofNullable ( renewal ).ifPresent ( e -> e.setApprovedDate ( approvedDate ) );
-        try {
-            this.save ( renewal );
-            return ResponseResult.okResult ();
-        } catch (Exception e) {
-            throw new SystemException ( AppHttpCodeEnum.SYSTEM_ERROR );
-        }
-    }
-
-    /**
-     * 修改续约合同
-     *
-     * @param renewal 更新
-     *
-     * @return {@link ResponseResult}
-     */
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public ResponseResult updateRenewal(Renewal renewal) {
-        // 获取当前日期并注入renewal
-        String approvedDate = new SimpleDateFormat ( "yyy-MM-dd" ).format ( new Date () );
-        Optional.ofNullable ( renewal ).ifPresent ( e -> e.setApprovedDate ( approvedDate ) );
-        try {
-            this.update ( renewal, Wrappers.lambdaQuery ( Renewal.class ).eq ( Renewal::getId, renewal.getId () ) );
-            return ResponseResult.okResult ( AppHttpCodeEnum.SUCCESS );
-        } catch (Exception e) {
-            throw new SystemException ( AppHttpCodeEnum.SYSTEM_ERROR );
         }
     }
 }

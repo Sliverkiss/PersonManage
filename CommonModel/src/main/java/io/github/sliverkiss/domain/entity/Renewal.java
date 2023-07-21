@@ -2,7 +2,6 @@ package io.github.sliverkiss.domain.entity;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -26,7 +25,7 @@ import java.util.Optional;
 @NoArgsConstructor
 @Accessors(chain = true)
 @TableName("renewal")
-public class Renewal implements Serializable {
+public class Renewal extends BaseEntity implements Serializable {
     @TableId
     private Integer id;
     // 员工信息编号
@@ -44,9 +43,6 @@ public class Renewal implements Serializable {
     private String director;
     //审核状态
     private String state;
-
-    @TableLogic
-    private Integer delFlag;
 
     public Renewal(Renewal renewal) {
         Optional.ofNullable ( renewal ).ifPresent ( e -> {

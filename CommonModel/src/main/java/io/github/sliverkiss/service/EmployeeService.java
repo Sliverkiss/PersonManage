@@ -1,12 +1,12 @@
 package io.github.sliverkiss.service;
 
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.IService;
 import io.github.sliverkiss.domain.DTO.EmployeeQueryDTO;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.Employee;
 import io.github.sliverkiss.domain.vo.EmployeeVo;
-import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
 
 /**
  * 员工表(Employee)表服务接口
@@ -49,11 +49,14 @@ public interface EmployeeService extends IService<Employee> {
      * @return {@link ResponseResult}
      */
     public ResponseResult deleteEmployee(Integer id);
+
     /**
      * 获取合同列表
      *
      * @return {@link ResponseResult}
      */
     public ResponseResult selectContractPage();
+
+    List<EmployeeVo> getEmployeeVoList();
 }
 
