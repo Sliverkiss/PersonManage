@@ -1,6 +1,5 @@
 package io.github.sliverkiss.domain.vo;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import io.github.sliverkiss.domain.entity.Transfer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +15,6 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-@TableName("transfer")
 public class TransferVo extends Transfer {
 
     private String EmployeeName;// 员工姓名

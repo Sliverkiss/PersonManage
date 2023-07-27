@@ -15,6 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface ICrudService<T extends BaseEntity> extends IService<T> {
 
+    /**
+     * 保存实体
+     *
+     * @param entity 实体
+     *
+     * @return {@link ResponseResult}
+     */
     @Transactional(rollbackFor = Exception.class)
     default ResponseResult saveEntity(T entity) {
         try {
@@ -27,11 +34,25 @@ public interface ICrudService<T extends BaseEntity> extends IService<T> {
         }
     }
 
+    /**
+     * 更新实体
+     *
+     * @param entity 实体
+     *
+     * @return {@link ResponseResult}
+     */
     @Transactional(rollbackFor = Exception.class)
     default ResponseResult updateEntity(T entity) {
         return saveEntity ( entity );
     }
 
+    /**
+     * 删除实体
+     *
+     * @param id id
+     *
+     * @return {@link ResponseResult}
+     */
     @Transactional(rollbackFor = Exception.class)
     default ResponseResult deleteEntity(Integer id) {
         if (id != null) {

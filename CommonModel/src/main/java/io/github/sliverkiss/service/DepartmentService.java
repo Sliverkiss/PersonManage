@@ -11,6 +11,14 @@ import io.github.sliverkiss.domain.entity.Department;
  * @since 2023-07-06 12:50:06
  */
 public interface DepartmentService extends ICrudService<Department> {
+
+    /**
+     * 选择页面
+     *
+     * @param departmentQueryDTO 部门查询dto
+     *
+     * @return {@link ResponseResult}
+     */
     ResponseResult selectPage(DepartmentQueryDTO departmentQueryDTO);
 }
 
