@@ -6,7 +6,7 @@
         <el-icon>
           <location/>
         </el-icon>
-        <span>打卡考勤</span>
+        <span>薪资查询</span>
       </template>
       <div class="asidecolor">
         <el-menu-item index="3-1">打卡签到/下班</el-menu-item>
@@ -18,7 +18,7 @@
         <el-icon>
           <AlarmClock/>
         </el-icon>
-        <span>请假管理</span>
+        <span>合同管理</span>
       </template>
       <div class="asidecolor">
         <el-menu-item index="4-1">申请请假</el-menu-item>
@@ -54,7 +54,7 @@
         <el-icon>
           <Coin/>
         </el-icon>
-        <span>奖惩管理</span>
+        <span>绩效考核</span>
       </template>
       <div class="asidecolor">
         <el-menu-item index="7-1">绩效考核</el-menu-item>

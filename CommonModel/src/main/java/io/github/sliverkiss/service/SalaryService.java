@@ -1,6 +1,6 @@
 package io.github.sliverkiss.service;
 
-import io.github.sliverkiss.domain.DTO.SalaryDTO;
+import io.github.sliverkiss.domain.DTO.SalaryQueryDTO;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.Salary;
 
@@ -12,6 +12,6 @@ import io.github.sliverkiss.domain.entity.Salary;
  */
 public interface SalaryService extends ICrudService<Salary> {
 
-    ResponseResult selectSalaryPage(SalaryDTO salaryDTO);
+    ResponseResult selectSalaryPage(SalaryQueryDTO salaryQueryDTO);
 }
 

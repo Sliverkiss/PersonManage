@@ -271,7 +271,7 @@
           <el-col :span="12">
             <el-form-item prop="startContract" label="合同起始日期:">
               <div class="demo-date-picker">
-                <div class="block" style="width:50px">
+                <div class="block" style=" width:50px">
                   <el-date-picker
                       v-model="state.formData.startContract"
                       type="date"

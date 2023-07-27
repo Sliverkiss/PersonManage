@@ -19,7 +19,7 @@ public interface ICrudService<T extends BaseEntity> extends IService<T> {
     default ResponseResult saveEntity(T entity) {
         try {
             beforeSave ( entity );
-            this.save ( entity );
+            this.saveOrUpdate ( entity );
             afterSave ( entity );
             return ResponseResult.okResult ();
         } catch (Exception e) {
@@ -27,14 +27,10 @@ public interface ICrudService<T extends BaseEntity> extends IService<T> {
         }
     }
 
-    ;
-
     @Transactional(rollbackFor = Exception.class)
     default ResponseResult updateEntity(T entity) {
         return saveEntity ( entity );
     }
-
-    ;
 
     @Transactional(rollbackFor = Exception.class)
     default ResponseResult deleteEntity(Integer id) {
@@ -50,8 +46,6 @@ public interface ICrudService<T extends BaseEntity> extends IService<T> {
         }
     }
 
-    ;
-
     /**
      * 保存前执行
      *
@@ -60,8 +54,6 @@ public interface ICrudService<T extends BaseEntity> extends IService<T> {
     default void beforeSave(T entity) {
     }
 
-    ;
-
     /**
      * 保存后执行
      *
@@ -69,7 +61,5 @@ public interface ICrudService<T extends BaseEntity> extends IService<T> {
      */
     default void afterSave(T entity) {
     }
-
-    ;
 
 }

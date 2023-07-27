@@ -1,6 +1,6 @@
 package io.github.sliverkiss.controller;
 
-import io.github.sliverkiss.domain.DTO.SalaryDTO;
+import io.github.sliverkiss.domain.DTO.SalaryQueryDTO;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.Salary;
 import io.github.sliverkiss.service.impl.SalaryServiceImpl;
@@ -22,8 +22,8 @@ import java.util.Optional;
 public class SalaryController extends BaseController<SalaryServiceImpl, Salary> {
 
     @GetMapping("/page")
-    public ResponseResult selectRenewalPage(SalaryDTO salaryDTO) {
-        return service.selectSalaryPage ( salaryDTO );
+    public ResponseResult selectRenewalPage(SalaryQueryDTO salaryQueryDTO) {
+        return service.selectSalaryPage ( salaryQueryDTO );
     }
 
     @Override

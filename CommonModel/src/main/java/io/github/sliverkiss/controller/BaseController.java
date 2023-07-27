@@ -65,12 +65,7 @@ public abstract class BaseController<S extends ICrudService<T>, T extends BaseEn
 
     @DeleteMapping("/delete/{id}")
     public ResponseResult delete(@PathVariable Integer id) {
-        try {
-            service.deleteEntity ( id );
-        } catch (Exception e) {
-            throw new SystemException ( AppHttpCodeEnum.SYSTEM_ERROR );
-        }
-        return ResponseResult.okResult ();
+        return service.deleteEntity ( id );
     }
 
     /**
@@ -81,7 +76,6 @@ public abstract class BaseController<S extends ICrudService<T>, T extends BaseEn
      * @throws Exception
      */
     public void beforeSave(T entity) throws Exception {
-
     }
 
     public void beforeUpdate(T entity) throws Exception {

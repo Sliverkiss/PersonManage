@@ -2,6 +2,7 @@ package io.github.sliverkiss.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -9,7 +10,7 @@ import io.github.sliverkiss.dao.DepartmentDao;
 import io.github.sliverkiss.dao.EmployeeDao;
 import io.github.sliverkiss.dao.PersonalDao;
 import io.github.sliverkiss.dao.SalaryDao;
-import io.github.sliverkiss.domain.DTO.SalaryDTO;
+import io.github.sliverkiss.domain.DTO.SalaryQueryDTO;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.Department;
 import io.github.sliverkiss.domain.entity.Employee;
@@ -20,7 +21,6 @@ import io.github.sliverkiss.enums.AppHttpCodeEnum;
 import io.github.sliverkiss.exception.SystemException;
 import io.github.sliverkiss.service.SalaryService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import xin.altitude.cms.common.util.EntityUtils;
 
 import javax.annotation.Resource;
@@ -45,21 +45,23 @@ public class SalaryServiceImpl extends ServiceImpl<SalaryDao, Salary> implements
     private DepartmentDao departmentDao;
 
     @Override
-    public ResponseResult selectSalaryPage(SalaryDTO salaryDTO) {
-        Integer currentPage = salaryDTO.getCurrentPage ();
-        Integer pageSize = salaryDTO.getPageSize ();
-        String name = salaryDTO.getName ();
-        String employeeId = salaryDTO.getEmployeeId ();
-        String departmentId = salaryDTO.getDepartmentId ();
-        String salaryDate = salaryDTO.getSalaryDate ();
-        String status = salaryDTO.getStatus ();
+    public ResponseResult selectSalaryPage(SalaryQueryDTO salaryQueryDTO) {
+        Integer currentPage = salaryQueryDTO.getCurrentPage ();
+        Integer pageSize = salaryQueryDTO.getPageSize ();
+        String employeeId = salaryQueryDTO.getEmployeeId ();
+        String salaryDate = salaryQueryDTO.getSalaryDate ();
+        String status = salaryQueryDTO.getStatus ();
 
         if (currentPage == null || pageSize <= 0 || pageSize == null || pageSize < 1) {
             throw new SystemException ( AppHttpCodeEnum.SYSTEM_ERROR );
         }
         Page<Salary> page = new Page<> ( currentPage, pageSize );
         try {
-            LambdaQueryWrapper<Salary> salaryWrapper = Wrappers.lambdaQuery ( Salary.class );
+            // 模糊查询
+            LambdaQueryWrapper<Salary> salaryWrapper = Wrappers.lambdaQuery ( Salary.class )
+                    .like ( StringUtils.isNotBlank ( employeeId ), Salary::getEmployeeId, employeeId )
+                    .like ( StringUtils.isNotBlank ( salaryDate ), Salary::getSalaryDate, salaryDate )
+                    .like ( StringUtils.isNotBlank ( status ), Salary::getStatus, status );
             Page<Salary> salaryPage = this.page ( page, salaryWrapper );
             IPage<SalaryVo> salaryVoIPage = EntityUtils.toPage ( salaryPage, SalaryVo::new );
             // 注入属性
@@ -91,33 +93,5 @@ public class SalaryServiceImpl extends ServiceImpl<SalaryDao, Salary> implements
         }
     }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public ResponseResult saveEntity(Salary salary) {
-        this.save ( salary );
-        return ResponseResult.okResult ();
-    }
-
-    @Override
-    // @SneakyThrows
-    @Transactional(rollbackFor = Exception.class)
-    public ResponseResult updateEntity(Salary salary) {
-        try {
-            this.update ( salary, Wrappers.<Salary>lambdaQuery ().eq ( Salary::getId, salary.getId () ) );
-        } catch (Exception e) {
-            throw new SystemException ( AppHttpCodeEnum.SYSTEM_ERROR );
-        }
-        return ResponseResult.okResult ();
-    }
-
-    @Override
-    public ResponseResult deleteEntity(Integer id) {
-        try {
-            this.removeById ( id );
-        } catch (Exception e) {
-            throw new SystemException ( AppHttpCodeEnum.SYSTEM_ERROR );
-        }
-        return ResponseResult.okResult ();
-    }
 }
 

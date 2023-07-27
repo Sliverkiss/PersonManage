@@ -17,30 +17,31 @@
                   </el-icon>
                   <span>新增部门</span></el-button>
               </div>
-              <div class="" style="width:120px">
-                <el-button type="danger" plain @click="dialogFormVisible= true">
-                  <el-icon>
-                    <CloseBold/>
-                  </el-icon>
-                  <span>部门合并</span></el-button>
-              </div>
+              <!--              <div class="" style="width:120px">-->
+              <!--                <el-button type="danger" plain @click="dialogFormVisible= true">-->
+              <!--                  <el-icon>-->
+              <!--                    <CloseBold/>-->
+              <!--                  </el-icon>-->
+              <!--                  <span>部门合并</span></el-button>-->
+              <!--              </div>-->
             </div>
           </template>
           <div class="block-content block-content-full">
             <div id="usersList_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
               <div class="row">
                 <div class="col-sm-12 col-md-12">
-                  <el-select v-model="state.updateData.departmentName" style="width:150px" clearable
+                  <el-select v-model="departmentId" style="width:150px" clearable
                              placeholder="请选择部门名称">
                     <el-option
-                        v-for="department in toRaw(departmentStore.departmentList)"
+                        v-for="department in state.tableData"
                         :key="department.id"
                         :label="department.departmentName"
-                        :value="department.departmentName"
+                        :value="department.id"
                     />
                   </el-select>
-                  <el-input style="width:160px;margin-left:10px" placeholder="请输入姓名"></el-input>
-                  <el-button type="primary" class="ms-2">
+                  <el-input v-model="manager" style="width:160px;margin-left:10px"
+                            placeholder="请输入负责人" clearable></el-input>
+                  <el-button type="primary" class="ms-2" @click="load">
                     <el-icon>
                       <Search/>
                     </el-icon>
@@ -52,7 +53,7 @@
                 <div class="col-sm-12 p-3">
                   <div class="demo-collapse">
                     <el-collapse v-model="activeNames" @change="handleChange">
-                      <el-collapse-item v-for="department in toRaw(departmentStore.departmentList)"
+                      <el-collapse-item v-for="department in state.tableData"
                                         :title="department.departmentName" :name="department.id">
                         <div>
                           <el-descriptions
@@ -63,12 +64,13 @@
                               border
                           >
                             <template #extra>
-                              <el-button size="small" style="background-color:#66b1ff" @click="EditSalary(scope.row)">
+                              <el-button size="small" style="background-color:#66b1ff"
+                                         @click="EditDepartment(department)">
                                 <el-icon>
                                   <Edit style="color:#213d5b"/>
                                 </el-icon>
                               </el-button>
-                              <el-popconfirm @confirm="DeleteSalary(department.id)" title="确认删除?"
+                              <el-popconfirm @confirm="DeleteEntity(department.id)" title="确认删除?"
                                              confirm-button-text="确认"
                                              cancel-button-text="取消">
                                 <template #reference>
@@ -124,7 +126,7 @@
                               </template>
                               {{ department?.parentDepartment?.departmentName || '无' }}
                             </el-descriptions-item>
-                            <el-descriptions-item>
+                            <el-descriptions-item :span="2">
                               <template #label>
                                 <div class="cell-item">
                                   <el-icon :style="iconStyle">
@@ -140,6 +142,17 @@
                               </div>
                               <div v-show="!department?.postList">无</div>
                             </el-descriptions-item>
+                            <el-descriptions-item>
+                              <template #label>
+                                <div class="cell-item">
+                                  <el-icon>
+                                    <office-building/>
+                                  </el-icon>
+                                  部门描述
+                                </div>
+                              </template>
+                              {{ department.contect }}
+                            </el-descriptions-item>
                           </el-descriptions>
                         </div>
 
@@ -153,16 +166,20 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-sm-12 col-md-4">
+                <div class="col-sm-12 col-md-5">
                   <div class="dataTables_info" id="usersList_info" role="status" aria-live="polite"><span
-                      class="text-muted ">共有 5 条 / 1 页</span></div>
+                      class="text-muted ">共有 {{ total }} 条 / {{ currentPage }} 页</span></div>
                 </div>
                 <div class="col-sm-12 col-md-7">
                   <el-pagination
                       background
-                      page-size="10"
-                      layout="prev, pager, next"
-                      :total="50">
+                      :page-sizes="[1,10,20,30]"
+                      layout="prev,pager,next"
+                      v-model::current-page="currentPage"
+                      v-model:page-size="pageSize"
+                      @size-change="handleSizeChange"
+                      @current-change="handleCurrentChange"
+                      :total="total">
                   </el-pagination>
                 </div>
               </div>
@@ -172,17 +189,151 @@
       </div>
     </div>
   </div>
+  <!--  新增薪资表单-->
+  <div>
+    <el-dialog v-model="dialogFormVisible" title="新增部门" align-center center class="" width="450"
+               style="border-radius: 0.875rem 1rem;">
+      <el-form :model="state.formData" class="" status-icon :rules="rules" ref="ruleFormRef">
+        <el-row :gutter="24">
+          <el-col :span="24">
+            <el-form-item prop="departmentName" size="large" label="部门名称：">
+              <el-input v-model="state.formData.departmentName" placeholder="请输入部门名称"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item prop="parentId" size="large" label="上级部门：" label-width="90">
+              <el-select v-model="state.formData.parentId" placeholder="请选择上级部门" style="width:2250px"
+                         clearable>
+                <el-option value="" label="无"></el-option>
+                <el-option
+                    v-for="department in state.tableData"
+                    :key="department.id"
+                    :label="department.departmentName"
+                    :value="department.id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item prop="location" size="large" label="部门位置：" label-width="90">
+              <el-input v-model="state.formData.location" type="text" placeholder="请输入部门位置"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item prop="phone" size="large" label="联系方式：">
+              <el-input v-model="state.formData.phone" type="text"
+                        placeholder="请输入部门联系方式"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item prop="manager" size="large" label="负责人：" label-width="90">
+              <el-input v-model="state.formData.manager" type="text"
+                        placeholder="请输入部门负责人名称"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item prop="departmentComment" size="large" label="部门描述：" label-width="90">
+              <el-input v-model="state.formData.contect" type="textarea"
+                        placeholder="请输入部门描述"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+      </el-form>
+
+      <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="save" type="primary">新增</el-button>
+        <el-button @click="clearFormData">
+          取消
+        </el-button>
+      </span>
+      </template>
+    </el-dialog>
+  </div>
+  <!--  修改薪资表单-->
+  <div>
+    <el-dialog v-model="dialogUpdateVisible" title="修改部门" align-center center class="" width="450"
+               style="border-radius: 0.875rem 1rem;">
+      <el-form :model="state.updateData" class="" status-icon :rules="rules" ref="ruleFormRef">
+        <el-row :gutter="24">
+          <el-col :span="24">
+            <el-form-item prop="departmentName" size="large" label="部门名称：">
+              <el-input v-model="state.updateData.departmentName" placeholder="请输入部门名称"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item prop="parentId" size="large" label="上级部门：" label-width="90">
+              <el-select v-model="state.updateData.parentId" placeholder="请选择上级部门" style="width:2250px"
+                         clearable>
+                <el-option value="" label="无"></el-option>
+                <el-option
+                    v-for="department in state.tableData"
+                    :key="department.id"
+                    :label="department.departmentName"
+                    :value="department.id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item prop="location" size="large" label="部门位置：" label-width="90">
+              <el-input v-model="state.updateData.location" type="text" placeholder="请输入部门位置"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item prop="phone" size="large" label="联系方式：">
+              <el-input v-model="state.updateData.phone" type="text"
+                        placeholder="请输入部门联系方式"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item prop="manager" size="large" label="负责人：" label-width="90">
+              <el-input v-model="state.updateData.manager" type="text"
+                        placeholder="请输入部门负责人名称"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item prop="departmentComment" size="large" label="部门描述：" label-width="90">
+              <el-input v-model="state.updateData.contect" type="textarea"
+                        placeholder="请输入部门描述"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+      </el-form>
+
+      <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="update" type="primary">修改</el-button>
+        <el-button @click="clearFormData">
+          取消
+        </el-button>
+      </span>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 
 <script setup>
-import {computed, reactive, ref, toRaw} from 'vue'
+import {computed, getCurrentInstance, reactive, ref, toRaw} from 'vue'
 import request from "@/request.js";
-import {ElMessage} from "element-plus";
+import {ElMessage, ElNotification} from "element-plus";
 import {useDepartment} from "@/stores/department.js"
 
+const {proxy} = getCurrentInstance();
 const departmentStore = useDepartment();
 const activeNames = ref('1')
 const size = ref('')
+
+//模糊查询条件
+const currentPage = ref(1);//当前页
+const pageSize = ref(5);//页码展示数量
+const total = ref(10);//页码总数
+const departmentId = ref('');//部门编号
+const manager = ref('');//部门负责人
+
+
 const blockMargin = computed(() => {
   const marginMap = {
     large: '32px',
@@ -206,8 +357,102 @@ const state = reactive({
   updateData: {},
 })
 
+const rules = reactive({
+  departmentName: [
+    {required: true, message: '请输入部门名称', trigger: 'blur'}
+  ],
+  phone: [
+    {required: true, message: '请输入部门名称', trigger: 'blur'}
+  ],
+  manager: [
+    {required: true, message: '请输入部门名称', trigger: 'blur'}
+  ]
+});
+//打开视图
+const dialogFormVisible = ref(false)
+const dialogUpdateVisible = ref(false)
+//换页
+const handleSizeChange = (val) => {
+  pageSize.value = val;
+  load();
+}
+const handleCurrentChange = (val) => {
+  currentPage.value = val;
+  load()
+}
+
+const EditDepartment = (row) => {
+  dialogUpdateVisible.value = true;
+  state.updateData = JSON.parse(JSON.stringify(row));
+}
+const clearFormData = () => {
+  let clearData = {}
+  state.formData = clearData;
+  dialogFormVisible.value = false;
+  dialogUpdateVisible.value = false;
+}
+const save = () => {
+  //表单校检
+  proxy.$refs.ruleFormRef.validate((valid) => {
+    if (valid) {
+      //发送后台请求
+      request.post('admin/department/save', state.formData).then(res => {
+        if (res.code == '200') {
+          ElNotification.success('新增薪资成功！')
+        } else {
+          ElMessage.error('系统服务异常，请稍后再试~')
+        }
+        clearFormData();
+        load();
+        selectDepartmentList();
+      })
+    } else {
+      ElMessage.error('薪资信息填写错误')
+    }
+  })
+}
+const update = () => {
+  request.put('admin/department/update', state.updateData).then((res) => {
+    try {
+      if (res.code == 200) {
+        ElNotification.success(res.msg);
+      } else {
+        ElMessage.error(res.msg);
+      }
+    } catch {
+      ElMessage.error(res.msg);
+    } finally {
+      clearFormData();
+      load();
+      selectDepartmentList();
+    }
+  })
+}
+const DeleteEntity = (id) => {
+  request.delete('admin/department/delete/' + id).then((res) => {
+    try {
+      if (res.code == 200) {
+        ElNotification.success(res.msg);
+      } else {
+        ElMessage.error(res.msg);
+      }
+    } catch {
+      ElMessage.error(res.msg);
+    } finally {
+      load();
+      selectDepartmentList();
+    }
+  })
+}
 const selectDepartmentList = () => {
-  request.get('admin/department/list').then(res => {
+  request.get('admin/department/page', {
+    params: {
+      currentPage: currentPage.value,
+      pageSize: pageSize.value,
+      departmentId: departmentId.value,
+      manager: manager.value,
+    }
+  }).then(res => {
     try {
       if (res.code === 200) {
         departmentStore.setDepartmentList(res.data.records);
@@ -217,8 +462,17 @@ const selectDepartmentList = () => {
     }
   })
 }
+
+
 const load = () => {
-  request.get('/admin/department/list').then((res) => {
+  request.get('/admin/department/page', {
+    params: {
+      currentPage: currentPage.value,
+      pageSize: pageSize.value,
+      departmentId: departmentId.value,
+      manager: manager.value,
+    }
+  }).then((res) => {
     try {
       if (res.code == 200) {
         state.tableData = res.data?.records

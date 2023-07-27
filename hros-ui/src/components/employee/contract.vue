@@ -107,11 +107,11 @@
                       </el-table-column>
                       <el-table-column fixed="right" align="center" label="操作" width="120">
                         <template #default="scope">
-                          <el-button size="small" style="background-color:#66b1ff" @click="EditRenewal(scope.row)">
-                            <el-icon>
-                              <Edit style="color:#213d5b"/>
-                            </el-icon>
-                          </el-button>
+                          <!--                          <el-button size="small" style="background-color:#66b1ff" @click="EditRenewal(scope.row)">-->
+                          <!--                            <el-icon>-->
+                          <!--                              <Edit style="color:#213d5b"/>-->
+                          <!--                            </el-icon>-->
+                          <!--                          </el-button>-->
                           <el-popconfirm @confirm="DelRenewal(scope.row.id)" title="确认删除?"
                                          confirm-button-text="确认"
                                          cancel-button-text="取消">

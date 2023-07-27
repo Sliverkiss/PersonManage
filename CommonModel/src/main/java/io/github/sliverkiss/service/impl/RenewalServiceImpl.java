@@ -20,6 +20,7 @@ import io.github.sliverkiss.domain.vo.RenewalVo;
 import io.github.sliverkiss.enums.AppHttpCodeEnum;
 import io.github.sliverkiss.exception.SystemException;
 import io.github.sliverkiss.service.RenewalService;
+import io.github.sliverkiss.utils.DateUtil;
 import org.springframework.stereotype.Service;
 import xin.altitude.cms.common.util.EntityUtils;
 
@@ -127,11 +128,18 @@ public class RenewalServiceImpl extends ServiceImpl<RenewalDao, Renewal> impleme
     }
 
     @Override
-    public void beforeSave(Renewal renewal) {
+    public void afterSave(Renewal renewal) {
         // 判断续约申请是否通过
         if (renewal.getState ().equals ( "通过" )) {
-            Employee employe = employeeDao.selectById ( renewal.getEmployeeId () );
-
+            Employee employee = employeeDao.selectById ( renewal.getEmployeeId () );
+            // 获取当前日期
+            Optional.ofNullable ( employee ).ifPresent ( e -> {
+                // 当前终止日期为起始日期，合同年限为续约年限
+                e.setStartContract ( e.getEndContract () ).setContractTerm ( renewal.getRenewalAge () );
+                // 自动计算并注入合同截止日期
+                e.setEndContract ( DateUtil.endContract ( e.getStartContract (), e.getContractTerm () ) );
+            } );
+            employeeDao.updateById ( employee );
         }
     }
 }

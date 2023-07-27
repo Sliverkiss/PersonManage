@@ -1,5 +1,6 @@
 package io.github.sliverkiss.service;
 
+import io.github.sliverkiss.domain.DTO.DepartmentQueryDTO;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.Department;
 
@@ -10,7 +11,6 @@ import io.github.sliverkiss.domain.entity.Department;
  * @since 2023-07-06 12:50:06
  */
 public interface DepartmentService extends ICrudService<Department> {
-
-    public ResponseResult selectDepartmentList();
+    ResponseResult selectPage(DepartmentQueryDTO departmentQueryDTO);
 }
 
