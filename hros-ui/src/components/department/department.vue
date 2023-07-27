@@ -165,12 +165,13 @@
                   </div>
                 </div>
               </div>
-              <div class="row">
-                <div class="col-sm-12 col-md-5">
+              <div style="display:flex">
+                <div>
                   <div class="dataTables_info" id="usersList_info" role="status" aria-live="polite"><span
                       class="text-muted ">共有 {{ total }} 条 / {{ currentPage }} 页</span></div>
                 </div>
-                <div class="col-sm-12 col-md-7">
+                <div style="flex:1"></div>
+                <div>
                   <el-pagination
                       background
                       :page-sizes="[1,10,20,30]"
@@ -475,9 +476,11 @@ const load = () => {
   }).then((res) => {
     try {
       if (res.code == 200) {
+        total.value = res.data.total - 0;
         state.tableData = res.data?.records
         console.log(toRaw(state.tableData))
       } else {
+        total.value = res.data.total - 0;
         ElMessage.error(res.msg)
       }
     } catch (e) {
