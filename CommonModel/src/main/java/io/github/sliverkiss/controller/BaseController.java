@@ -45,8 +45,12 @@ public abstract class BaseController<S extends ICrudService<T>, T extends BaseEn
     @ApiOperation(value = "保存", notes = "ID存在修改，不存在添加")
     public ResponseResult save(@RequestBody T entity) {
         try {
-            beforeSave ( entity );
-            return service.saveEntity ( entity );
+            if (beforeSaveCheck ( entity )) {
+                beforeSave ( entity );
+                return service.saveEntity ( entity );
+            } else {
+                return ResponseResult.errorResult ( AppHttpCodeEnum.SYSTEM_ERROR.getCode (), "同一员工不能同时拥有多个申请记录,请耐心等待管理员审核～" );
+            }
         } catch (Exception e) {
             throw new SystemException ( AppHttpCodeEnum.SYSTEM_ERROR );
         }
@@ -78,8 +82,15 @@ public abstract class BaseController<S extends ICrudService<T>, T extends BaseEn
     public void beforeSave(T entity) throws Exception {
     }
 
+    /**
+     * 更新前执行
+     *
+     * @param entity 实体
+     *
+     * @throws Exception 异常
+     */
     public void beforeUpdate(T entity) throws Exception {
-
+        beforeSave ( entity );
     }
 
     /**
@@ -90,6 +101,16 @@ public abstract class BaseController<S extends ICrudService<T>, T extends BaseEn
     public void afterEdit(T entity) {
 
     }
+
+    /**
+     * 在保存之前检查验证
+     *
+     * @return boolean
+     */
+    public boolean beforeSaveCheck(T entity) {
+        return true;
+    }
+
 
     /**
      * 根据id获取信息

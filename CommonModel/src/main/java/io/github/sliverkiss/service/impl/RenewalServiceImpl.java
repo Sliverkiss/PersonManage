@@ -1,6 +1,7 @@
 package io.github.sliverkiss.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -87,7 +88,8 @@ public class RenewalServiceImpl extends ServiceImpl<RenewalDao, Renewal> impleme
         } else {
             try {
                 // 对续约表 进行模糊查询
-                LambdaQueryWrapper<Renewal> renewalWrapper = Wrappers.lambdaQuery ( Renewal.class )
+                QueryWrapper<Renewal> renewalWrapper = new QueryWrapper<> ();
+                renewalWrapper.select ( "DISTINCT employee_id" ).lambda ()
                         .in ( employeeIds.size () > 0, Renewal::getEmployeeId, employeeIds )
                         .eq ( StringUtils.isNotBlank ( status ), Renewal::getState, status );
                 // 将模糊查询结果进行分页
@@ -95,11 +97,24 @@ public class RenewalServiceImpl extends ServiceImpl<RenewalDao, Renewal> impleme
                 IPage<RenewalVo> renewalVoIPage = EntityUtils.toPage ( renewalPage, RenewalVo::new );
                 // 多表联查
                 this.renewalInnerJoinEmployee ( renewalVoIPage );
+                // 获取员工合同列表
+                this.onePatchRenewalList ( renewalVoIPage );
                 return ResponseResult.okResult ( renewalVoIPage );
             } catch (Exception e) {
                 throw new SystemException ( AppHttpCodeEnum.FIND_NOT_FOUND );
             }
         }
+    }
+
+    /**
+     * 获取取员工合同列表
+     *
+     * @param renewalVoIPage 续约视图
+     */
+    public void onePatchRenewalList(IPage<RenewalVo> renewalVoIPage) {
+        renewalVoIPage.getRecords ().forEach ( e -> {
+            e.setRenewalList ( this.list ( Wrappers.lambdaQuery ( Renewal.class ).in ( Renewal::getEmployeeId, e.getEmployeeId () ).orderByDesc ( Renewal::getApprovedDate ) ) );
+        } );
     }
 
     /**
@@ -126,6 +141,7 @@ public class RenewalServiceImpl extends ServiceImpl<RenewalDao, Renewal> impleme
             } );
         }
     }
+
 
     @Override
     public void afterSave(Renewal renewal) {

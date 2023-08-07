@@ -103,10 +103,32 @@ export const useContract = defineStore('contract', {
     state: () => {
         return{
             contractMap:[
+                // {
+                //     key: 'id',
+                //     value: '序号'
+                // }, {
+                //     key: 'employeeId',
+                //     value: 'UID'
+                // }, {
+                //     key: 'name',
+                //     value: '姓名'
+                // }, {
+                //     key: 'departmentName',
+                //     value: '所在部门'
+                // }, {
+                //     key: 'renewalAge',
+                //     value: '续约年数'
+                // }, {
+                //     key: 'departmentComment',
+                //     value: '部门意见'
+                // }, {
+                //     key: 'approvedDate',
+                //     value: '审核日期'
+                // }, {
+                //     key: 'director',
+                //     value: '审核人'
+                // }
                 {
-                    key: 'id',
-                    value: '序号'
-                }, {
                     key: 'employeeId',
                     value: 'UID'
                 }, {
@@ -116,17 +138,8 @@ export const useContract = defineStore('contract', {
                     key: 'departmentName',
                     value: '所在部门'
                 }, {
-                    key: 'renewalAge',
-                    value: '续约年数'
-                }, {
-                    key: 'departmentComment',
-                    value: '部门意见'
-                }, {
-                    key: 'approvedDate',
-                    value: '审核日期'
-                }, {
-                    key: 'director',
-                    value: '审核人'
+                    key: 'endContract',
+                    value: '合同终止时间'
                 }
             ]
         }

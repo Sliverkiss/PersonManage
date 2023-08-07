@@ -33,7 +33,7 @@
                   <el-select v-model="departmentId" style="width:150px" clearable
                              placeholder="请选择部门名称">
                     <el-option
-                        v-for="department in state.tableData"
+                        v-for="department in departmentStore.departmentList"
                         :key="department.id"
                         :label="department.departmentName"
                         :value="department.id"
@@ -207,7 +207,7 @@
                          clearable>
                 <el-option value="" label="无"></el-option>
                 <el-option
-                    v-for="department in state.tableData"
+                    v-for="department in departmentStore.departmentList"
                     :key="department.id"
                     :label="department.departmentName"
                     :value="department.id"
@@ -269,7 +269,7 @@
                          clearable>
                 <el-option value="" label="无"></el-option>
                 <el-option
-                    v-for="department in state.tableData"
+                    v-for="department in departmentStore.departmentList"
                     :key="department.id"
                     :label="department.departmentName"
                     :value="department.id"
@@ -446,17 +446,10 @@ const DeleteEntity = (id) => {
   })
 }
 const selectDepartmentList = () => {
-  request.get('admin/department/page', {
-    params: {
-      currentPage: currentPage.value,
-      pageSize: pageSize.value,
-      departmentId: departmentId.value,
-      manager: manager.value,
-    }
-  }).then(res => {
+  request.get('admin/department/list').then(res => {
     try {
       if (res.code === 200) {
-        departmentStore.setDepartmentList(res.data.records);
+        departmentStore.setDepartmentList(res.data)
       }
     } catch (e) {
       ElMessage.error(e);

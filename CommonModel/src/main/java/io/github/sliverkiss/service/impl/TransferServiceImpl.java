@@ -17,8 +17,6 @@ import io.github.sliverkiss.domain.entity.Employee;
 import io.github.sliverkiss.domain.entity.Personal;
 import io.github.sliverkiss.domain.entity.Transfer;
 import io.github.sliverkiss.domain.vo.TransferVo;
-import io.github.sliverkiss.enums.AppHttpCodeEnum;
-import io.github.sliverkiss.exception.SystemException;
 import io.github.sliverkiss.service.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,20 +46,29 @@ public class TransferServiceImpl extends ServiceImpl<TransferDao, Transfer> impl
 
     @Override
     public ResponseResult selectPage(TransferQueryDTO transferQueryDTO) {
-        Integer currentPage = transferQueryDTO.getCurrentPage ();
-        Integer pageSize = transferQueryDTO.getPageSize ();
+        Page<Transfer> page = toPage ( transferQueryDTO );
         String employeeId = transferQueryDTO.getEmployeeId ();
         String employeeName = transferQueryDTO.getEmployeeName ();
+        String state = transferQueryDTO.getState ();
+        String notState = transferQueryDTO.getNotState ();
+        List<Integer> personalIds = personalDao.selectList ( Wrappers.lambdaQuery ( Personal.class )
+                        .like ( StringUtils.isNotBlank ( employeeName ), Personal::getName, employeeName ) )
+                .stream ().map ( Personal::getId ).collect ( Collectors.toList () );
+        List<Integer> employeeIds = employeeDao.selectList ( Wrappers.lambdaQuery ( Employee.class ).in ( personalIds.size () > 0, Employee::getPersonalId, personalIds ) )
+                .stream ().map ( Employee::getId ).collect ( Collectors.toList () );
         try {
             // 模糊查询
             LambdaQueryWrapper<Transfer> wrapper = Wrappers.lambdaQuery ( Transfer.class )
-                    .like ( StringUtils.isNotBlank ( employeeId ), Transfer::getEmployeeId, employeeId );
-            // 获取数据
-            Page<Transfer> page = this.page ( new Page<> ( currentPage, pageSize ), wrapper );
+                    .like ( StringUtils.isNotBlank ( employeeId ), Transfer::getEmployeeId, employeeId )
+                    .like ( StringUtils.isNotBlank ( state ), Transfer::getState, state )
+                    .notLike ( StringUtils.isNotBlank ( notState ), Transfer::getState, notState );// 获取数据
+            Page<Transfer> transferPage = this.page ( page, wrapper );
             IPage<TransferVo> transferVoIPage = EntityUtils.toPage ( page, TransferVo::new );
             // 属性注入，员工姓名，调出部门，调入部门
             this.transferInnerJoinDepartment ( transferVoIPage );
             this.transferInnerJoinPersonal ( transferVoIPage );
+            // 注入员工调岗列表
+            this.onePatchTransferList ( transferVoIPage );
             return ResponseResult.okResult ( transferVoIPage );
         } catch (Exception e) {
             throw e;
@@ -74,7 +81,7 @@ public class TransferServiceImpl extends ServiceImpl<TransferDao, Transfer> impl
      * @param transferVoIPage 调岗审核视图
      */
     public void transferInnerJoinDepartment(IPage<TransferVo> transferVoIPage) {
-        Optional.ofNullable ( transferVoIPage ).ifPresent ( t -> {
+        if (transferVoIPage.getRecords ().size () > 0) {
             // 获取部门信息
             Set<Integer> departmentIds = EntityUtils.toSet ( transferVoIPage.getRecords (), Transfer::getBeforeDepartment );
             departmentIds.addAll ( EntityUtils.toSet ( transferVoIPage.getRecords (), Transfer::getAfterDepartment ) );
@@ -89,6 +96,17 @@ public class TransferServiceImpl extends ServiceImpl<TransferDao, Transfer> impl
                     Optional.ofNullable ( afterDepartment ).ifPresent ( e -> transferVo.setAfterDepartmentName ( e.getDepartmentName () ) );
                 } );
             }
+        }
+    }
+
+    /**
+     * 注入员工调岗列表，一对多关系，一个员工拥有多条调岗记录
+     *
+     * @param transferVoIPage 调岗审核视图
+     */
+    public void onePatchTransferList(IPage<TransferVo> transferVoIPage) {
+        transferVoIPage.getRecords ().forEach ( e -> {
+            e.setTransferList ( this.list ( Wrappers.lambdaQuery ( Transfer.class ).in ( Transfer::getEmployeeId, e.getEmployeeId () ).orderByDesc ( Transfer::getApplyDate ) ) );
         } );
     }
 
@@ -100,7 +118,7 @@ public class TransferServiceImpl extends ServiceImpl<TransferDao, Transfer> impl
     public void transferInnerJoinPersonal(IPage<TransferVo> transferVoIPage) {
         try {
             // 获取员工信息
-            Optional.ofNullable ( transferVoIPage ).ifPresent ( t -> {
+            if (transferVoIPage.getRecords ().size () > 0) {
                 Set<Integer> employeeIds = transferVoIPage.getRecords ().stream ().map ( Transfer::getEmployeeId ).collect ( Collectors.toSet () );
                 List<Integer> personalIds = employeeDao.selectList ( Wrappers.lambdaQuery ( Employee.class ).in ( Employee::getId, employeeIds ) )
                         .stream ().map ( Employee::getPersonalId ).collect ( Collectors.toList () );
@@ -109,12 +127,18 @@ public class TransferServiceImpl extends ServiceImpl<TransferDao, Transfer> impl
                 // 注入员工姓名
                 transferVoIPage.getRecords ().forEach ( transferVo -> {
                     Employee employee = employeeDao.selectById ( transferVo.getEmployeeId () );
+                    Department department = departmentDao.selectById ( employee.getDepartmentId () );
                     Personal personal = map.get ( employee.getPersonalId () );
-                    Optional.ofNullable ( personal ).ifPresent ( e -> transferVo.setEmployeeName ( e.getName () ) );
+                    Optional.ofNullable ( personal ).ifPresent ( e -> {
+                        // 注入员工姓名
+                        transferVo.setEmployeeName ( e.getName () )
+                                // 注入部门名称
+                                .setDepartmentName ( department.getDepartmentName () );
+                    } );
                 } );
-            } );
+            }
         } catch (Exception e) {
-            throw new SystemException ( AppHttpCodeEnum.SYSTEM_ERROR );
+            throw e;
         }
 
     }

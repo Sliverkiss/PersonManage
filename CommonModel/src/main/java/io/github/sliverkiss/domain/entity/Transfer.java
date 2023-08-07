@@ -31,10 +31,12 @@ public class Transfer extends BaseEntity implements Serializable {
     private Integer beforeDepartment;
     // 调入部门
     private Integer afterDepartment;
+    // 调动岗位
+    private String transferPost;
     // 调动理由
     private String reason;
     // 调动类型
-    private String type;
+    private String transferType;
     // 调动种类
     private String kind;
     // 申请日期
@@ -44,7 +46,7 @@ public class Transfer extends BaseEntity implements Serializable {
     // 调入部门意见
     private String afterComment;
     // 人事处意见
-    private String personnalComment;
+    private String personalComment;
     // 审核状态
     private String state;
 
@@ -54,12 +56,14 @@ public class Transfer extends BaseEntity implements Serializable {
             this.employeeId = e.getEmployeeId ();
             this.beforeDepartment = e.getBeforeDepartment ();
             this.afterDepartment = e.getAfterDepartment ();
+            this.transferPost = e.getTransferPost ();
             this.reason = e.getReason ();
+            this.transferType = e.getTransferType ();
             this.kind = e.getKind ();
             this.applyDate = e.getApplyDate ();
             this.beforeComment = e.getBeforeComment ();
             this.afterComment = e.getAfterComment ();
-            this.personnalComment = getPersonnalComment ();
+            this.personalComment = getPersonalComment ();
             this.state = e.getState ();
         } );
     }

@@ -18,4 +18,7 @@ import lombok.experimental.Accessors;
 public class TransferQueryDTO extends Page {
     private String employeeId;
     private String employeeName;
+    // 审核状态
+    private String state;
+    private String notState;
 }

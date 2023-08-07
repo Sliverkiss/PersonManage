@@ -28,11 +28,15 @@ export const useDepartment=defineStore('department',{
                     value: '调入部门'
                 },
                 {
+                    key: 'transferPost',
+                    value: '调动岗位'
+                },
+                {
                     key: 'reason',
                     value: '调动理由'
                 },
                 {
-                    key: 'type',
+                    key: 'transferType',
                     value: '调动类型'
                 },
                 {
@@ -85,7 +89,7 @@ export const useDepartment=defineStore('department',{
     persist: {
         enabled: false,
         strategies: [{
-            key: 'DepartmentList',
+            key: 'departmentList',
             storage: localStorage,
         }]
     }

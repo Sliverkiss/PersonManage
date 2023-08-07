@@ -17,6 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/department")
 public class DepartmentController extends BaseController<DepartmentServiceImpl, Department> {
 
+    @GetMapping("/list")
+    public ResponseResult selectDepartmentList() {
+        return ResponseResult.okResult ( service.list () );
+    }
 
     @GetMapping("/page")
     public ResponseResult selectRenewalPage(DepartmentQueryDTO departmentQueryDTO) {

@@ -1,117 +1,65 @@
 <template>
   <div>
-    <div class="content" id="pjax-container">
-      <div class="block block-rounded">
-        <el-card class="notice-card ">
-          <template #header>
-            <div class="text-muted fw-bold " style="display:flex">
-              <div style="width:200px">
-                <UserFilled class="m-1 " width="20px"/>
-                员工合同管理
-              </div>
-              <div style="flex:1"></div>
-              <div class="" style="width:120px">
-                <el-button type="success" plain @click="dialogFormVisible= true">
-                  <el-icon>
-                    <Plus/>
-                  </el-icon>
-                  <span>新增续约</span></el-button>
-              </div>
+    <el-tabs v-model="activeName" class="demo-tabs bg-white p-3 notice-card ">
+      <el-tab-pane name="first" @tab-Click="router.push('/console/employee/contract')">
+        <template #label>
+        <span class="custom-tabs-label">
+          <el-icon><calendar/></el-icon>
+          <span>合同管理</span>
+        </span>
+        </template>
+        <div class="text-muted fw-bold mt-2 mb-2" style="display:flex">
+          <div class="row">
+            <div class="col-sm-12 col-md-12">
+              <el-input v-model="employeeId" style="width:120px" placeholder="请输入员工编号"></el-input>
+              <el-input v-model="name" style="width:100px;margin-left:10px" placeholder="请输入姓名"></el-input>
+              <el-button type="primary" class="ms-2" @Click="load">
+                <el-icon>
+                  <Search/>
+                </el-icon>
+                搜索
+              </el-button>
             </div>
-          </template>
-          <div class="block-content block-content-full">
-            <div id="usersList_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
-              <div class="row">
-                <div class="col-sm-12 col-md-12">
-                  <el-input v-model="employeeId" style="width:120px" placeholder="请输入员工编号"></el-input>
-                  <el-input v-model="name" style="width:100px;margin-left:10px" placeholder="请输入姓名"></el-input>
-                  <el-select v-model="DepartmentId" style="width:120px;margin-left:10px" placeholder="请选择部门"
-                             clearable>
-                    <el-option
-                        v-for="department in toRaw(departmentStore.departmentList)"
-                        :key="department.id"
-                        :label="department.departmentName"
-                        :value="department.id"
-                    />
-                  </el-select>
-                  <el-select v-model="status" style="width:140px;margin-left:10px" placeholder="请选择审核状态"
-                             clearable>
-                    <el-option label="通过" value="通过"/>
-                    <el-option label="审核中" value="审核中"/>
-                    <el-option label="未通过" value="未通过"/>
-                  </el-select>
-                  <el-button type="primary" class="ms-2" @Click="load">
-                    <el-icon>
-                      <Search/>
-                    </el-icon>
-                    搜索
-                  </el-button>
-                </div>
-              </div>
-              <h6 class=" mt-2 p-3 pb-0 text-secondary">待审核列表</h6>
-              <div class="row">
-                <div class="col-sm-12 p-3 ">
-                  <el-table :data="state.tableData.filter(e=>e.state=='审核中')" stripe class="text-center">
-                    <template v-for="(col,index) in toRaw(contractStore.contractMap)" :key="index">
-                      <el-table-column :prop="col.key" :label="col.value" align="center" sortable></el-table-column>
-                    </template>
-                    <el-table-column prop="state" label="审核状态" align="center" sortable>
-                      <template #default="scope">
-                        <el-tag
-                            :type="scope.row.state === '通过' ? '' :'审核中'?'warning': 'danger'"
-                            disable-transitions>{{ scope.row.state }}
-                        </el-tag>
-                      </template>
-                    </el-table-column>
-                    <el-table-column fixed="right" align="center" label="操作" width="120">
-                      <template #default="scope">
-                        <el-button size="small" style="background-color:#66b1ff" @click="EditRenewal(scope.row)">
-                          <el-icon>
-                            <Edit style="color:#213d5b"/>
-                          </el-icon>
-                        </el-button>
-                        <el-popconfirm @confirm="DelRenewal(scope.row.id)" title="确认删除?"
-                                       confirm-button-text="确认"
-                                       cancel-button-text="取消">
-                          <template #reference>
-                            <el-button type="danger" size="small">
-                              <el-icon>
-                                <Delete style="color:#582e2e"/>
-                              </el-icon>
-                            </el-button>
-                          </template>
-                        </el-popconfirm>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                </div>
-              </div>
-              <h6 class=" mt-2 p-3 pb-0 text-secondary">合同续约记录</h6>
-              <div class="row">
-                <div class="col-sm-12 p-3 ">
-                  <el-auto-resizer>
-                    <el-table :data="state.tableData.filter(e=>e.state=='未通过'||e.state=='通过')" stripe
-                              class="text-center">
-                      <template v-for="(col,index) in toRaw(contractStore.contractMap)" :key="index">
-                        <el-table-column :prop="col.key" :label="col.value" align="center" sortable></el-table-column>
-                      </template>
+          </div>
+          <div style="flex:1"></div>
+          <div class="" style="width:120px">
+            <el-button type="success" plain @click="dialogFormVisible= true">
+              <el-icon>
+                <Plus/>
+              </el-icon>
+              <span>新增续约</span></el-button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 p-3 ">
+            <el-table :data="state.tableData" stripe class="text-center"
+                      element-loading-text="拼命加载中">
+              <el-table-column type="expand">
+                <template #default="props">
+                  <div>
+                    <!--                    <h3>Family</h3>-->
+                    <el-table :data="props.row.renewalList" max-height="250">
+                      <el-table-column label="id" prop="id"/>
+                      <el-table-column label="续约年数" prop="renewalAge"/>
+                      <el-table-column label="审核日期" prop="approvedDate" sortable/>
+                      <el-table-column label="审核人" prop="director"/>
                       <el-table-column prop="state" label="审核状态" align="center" sortable>
                         <template #default="scope">
                           <el-tag
                               :type="scope.row.state === '通过' ? '' :scope.row.state ==='未通过'?'danger': 'warning'"
                               disable-transitions
                           >{{ scope.row.state }}
-                          </el-tag
-                          >
+                          </el-tag>
+                          <a v-show="scope.row.state ==='未通过'?true:false">查看原因</a>
                         </template>
                       </el-table-column>
                       <el-table-column fixed="right" align="center" label="操作" width="120">
                         <template #default="scope">
-                          <!--                          <el-button size="small" style="background-color:#66b1ff" @click="EditRenewal(scope.row)">-->
-                          <!--                            <el-icon>-->
-                          <!--                              <Edit style="color:#213d5b"/>-->
-                          <!--                            </el-icon>-->
-                          <!--                          </el-button>-->
+                          <el-button size="small" style="background-color:#66b1ff" @click="EditRenewal(scope.row)">
+                            <el-icon>
+                              <Edit style="color:#213d5b"/>
+                            </el-icon>
+                          </el-button>
                           <el-popconfirm @confirm="DelRenewal(scope.row.id)" title="确认删除?"
                                          confirm-button-text="确认"
                                          cancel-button-text="取消">
@@ -126,33 +74,221 @@
                         </template>
                       </el-table-column>
                     </el-table>
-                  </el-auto-resizer>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-sm-12 col-md-5">
-                  <div class="dataTables_info" id="usersList_info" role="status" aria-live="polite"><span
-                      class="text-muted ">共有 {{ total }} 条 / {{ currentPage }} 页</span></div>
-                </div>
-                <div class="col-sm-12 col-md-7">
-                  <el-pagination
-                      background
-                      :page-sizes="[1,10,20,30]"
-                      layout="prev,pager,next"
-                      v-model::current-page="currentPage"
-                      v-model:page-size="pageSize"
-                      @size-change="handleSizeChange"
-                      @current-change="handleCurrentChange"
-                      :total="total">
-                  </el-pagination>
-                </div>
-              </div>
+                  </div>
+                  <!--                  <div style="display:flex" class="mt-3 mb-3">-->
+                  <!--                    <div>-->
+                  <!--                      <div class="dataTables_info" id="usersList_info" role="status" aria-live="polite"><span-->
+                  <!--                          class="text-muted ">共有 {{ total }} 条 / {{ currentPage }} 页</span></div>-->
+                  <!--                    </div>-->
+                  <!--                    <div style="flex:1"></div>-->
+                  <!--                    <div>-->
+                  <!--                      <el-pagination-->
+                  <!--                          small-->
+                  <!--                          :page-sizes="[1,10,20,30]"-->
+                  <!--                          layout="prev,pager,next"-->
+                  <!--                          v-model::current-page="currentPage"-->
+                  <!--                          v-model:page-size="pageSize"-->
+                  <!--                          @size-change="handleSizeChange"-->
+                  <!--                          @current-change="handleCurrentChange"-->
+                  <!--                          :total="total">-->
+                  <!--                      </el-pagination>-->
+                  <!--                    </div>-->
+                  <!--                  </div>-->
+                </template>
+              </el-table-column>
+              <el-table-column v-for="(col,index) in toRaw(contractStore.contractMap)" :key="index" :prop="col.key"
+                               :label="col.value" align="center"></el-table-column>
+              <!--              <el-table-column fixed="right" align="center" label="操作" width="120" >-->
+              <!--                <template #default="scope">-->
+              <!--                  <el-button size="small" style="background-color:#66b1ff" @click="EditRenewal(scope.row)">-->
+              <!--                    <el-icon>-->
+              <!--                      <Edit style="color:#213d5b"/>-->
+              <!--                    </el-icon>-->
+              <!--                  </el-button>-->
+              <!--                  <el-popconfirm @confirm="DelRenewal(scope.row.id)" title="确认删除?"-->
+              <!--                                 confirm-button-text="确认"-->
+              <!--                                 cancel-button-text="取消">-->
+              <!--                    <template #reference>-->
+              <!--                      <el-button type="danger" size="small">-->
+              <!--                        <el-icon>-->
+              <!--                          <Delete style="color:#582e2e"/>-->
+              <!--                        </el-icon>-->
+              <!--                      </el-button>-->
+              <!--                    </template>-->
+              <!--                  </el-popconfirm>-->
+              <!--                </template>-->
+              <!--              </el-table-column>-->
+            </el-table>
+          </div>
+        </div>
+        <div style="display:flex">
+          <div>
+            <div class="dataTables_info" id="usersList_info" role="status" aria-live="polite"><span
+                class="text-muted ">共有 {{ total }} 条 / {{ currentPage }} 页</span></div>
+          </div>
+          <div style="flex:1"></div>
+          <div>
+            <el-pagination
+                background
+                :page-sizes="[1,10,20,30]"
+                layout="prev,pager,next"
+                v-model::current-page="currentPage"
+                v-model:page-size="pageSize"
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :total="total">
+            </el-pagination>
+          </div>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane name="second" @tab-Click="router.push('/login')">
+        <template #label>
+        <span class="custom-tabs-label">
+          <el-icon><calendar/></el-icon>
+          <span>续约审核</span>
+        </span>
+          <!--显示消息数量提示-->
+          <div class="oversee">
+            <el-badge :value="state.tableData.length" :hidden="isHidden" :max="99" class="item">
+            </el-badge>
+          </div>
+        </template>
+
+        <div class="text-muted fw-bold mt-2 mb-2" style="display:flex">
+          <div class="row">
+            <div class="col-sm-12 col-md-12">
+              <el-input v-model="employeeId" style="width:120px" placeholder="请输入员工编号"></el-input>
+              <el-input v-model="name" style="width:100px;margin-left:10px" placeholder="请输入姓名"></el-input>
+              <el-button type="primary" class="ms-2" @Click="load">
+                <el-icon>
+                  <Search/>
+                </el-icon>
+                搜索
+              </el-button>
             </div>
           </div>
-        </el-card>
-      </div>
-    </div>
-    <Foot/>
+          <div style="flex:1"></div>
+          <div class="" style="width:120px">
+            <el-button type="success" plain @click="dialogFormVisible= true">
+              <el-icon>
+                <Plus/>
+              </el-icon>
+              <span>新增续约</span></el-button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 p-3 ">
+            <el-table :data="state.tableData" stripe class="text-center"
+                      element-loading-text="拼命加载中">
+              <el-table-column type="expand">
+                <template #default="props">
+                  <div>
+                    <!--                    <h3>Family</h3>-->
+                    <el-table :data="props.row.renewalList" max-height="250">
+                      <el-table-column label="id" prop="id"/>
+                      <el-table-column label="续约年数" prop="renewalAge"/>
+                      <el-table-column label="审核日期" prop="approvedDate" sortable/>
+                      <el-table-column label="审核人" prop="director"/>
+                      <el-table-column prop="state" label="审核状态" align="center" sortable>
+                        <template #default="scope">
+                          <el-tag
+                              :type="scope.row.state === '通过' ? '' :scope.row.state ==='未通过'?'danger': 'warning'"
+                              disable-transitions
+                          >{{ scope.row.state }}
+                          </el-tag>
+                          <a v-show="scope.row.state ==='未通过'?true:false">查看原因</a>
+                        </template>
+                      </el-table-column>
+                      <el-table-column fixed="right" align="center" label="操作" width="120">
+                        <template #default="scope">
+                          <el-button size="small" style="background-color:#66b1ff" @click="EditRenewal(scope.row)">
+                            <el-icon>
+                              <Edit style="color:#213d5b"/>
+                            </el-icon>
+                          </el-button>
+                          <el-popconfirm @confirm="DelRenewal(scope.row.id)" title="确认删除?"
+                                         confirm-button-text="确认"
+                                         cancel-button-text="取消">
+                            <template #reference>
+                              <el-button type="danger" size="small">
+                                <el-icon>
+                                  <Delete style="color:#582e2e"/>
+                                </el-icon>
+                              </el-button>
+                            </template>
+                          </el-popconfirm>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </div>
+                  <!--                  <div style="display:flex" class="mt-3 mb-3">-->
+                  <!--                    <div>-->
+                  <!--                      <div class="dataTables_info" id="usersList_info" role="status" aria-live="polite"><span-->
+                  <!--                          class="text-muted ">共有 {{ total }} 条 / {{ currentPage }} 页</span></div>-->
+                  <!--                    </div>-->
+                  <!--                    <div style="flex:1"></div>-->
+                  <!--                    <div>-->
+                  <!--                      <el-pagination-->
+                  <!--                          small-->
+                  <!--                          :page-sizes="[1,10,20,30]"-->
+                  <!--                          layout="prev,pager,next"-->
+                  <!--                          v-model::current-page="currentPage"-->
+                  <!--                          v-model:page-size="pageSize"-->
+                  <!--                          @size-change="handleSizeChange"-->
+                  <!--                          @current-change="handleCurrentChange"-->
+                  <!--                          :total="total">-->
+                  <!--                      </el-pagination>-->
+                  <!--                    </div>-->
+                  <!--                  </div>-->
+                </template>
+              </el-table-column>
+              <el-table-column v-for="(col,index) in toRaw(contractStore.contractMap)" :key="index" :prop="col.key"
+                               :label="col.value" align="center"></el-table-column>
+              <!--              <el-table-column fixed="right" align="center" label="操作" width="120" >-->
+              <!--                <template #default="scope">-->
+              <!--                  <el-button size="small" style="background-color:#66b1ff" @click="EditRenewal(scope.row)">-->
+              <!--                    <el-icon>-->
+              <!--                      <Edit style="color:#213d5b"/>-->
+              <!--                    </el-icon>-->
+              <!--                  </el-button>-->
+              <!--                  <el-popconfirm @confirm="DelRenewal(scope.row.id)" title="确认删除?"-->
+              <!--                                 confirm-button-text="确认"-->
+              <!--                                 cancel-button-text="取消">-->
+              <!--                    <template #reference>-->
+              <!--                      <el-button type="danger" size="small">-->
+              <!--                        <el-icon>-->
+              <!--                          <Delete style="color:#582e2e"/>-->
+              <!--                        </el-icon>-->
+              <!--                      </el-button>-->
+              <!--                    </template>-->
+              <!--                  </el-popconfirm>-->
+              <!--                </template>-->
+              <!--              </el-table-column>-->
+            </el-table>
+          </div>
+        </div>
+        <div style="display:flex">
+          <div>
+            <div class="dataTables_info" id="usersList_info" role="status" aria-live="polite"><span
+                class="text-muted ">共有 {{ total }} 条 / {{ currentPage }} 页</span></div>
+          </div>
+          <div style="flex:1"></div>
+          <div>
+            <el-pagination
+                background
+                :page-sizes="[1,10,20,30]"
+                layout="prev,pager,next"
+                v-model::current-page="currentPage"
+                v-model:page-size="pageSize"
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :total="total">
+            </el-pagination>
+          </div>
+        </div>
+      </el-tab-pane>
+      <Foot/>
+    </el-tabs>
   </div>
 
   <!--  新增续约表单-->
@@ -245,12 +381,14 @@ import {useContract} from "@/stores/employee.js";
 import {useDepartment} from "@/stores/department.js"
 import {ElMessage, ElNotification} from "element-plus";
 import {useUser} from '@/stores/user.js'
+import {useRouter} from "vue-router";
 
 const {proxy} = getCurrentInstance();
+const router = useRouter();
 const userStore = useUser();
 const contractStore = useContract();
 const departmentStore = useDepartment();
-
+const activeName = ref('first')
 const state = reactive({
   tableData: [],
   formData: {},
@@ -286,6 +424,9 @@ const name = ref('');//员工姓名
 const DepartmentId = ref('');//部门编号
 const status = ref('');//审核状态
 
+const handleClick = (tab, event) => {
+  router.push('/console/employee/contract')
+}
 const handleSizeChange = (val) => {
   pageSize.value = val;
   load();

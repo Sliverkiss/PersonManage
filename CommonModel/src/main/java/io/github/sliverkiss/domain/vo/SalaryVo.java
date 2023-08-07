@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import java.util.List;
+
 /**
  * @author SliverKiss
  * @apiNote
@@ -23,6 +25,8 @@ public class SalaryVo extends Salary {
     private String name;
 
     private String departmentName;
+    // 员工薪资列表
+    private List<Salary> salaryList;
 
     public SalaryVo(Salary salary) {
         super ( salary );

@@ -36,7 +36,7 @@
                   <el-select v-model="DepartmentId" style="width:120px;margin-left:10px" placeholder="请选择部门"
                              clearable>
                     <el-option
-                        v-for="department in toRaw(departmentStore.departmentList)"
+                        v-for="department in departmentStore.departmentList"
                         :key="department.id"
                         :label="department.departmentName"
                         :value="department.id"
@@ -93,12 +93,13 @@
                   </el-table>
                 </div>
               </div>
-              <div class="row">
-                <div class="col-sm-12 col-md-4">
+              <div style="display:flex">
+                <div>
                   <div class="dataTables_info" id="usersList_info" role="status" aria-live="polite"><span
                       class="text-muted ">共有 {{ total }} 条 / {{ currentPage }} 页</span></div>
                 </div>
-                <div class="col-sm-12 col-md-7">
+                <div style="flex:1"></div>
+                <div>
                   <el-pagination
                       background
                       :page-sizes="[1,10,20,30]"
@@ -255,7 +256,7 @@
             <el-form-item prop="departmentName" label="部门:">
               <el-select v-model="state.formData.departmentName" style="width:220px">
                 <el-option
-                    v-for="department in toRaw(departmentStore.departmentList)"
+                    v-for="department in  departmentStore.departmentList"
                     :key="department.id"
                     :label="department.departmentName"
                     :value="department.departmentName"
@@ -451,7 +452,7 @@
             <el-form-item prop="departmentName" label="部门:">
               <el-select v-model="state.updateData.departmentName" style="width:220px">
                 <el-option
-                    v-for="department in toRaw(departmentStore.departmentList)"
+                    v-for="department in  departmentStore.departmentList"
                     :key="department.id"
                     :label="department.departmentName"
                     :value="department.departmentName"
@@ -649,7 +650,7 @@ const selectDepartmentList = () => {
   request.get('admin/department/list').then(res => {
     try {
       if (res.code === 200) {
-        departmentStore.setDepartmentList(res.data.records);
+        departmentStore.setDepartmentList(res.data);
       }
     } catch (e) {
       ElMessage.error(e);

@@ -21,11 +21,13 @@ public class DepartmentVo extends Department {
 
     // 上级部门
     private Department parentDepartment;
+    // 部门下员工名单
+    private List<EmployeeVo> employeeVoList;
 
-    //岗位列表
+    // 岗位列表
     private List<String> postList;
 
     public DepartmentVo(Department department) {
-        super(department);
+        super ( department );
     }
 }

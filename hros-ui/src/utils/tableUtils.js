@@ -50,13 +50,18 @@ export const formatDate=(row, column)=> {
         return null
     }
     console.log(typeof data)
-    if(data instanceof Date){
+    if (data instanceof Date) {
         let dt = new Date(data)
         return dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate()
-    }else {
+    } else {
         return data;
     }
 }
 const padLeftZero = (str) => {
     return ('00' + str).substr(str.length)
+}
+//数据去重
+export const unique = (arr) => {
+    const res = new Map();
+    return arr.filter((arr) => !res.has(arr.id) && res.set(arr.id, 1));
 }
