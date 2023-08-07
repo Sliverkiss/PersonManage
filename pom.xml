@@ -10,6 +10,8 @@
     <modules>
         <module>CommonModel</module>
         <module>AdminModel</module>
+        <module>RBACModel</module>
+        <module>RBACModel</module>
     </modules>
 
 

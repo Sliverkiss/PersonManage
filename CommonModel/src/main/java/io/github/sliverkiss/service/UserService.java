@@ -1,7 +1,8 @@
 package io.github.sliverkiss.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
-import io.github.sliverkiss.domain.entity.User;
+
+import io.github.sliverkiss.domain.ResponseResult;
+import io.github.sliverkiss.domain.entity.RBAC.User;
 
 /**
  * 用户(User)表服务接口
@@ -9,7 +10,7 @@ import io.github.sliverkiss.domain.entity.User;
  * @author tistzach
  * @since 2023-07-03 13:12:53
  */
-public interface UserService extends IService<User> {
-
+public interface UserService extends ICrudService<User> {
+    public ResponseResult login(User user);
 }
 
