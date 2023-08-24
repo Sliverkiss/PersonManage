@@ -6,10 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="RBACModel" />
         <module name="CommonModel" />
         <module name="AdminModel" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="RBACModel" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

@@ -1,6 +1,6 @@
 package io.github.sliverkiss.service;
 
-import io.github.sliverkiss.domain.DTO.RenewalQueryDTO;
+import io.github.sliverkiss.controller.DTO.RenewalQueryDTO;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.Renewal;
 

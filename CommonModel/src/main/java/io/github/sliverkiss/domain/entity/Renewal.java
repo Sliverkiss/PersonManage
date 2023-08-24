@@ -24,7 +24,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-@TableName("renewal")
+@TableName("employee_renewal")
 public class Renewal extends BaseEntity implements Serializable {
     @TableId
     private Integer id;
@@ -34,25 +34,43 @@ public class Renewal extends BaseEntity implements Serializable {
     private Integer renewalAge;
     // 部门意见
     private String departmentComment;
+    // 合同起始日期
+    @JSONField(format = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private String startContract;
+    // 合同终止日期
+    @JSONField(format = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private String endContract;
+    // 申请日期
+    @JSONField(format = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private String applyDate;
     // 审核日期
     @JSONField(format = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private String approvedDate;
-    //审核负责人
+    // 审核负责人
     private String director;
-    //审核状态
+    // 审核状态
     private String state;
 
     public Renewal(Renewal renewal) {
         Optional.ofNullable ( renewal ).ifPresent ( e -> {
             this.id = e.getId ();
             this.employeeId = e.getEmployeeId ();
-           this.renewalAge = e.getRenewalAge();
-           this.departmentComment = e.getDepartmentComment();
-           this.approvedDate = e.getApprovedDate();
-           this.director = e.getDirector();
-           this.state = e.getState();
+            this.renewalAge = e.getRenewalAge ();
+            this.departmentComment = e.getDepartmentComment ();
+            this.startContract = e.getStartContract ();
+            this.endContract = e.getEndContract ();
+            this.applyDate = e.getApplyDate ();
+            this.approvedDate = e.getApprovedDate ();
+            this.director = e.getDirector ();
+            this.state = e.getState ();
         } );
     }
 

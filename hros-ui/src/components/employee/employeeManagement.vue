@@ -10,14 +10,14 @@
                 员工资料管理
               </div>
               <div style="flex:1"></div>
-              <div class="" style="width:120px">
+              <div class="" style="width:120px" v-if="user.role">
                 <el-button type="success" plain @click="dialogFormVisible= true">
                   <el-icon>
                     <Plus/>
                   </el-icon>
                   <span>入职登记</span></el-button>
               </div>
-              <div class="" style="width:120px">
+              <div class="" style="width:120px" v-if="user.role">
                 <el-button type="success" plain @click="downloadList">
                   <el-icon>
                     <Document/>
@@ -28,7 +28,7 @@
           </template>
           <div class="block-content block-content-full">
             <div id="usersList_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
-              <div class="row">
+              <div v-if="user.role" class="row">
                 <div class="col-sm-12 col-md-12">
                   <el-input v-model="employeeId" style="width:120px" placeholder="请输入员工编号" clearable></el-input>
                   <el-input v-model="name" style="width:120px;margin-left:10px" placeholder="请输入姓名"
@@ -56,7 +56,7 @@
               </div>
               <div class="row">
                 <div class="col-sm-12 p-3">
-                  <el-table :data="state.tableData" stripe class="text-center">
+                  <el-table :data="state.tableData" stripe class="text-center" height="400" max-height="400">
                     <template v-for="(col,index) in toRaw(employeeStore.employeeMap)" :key="index">
                       <el-table-column :prop="col.key" :label="col.value" align="center"
                                        :width="flexWidth(col.key,state.tableData,col.value)"></el-table-column>
@@ -78,7 +78,8 @@
                             <Edit style="color:#213d5b"/>
                           </el-icon>
                         </el-button>
-                        <el-popconfirm @confirm="DelEmployee(scope.row.id)" title="确认删除?" confirm-button-text="确认"
+                        <el-popconfirm v-if="user.role"
+                                       @confirm="DelEmployee(scope.row.id)" title="确认删除?" confirm-button-text="确认"
                                        cancel-button-text="取消">
                           <template #reference>
                             <el-button type="danger" size="small">
@@ -437,20 +438,21 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-divider/>
-        <h6 class="mb-3">工作信息</h6>
-        <el-row :gutter="24">
-          <el-col :span="10">
-            <el-form-item prop="engageForm" label="合同类型:">
-              <el-select v-model="state.updateData.engageForm" placeholder="" disabled>
-                <el-option label="劳务合同" value="劳务合同"/>
-                <el-option label="外聘合同" value="外聘合同"/>
-              </el-select>
-            </el-form-item>
-          </el-col>
+        <div v-if="user.role">
+          <el-divider/>
+          <h6 class="mb-3">工作信息</h6>
+          <el-row :gutter="24">
+            <el-col :span="10">
+              <el-form-item prop="engageForm" label="合同类型:">
+                <el-select v-model="state.updateData.engageForm" placeholder="" disabled>
+                  <el-option label="劳务合同" value="劳务合同"/>
+                  <el-option label="外聘合同" value="外聘合同"/>
+                </el-select>
+              </el-form-item>
+            </el-col>
           <el-col :span="12">
             <el-form-item prop="departmentName" label="部门:">
-              <el-select v-model="state.updateData.departmentName" style="width:220px">
+              <el-select v-model="state.updateData.departmentName" style="width:220px" disabled>
                 <el-option
                     v-for="department in  departmentStore.departmentList"
                     :key="department.id"
@@ -462,7 +464,7 @@
           </el-col>
           <el-col :span="10">
             <el-form-item prop="post" label="岗位:">
-              <el-input v-model="state.updateData.post"></el-input>
+              <el-input v-model="state.updateData.post" disabled></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -499,7 +501,8 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
+          </el-row>
+        </div>
       </el-form>
 
       <template #footer>
@@ -520,9 +523,13 @@ import {getCurrentInstance, reactive, ref, toRaw} from "vue";
 import {ElMessage, ElNotification} from "element-plus";
 import {flexWidth} from '@/utils/tableUtils.js'
 import {useEmployee} from "@/stores/employee.js";
-import {useDepartment} from "@/stores/department.js"
 import axios from "axios";
+import {useUser} from '@/stores/user.js'
+//部门列表
+import {useDepartment} from "@/stores/department.js"
 
+const useStore = useUser();
+const user = useStore.getUser();
 const departmentStore = useDepartment();
 const employeeStore = useEmployee();
 //前端规则校验
@@ -630,6 +637,8 @@ const load = () => {
       DepartmentId: DepartmentId.value,
       post: post.value,
       hireDate: hireDate.value,
+      userId: user.id,
+      userRole: user.role
     }
   }).then(res => {
     if (res.code === 200) {

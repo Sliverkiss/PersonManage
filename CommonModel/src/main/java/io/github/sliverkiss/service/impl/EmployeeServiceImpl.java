@@ -6,14 +6,17 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.github.sliverkiss.constants.UserContants;
+import io.github.sliverkiss.controller.DTO.EmployeeQueryDTO;
 import io.github.sliverkiss.dao.DepartmentDao;
 import io.github.sliverkiss.dao.EmployeeDao;
 import io.github.sliverkiss.dao.PersonalDao;
-import io.github.sliverkiss.domain.DTO.EmployeeQueryDTO;
+import io.github.sliverkiss.dao.RBAC.UserDao;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.Department;
 import io.github.sliverkiss.domain.entity.Employee;
 import io.github.sliverkiss.domain.entity.Personal;
+import io.github.sliverkiss.domain.entity.RBAC.User;
 import io.github.sliverkiss.domain.vo.ContractVo;
 import io.github.sliverkiss.domain.vo.EmployeeVo;
 import io.github.sliverkiss.enums.AppHttpCodeEnum;
@@ -22,6 +25,7 @@ import io.github.sliverkiss.service.EmployeeService;
 import io.github.sliverkiss.utils.BeanCopyUtils;
 import io.github.sliverkiss.utils.DateUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import xin.altitude.cms.common.util.EntityUtils;
@@ -49,6 +53,8 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
     private PersonalDao personalDao;
     @Resource
     private DepartmentDao departmentDao;
+    @Autowired
+    private UserDao userDao;
 
     /**
      * 员工检索，实现员工信息的多方位检索，包活员工编号、入职日期、部门、岗位和姓名检索
@@ -60,11 +66,14 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
         // 数据校验
         Integer currentPage = employeeQueryDTO.getCurrentPage ();
         Integer pageSize = employeeQueryDTO.getPageSize ();
+
         String name = employeeQueryDTO.getName ();
         String employeeId = employeeQueryDTO.getEmployeeId ();
         Integer departmentId = employeeQueryDTO.getDepartmentId ();
         String post = employeeQueryDTO.getPost ();
         String hireDate = employeeQueryDTO.getHireDate ();
+        Integer userId = employeeQueryDTO.getUserId ();
+        Integer role = employeeQueryDTO.getUserRole ();
         if (currentPage == null || pageSize <= 0 || pageSize == null || pageSize < 1) {
             throw new SystemException ( AppHttpCodeEnum.SYSTEM_ERROR );
         }
@@ -90,6 +99,15 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
                         .in ( personalIds.size () > 0, Employee::getPersonalId, personalIds )
                         .eq ( departmentList.size () > 0, Employee::getDepartmentId, departmentId )
                         .like ( StringUtils.isNotBlank ( hireDate ), Employee::getId, hireDate );
+                // 判断用户角色，筛选信息
+                if (role.equals ( UserContants.ROLE_USER )) {
+                    User user = userDao.selectById ( userId );
+                    Employee employee = this.getById ( user.getEmployeeId () );
+                    if (employee == null) {
+                        throw new SystemException ( AppHttpCodeEnum.FIND_NOT_FOUND );
+                    }
+                    employeeWrapper.eq ( Employee::getId, employee.getId () );
+                }
                 // 将 条件查询结果用page包装起来
                 Page<Employee> employeePage = this.page ( page, employeeWrapper );
                 IPage<EmployeeVo> employeeVoIPage = EntityUtils.toPage ( employeePage, EmployeeVo::new );
@@ -141,6 +159,22 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
                 employeeVo.setDepartmentName ( department.getDepartmentName () );
             } );
         }
+    }
+
+    /**
+     * 获取员工信息
+     *
+     * @param employeeId 雇员id
+     *
+     * @return {@link EmployeeVo}
+     */
+    @Override
+    public EmployeeVo getEmployeeVo(Integer employeeId) {
+        Employee employee = this.getById ( employeeId );
+        Personal personal = personalDao.selectById ( employee.getPersonalId () );
+        EmployeeVo employeeVo = EntityUtils.toObj ( employee, EmployeeVo::new );
+        Optional.ofNullable ( personal ).ifPresent ( e -> employeeVo.addPersonalInfo ( personal ) );
+        return employeeVo;
     }
 
     /**
@@ -278,5 +312,36 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
         List<EmployeeVo> list = page.getRecords ();
         return list;
     }
+
+    @Override
+    public List<Integer> getEmployeeIdsLikeName(String employeeName) {
+        if (StringUtils.isBlank ( employeeName )) {
+            return null;
+        }
+        try {
+            List<Integer> personalIds = personalDao.selectList (
+                            Wrappers.lambdaQuery ( Personal.class ).like ( Personal::getName, employeeName ) )
+                    .stream ().map ( Personal::getId ).collect ( Collectors.toList () );
+            List<Integer> employeeIds = this.list ( Wrappers.lambdaQuery ( Employee.class )
+                    .in ( Employee::getPersonalId, personalIds ) ).stream ().map ( Employee::getId ).collect ( Collectors.toList () );
+            return employeeIds;
+        } catch (Exception e) {
+            throw new RuntimeException ( e );
+        }
+    }
+
+    /**
+     * 根据部门id查询员工id集合
+     *
+     * @param departmentId 部门id
+     *
+     * @return {@link List}<{@link Integer}>
+     */
+    @Override
+    public List<Integer> getEmployeeIdsByDepartmentId(String departmentId) {
+        return this.list ( Wrappers.lambdaQuery ( Employee.class ).eq ( Employee::getDepartmentId, departmentId ) )
+                .stream ().map ( Employee::getId ).collect ( Collectors.toList () );
+    }
+
 }
 

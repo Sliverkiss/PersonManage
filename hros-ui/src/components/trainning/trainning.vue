@@ -36,7 +36,7 @@
             </div>
           </div>
           <div style="flex:1"></div>
-          <div class="" style="width:120px">
+          <div class="" style="width:120px" v-if="user.role">
             <el-button type="success" plain @click="dialogFormVisible= true">
               <el-icon>
                 <Plus/>
@@ -53,7 +53,7 @@
                                :width="flexWidth(col.key,state.tableData,col.value)"></el-table-column>
               <el-table-column label="培训状态" prop="status" align="center"/>
               <el-table-column fixed="right" align="center" label="操作" width="120">
-                <template #default="scope">
+                <template #default="scope" v-if="user.role">
                   <el-button size="small" style="background-color:#66b1ff" @click="EditRenewal(scope.row)">
                     <el-icon>
                       <Edit style="color:#213d5b"/>
@@ -68,6 +68,17 @@
                           <Delete style="color:#582e2e"/>
                         </el-icon>
                       </el-button>
+                    </template>
+                  </el-popconfirm>
+                </template>
+                <template #default="scope" v-else>
+                  <el-popconfirm @confirm="signUp(scope.row)" title="确认报名?"
+                                 confirm-button-text="确认"
+                                 cancel-button-text="取消">
+                    <template #reference>
+                      <el-link size="small" type="warning">
+                        报名
+                      </el-link>
                     </template>
                   </el-popconfirm>
                 </template>
@@ -245,7 +256,7 @@
       </el-form>
       <template #footer>
       <span class="dialog-footer">
-        <el-button @click="update" type="primary">审核</el-button>
+        <el-button @click="update" type="primary">确定</el-button>
         <el-button @click="clearFormData">
           取消
         </el-button>
@@ -262,14 +273,17 @@ import {getCurrentInstance, reactive, ref} from "vue";
 import {useContract} from "@/stores/employee.js";
 import {useDepartment} from "@/stores/department.js"
 import {ElMessage, ElNotification} from "element-plus";
-import {useUser} from '@/stores/user.js'
 import {flexWidth} from '@/utils/tableUtils.js'
+import {useUser} from '@/stores/user.js'
 
+const useStore = useUser();
+const user = useStore.getUser();
 const {proxy} = getCurrentInstance();
 const userStore = useUser();
 const contractStore = useContract();
 const departmentStore = useDepartment();
 const activeName = ref('first')
+
 const state = reactive({
   tableData: [],
   formData: {},
@@ -385,7 +399,28 @@ const update = () => {
     }
   })
 }
-
+const signUp = (row) => {
+  console.log(row.id)
+  request.get('admin/training/plan/sign', {
+    params: {
+      planId: row.id,
+      employeeId: 1,
+    }
+  }).then((res) => {
+    try {
+      if (res.code == 200) {
+        ElNotification.success(res.msg);
+      } else {
+        ElMessage.error(res.msg);
+      }
+    } catch {
+      ElMessage.error(res.msg);
+    } finally {
+      clearFormData();
+      load();
+    }
+  })
+}
 //
 const load = () => {
   request.get('/admin/training/plan/page', {

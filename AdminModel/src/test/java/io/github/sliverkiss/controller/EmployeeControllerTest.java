@@ -3,7 +3,7 @@ package io.github.sliverkiss.controller;
 import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.github.sliverkiss.domain.DTO.EmployeeQueryDTO;
+import io.github.sliverkiss.controller.DTO.EmployeeQueryDTO;
 import io.github.sliverkiss.domain.entity.Employee;
 import io.github.sliverkiss.domain.vo.EmployeeVo;
 import io.github.sliverkiss.service.EmployeeService;

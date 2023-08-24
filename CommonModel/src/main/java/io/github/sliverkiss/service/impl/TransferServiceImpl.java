@@ -6,11 +6,13 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.github.sliverkiss.constants.EmployeeConstants;
+import io.github.sliverkiss.constants.UserContants;
+import io.github.sliverkiss.controller.DTO.TransferQueryDTO;
 import io.github.sliverkiss.dao.DepartmentDao;
 import io.github.sliverkiss.dao.EmployeeDao;
 import io.github.sliverkiss.dao.PersonalDao;
 import io.github.sliverkiss.dao.TransferDao;
-import io.github.sliverkiss.domain.DTO.TransferQueryDTO;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.Department;
 import io.github.sliverkiss.domain.entity.Employee;
@@ -46,11 +48,14 @@ public class TransferServiceImpl extends ServiceImpl<TransferDao, Transfer> impl
 
     @Override
     public ResponseResult selectPage(TransferQueryDTO transferQueryDTO) {
+        System.out.println ( transferQueryDTO );
         Page<Transfer> page = toPage ( transferQueryDTO );
         String employeeId = transferQueryDTO.getEmployeeId ();
         String employeeName = transferQueryDTO.getEmployeeName ();
         String state = transferQueryDTO.getState ();
-        String notState = transferQueryDTO.getNotState ();
+        // 用户数据隔离
+        Integer userEmpId = transferQueryDTO.getUserEmpId ();
+        Integer userRole = transferQueryDTO.getUserRole ();
         List<Integer> personalIds = personalDao.selectList ( Wrappers.lambdaQuery ( Personal.class )
                         .like ( StringUtils.isNotBlank ( employeeName ), Personal::getName, employeeName ) )
                 .stream ().map ( Personal::getId ).collect ( Collectors.toList () );
@@ -60,15 +65,28 @@ public class TransferServiceImpl extends ServiceImpl<TransferDao, Transfer> impl
             // 模糊查询
             LambdaQueryWrapper<Transfer> wrapper = Wrappers.lambdaQuery ( Transfer.class )
                     .like ( StringUtils.isNotBlank ( employeeId ), Transfer::getEmployeeId, employeeId )
-                    .like ( StringUtils.isNotBlank ( state ), Transfer::getState, state )
-                    .notLike ( StringUtils.isNotBlank ( notState ), Transfer::getState, notState );// 获取数据
+                    .like ( StringUtils.isNotBlank ( state ), Transfer::getState, state );
+            // 数据隔离
+            if (userRole.equals ( UserContants.ROLE_USER )) {
+                // 如果为普通用户，则查询自己数据
+                wrapper.eq ( userEmpId != null, Transfer::getEmployeeId, userEmpId );
+            } else {
+                Employee employee = employeeDao.selectById ( userEmpId );
+                Integer departmentId = employee.getDepartmentId ();
+                // 如果不是人事处
+                if (!departmentId.equals ( EmployeeConstants.DEPARTMENT_PERSONAL_ID )) {
+                    // 获取调出部门和调入部门的数据
+                    wrapper.eq ( userEmpId != null, Transfer::getBeforeDepartment, departmentId )
+                            .or ()
+                            .eq ( userEmpId != null, Transfer::getAfterDepartment, departmentId );
+                }
+
+            }
             Page<Transfer> transferPage = this.page ( page, wrapper );
-            IPage<TransferVo> transferVoIPage = EntityUtils.toPage ( page, TransferVo::new );
+            IPage<TransferVo> transferVoIPage = EntityUtils.toPage ( transferPage, TransferVo::new );
             // 属性注入，员工姓名，调出部门，调入部门
             this.transferInnerJoinDepartment ( transferVoIPage );
             this.transferInnerJoinPersonal ( transferVoIPage );
-            // 注入员工调岗列表
-            this.onePatchTransferList ( transferVoIPage );
             return ResponseResult.okResult ( transferVoIPage );
         } catch (Exception e) {
             throw e;

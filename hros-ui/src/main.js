@@ -14,6 +14,7 @@ import store from './stores'
 
 
 const app = createApp(App);
+
 for (const iconName in ElIcons) {
     app.component(iconName, ElIcons[iconName])
 }

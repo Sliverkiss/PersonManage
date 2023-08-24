@@ -47,18 +47,6 @@ export const useDepartment=defineStore('department',{
                     key: 'applyDate',
                     value: '申请日期'
                 },
-                {
-                    key: 'beforeComment',
-                    value: '调出部门意见'
-                },
-                {
-                    key: 'afterComment',
-                    value: '调入部门意见'
-                },
-                {
-                    key: 'personalComment',
-                    value: '人事处意见'
-                },
             ]
 
 

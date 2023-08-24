@@ -2,6 +2,7 @@ package io.github.sliverkiss.domain.entity.RBAC;
 
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.github.sliverkiss.domain.entity.BaseEntity;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -28,13 +30,21 @@ import java.util.Objects;
 public class Permission extends BaseEntity implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;
-
     // 名称
     private String name;
+    // 菜单类型
+    private String menuType;
+    // 菜单名称
+    private String menuName;
     // 资源路径
     private String path;
-    // 备注
-    private String comment;
+    // 菜单图标
+    private String icon;
+    // 父类菜单
+    private Integer parentMenu;
+    // 子列表
+    @TableField(exist = false)
+    private List<Permission> children;
 
 
     @Override

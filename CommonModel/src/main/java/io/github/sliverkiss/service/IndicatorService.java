@@ -1,6 +1,6 @@
 package io.github.sliverkiss.service;
 
-import io.github.sliverkiss.domain.DTO.IndicatorDTO;
+import io.github.sliverkiss.controller.DTO.IndicatorDTO;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.Indicator;
 

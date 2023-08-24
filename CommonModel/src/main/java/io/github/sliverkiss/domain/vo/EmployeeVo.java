@@ -20,8 +20,8 @@ import java.util.Optional;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 @ExcelIgnoreUnannotated
+@EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Accessors(chain = true)
 public class EmployeeVo extends Employee{

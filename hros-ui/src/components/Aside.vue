@@ -20,13 +20,13 @@
         </div>
         <div>
           <p class="m-0 ms-4 mt-3" style="font-size:13px;color:#6C6E72">控制台</p>
-          <el-menu-item index="/index/home" @click="asideVisible=true">
+          <el-menu-item index="/index/text" @click="asideVisible=true">
             <el-icon>
               <HomeFilled/>
             </el-icon>
             <span>用户中心</span>
           </el-menu-item>
-          <el-menu-item index="/console" v-show="userStore.getUser().role==1" @click="asideVisible=false">
+          <el-menu-item index="/text" v-show="userStore.getUser().role==1" @click="asideVisible=false">
             <el-icon>
               <Platform/>
             </el-icon>

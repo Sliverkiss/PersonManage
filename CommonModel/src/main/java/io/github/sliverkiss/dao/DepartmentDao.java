@@ -1,6 +1,5 @@
 package io.github.sliverkiss.dao;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import io.github.sliverkiss.domain.entity.Department;
 import org.apache.ibatis.annotations.CacheNamespace;
 import org.apache.ibatis.annotations.Mapper;
@@ -14,7 +13,7 @@ import org.apache.ibatis.cache.decorators.ScheduledCache;
  */
 @Mapper
 @CacheNamespace(flushInterval = 5 * 60 * 1000, eviction = ScheduledCache.class, blocking = true)
-public interface DepartmentDao extends BaseMapper<Department> {
+public interface DepartmentDao extends ICrudDao<Department> {
 
 }
 

@@ -38,7 +38,7 @@ public interface ICrudService<T extends BaseEntity> extends IService<T> {
             afterSave ( entity );
             return ResponseResult.okResult ();
         } catch (Exception e) {
-            throw new SystemException ( AppHttpCodeEnum.SYSTEM_ERROR );
+            throw e;
         }
     }
 
@@ -90,7 +90,6 @@ public interface ICrudService<T extends BaseEntity> extends IService<T> {
      */
     default void afterSave(T entity) {
     }
-
 
     /**
      * 校验分页参数是否存在，并返回分页数据

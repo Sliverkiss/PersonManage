@@ -18,12 +18,15 @@
     "pinia-plugin-persist": "^1.0.0",
     "sass": "^1.63.6",
     "vue": "^3.2.47",
-    "vue-router": "^4.2.2"
+    "vue-router": "^4.2.2",
+    "wangeditor": "^4.7.15"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.1.0",
+    "mockjs": "^1.1.0",
     "unplugin-auto-import": "^0.16.4",
     "unplugin-vue-components": "^0.25.1",
-    "vite": "^4.3.9"
+    "vite": "^4.3.9",
+    "vite-plugin-mock": "^2.9.8"
   }
 }

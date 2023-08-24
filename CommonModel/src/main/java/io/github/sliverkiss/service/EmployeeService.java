@@ -1,7 +1,7 @@
 package io.github.sliverkiss.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import io.github.sliverkiss.domain.DTO.EmployeeQueryDTO;
+import io.github.sliverkiss.controller.DTO.EmployeeQueryDTO;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.Employee;
 import io.github.sliverkiss.domain.vo.EmployeeVo;
@@ -58,5 +58,11 @@ public interface EmployeeService extends IService<Employee> {
     public ResponseResult selectContractPage();
 
     List<EmployeeVo> getEmployeeVoList();
+
+    EmployeeVo getEmployeeVo(Integer employeeId);
+
+    public List<Integer> getEmployeeIdsLikeName(String employeeName);
+
+    public List<Integer> getEmployeeIdsByDepartmentId(String departmentId);
 }
 

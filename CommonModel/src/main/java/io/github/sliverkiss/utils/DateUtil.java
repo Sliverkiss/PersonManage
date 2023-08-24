@@ -1,8 +1,5 @@
 package io.github.sliverkiss.utils;
 
-import lombok.Builder;
-import lombok.Data;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -76,14 +73,23 @@ public class DateUtil {
         Calendar to = Calendar.getInstance();
         to.setTime(toDate);
 
-        int fromYear = from.get(Calendar.YEAR);
-        int fromMonth = from.get(Calendar.MONTH);
-        int toYear = to.get(Calendar.YEAR);
-        int toMonth = to.get(Calendar.MONTH);
-        int year = toYear-fromYear;
+        int fromYear = from.get ( Calendar.YEAR );
+        int fromMonth = from.get ( Calendar.MONTH );
+        int toYear = to.get ( Calendar.YEAR );
+        int toMonth = to.get ( Calendar.MONTH );
+        int year = toYear - fromYear;
         int month = toYear * 12 + toMonth - (fromYear * 12 + fromMonth);
-        int day = (int) ((to.getTimeInMillis() - from.getTimeInMillis() / (24 * 3600 * 1000)));
-        return new DateUtil (day,month,year);
+        int day = (int) ((to.getTimeInMillis () - from.getTimeInMillis () / (24 * 3600 * 1000)));
+        return new DateUtil ( day, month, year );
+    }
+
+    /**
+     * 更新日期
+     *
+     * @return {@link String}
+     */
+    public static String currentDateFormat() {
+        return new SimpleDateFormat ( "yyy-MM-dd" ).format ( new Date () );
     }
 
     /**
@@ -94,7 +100,7 @@ public class DateUtil {
      *
      * @return {@link String}
      */
-    public static String endContract(String startContract,Integer contractTerm){
+    public static String endContract(String startContract, Integer contractTerm) {
         // 设置时间格式
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyy-MM-dd");
         Date startDate=strToDate(startContract);

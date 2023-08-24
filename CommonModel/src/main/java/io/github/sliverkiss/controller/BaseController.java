@@ -5,7 +5,6 @@ import com.sun.org.slf4j.internal.LoggerFactory;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.BaseEntity;
 import io.github.sliverkiss.enums.AppHttpCodeEnum;
-import io.github.sliverkiss.exception.SystemException;
 import io.github.sliverkiss.service.ICrudService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +42,7 @@ public abstract class BaseController<S extends ICrudService<T>, T extends BaseEn
 
     @PostMapping("/save")
     @ApiOperation(value = "保存", notes = "ID存在修改，不存在添加")
-    public ResponseResult save(@RequestBody T entity) {
+    public ResponseResult save(@RequestBody T entity) throws Exception {
         try {
             if (beforeSaveCheck ( entity )) {
                 beforeSave ( entity );
@@ -52,23 +51,24 @@ public abstract class BaseController<S extends ICrudService<T>, T extends BaseEn
                 return ResponseResult.errorResult ( AppHttpCodeEnum.SYSTEM_ERROR.getCode (), "同一员工不能同时拥有多个申请记录,请耐心等待管理员审核～" );
             }
         } catch (Exception e) {
-            throw new SystemException ( AppHttpCodeEnum.SYSTEM_ERROR );
+            throw e;
         }
     }
 
     @PutMapping("/update")
     @ApiOperation(value = "修改", notes = "ID存在修改，不存在添加")
-    public ResponseResult update(@RequestBody T entity) {
+    public ResponseResult update(@RequestBody T entity) throws Exception {
         try {
             beforeUpdate ( entity );
             return service.updateEntity ( entity );
         } catch (Exception e) {
-            throw new SystemException ( AppHttpCodeEnum.SYSTEM_ERROR );
+            throw e;
         }
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseResult delete(@PathVariable Integer id) {
+
         return service.deleteEntity ( id );
     }
 
@@ -91,6 +91,16 @@ public abstract class BaseController<S extends ICrudService<T>, T extends BaseEn
      */
     public void beforeUpdate(T entity) throws Exception {
         beforeSave ( entity );
+    }
+
+    /**
+     * 在删除之前
+     *
+     * @param entity 实体
+     *
+     * @throws Exception 异常
+     */
+    public void beforeDelete(Integer id) throws Exception {
     }
 
     /**
@@ -120,7 +130,7 @@ public abstract class BaseController<S extends ICrudService<T>, T extends BaseEn
      * @return
      */
     @GetMapping("/info/{id}")
-    public T info(@PathVariable Long id) {
+    public T info(@PathVariable Integer id) {
         return service.getById ( id );
     }
 

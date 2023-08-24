@@ -10,20 +10,13 @@
                 部门岗位管理
               </div>
               <div style="flex:1"></div>
-              <div class="" style="width:120px">
+              <div class="" style="width:120px" v-if="user.role">
                 <el-button type="success" plain @click="dialogFormVisible= true">
                   <el-icon>
                     <Plus/>
                   </el-icon>
                   <span>新增部门</span></el-button>
               </div>
-              <!--              <div class="" style="width:120px">-->
-              <!--                <el-button type="danger" plain @click="dialogFormVisible= true">-->
-              <!--                  <el-icon>-->
-              <!--                    <CloseBold/>-->
-              <!--                  </el-icon>-->
-              <!--                  <span>部门合并</span></el-button>-->
-              <!--              </div>-->
             </div>
           </template>
           <div class="block-content block-content-full">
@@ -63,7 +56,7 @@
                               :size="size"
                               border
                           >
-                            <template #extra>
+                            <template #extra v-if="user.role">
                               <el-button size="small" style="background-color:#66b1ff"
                                          @click="EditDepartment(department)">
                                 <el-icon>
@@ -151,7 +144,9 @@
                                   部门描述
                                 </div>
                               </template>
-                              {{ department.contect }}
+                              <div class="" v-for="item in department.contect.split(`&`)">
+                                {{ item }}
+                              </div>
                             </el-descriptions-item>
                           </el-descriptions>
                         </div>
@@ -321,7 +316,10 @@ import {computed, getCurrentInstance, reactive, ref, toRaw} from 'vue'
 import request from "@/request.js";
 import {ElMessage, ElNotification} from "element-plus";
 import {useDepartment} from "@/stores/department.js"
+import {useUser} from '@/stores/user.js'
 
+const useStore = useUser();
+const user = useStore.getUser();
 const {proxy} = getCurrentInstance();
 const departmentStore = useDepartment();
 const activeNames = ref('1')

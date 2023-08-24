@@ -6,9 +6,9 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.github.sliverkiss.controller.DTO.DepartmentQueryDTO;
 import io.github.sliverkiss.dao.DepartmentDao;
 import io.github.sliverkiss.dao.EmployeeDao;
-import io.github.sliverkiss.domain.DTO.DepartmentQueryDTO;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.Department;
 import io.github.sliverkiss.domain.entity.Employee;
@@ -38,8 +38,7 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentDao, Department
 
     @Override
     public ResponseResult selectPage(DepartmentQueryDTO departmentQueryDTO) {
-        Integer currentPage = departmentQueryDTO.getCurrentPage ();
-        Integer pageSize = departmentQueryDTO.getPageSize ();
+        Page<Department> page = toPage ( departmentQueryDTO );
         Integer departmentId = departmentQueryDTO.getDepartmentId ();
         String manager = departmentQueryDTO.getManager ();
         try {
@@ -48,7 +47,7 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentDao, Department
                     .in ( departmentId != null, Department::getId, departmentId )
                     .like ( StringUtils.isNotBlank ( manager ), Department::getManager, manager );
             // 获取列表
-            Page<Department> departmentPage = this.page ( new Page<> ( currentPage, pageSize ), wrapper );
+            Page<Department> departmentPage = this.page ( page, wrapper );
             IPage<DepartmentVo> departmentVoIPage = EntityUtils.toPage ( departmentPage, DepartmentVo::new );
             // 获取岗位列表信息
             Set<Integer> departmentIds = EntityUtils.toSet ( departmentVoIPage.getRecords (), Department::getId );

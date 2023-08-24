@@ -3,22 +3,29 @@
     <el-tabs v-model="activeName" class="demo-tabs bg-white p-3 notice-card " @tab-click="handleClick">
       <el-tab-pane name="first">
         <template #label>
-
         <span class="custom-tabs-label">
           <el-icon><calendar/></el-icon>
           <span>离职管理</span>
         </span>
           <!--显示消息数量提示-->
-          <div class="oversee">
-            <el-badge :value="state.tableData.length" :hidden="isHidden" :max="99" class="item">
-            </el-badge>
-          </div>
+          <!--          <div class="oversee">-->
+          <!--            <el-badge :value="state.tableData.length" :hidden="isHidden" :max="99" class="item">-->
+          <!--            </el-badge>-->
+          <!--          </div>-->
         </template>
         <div class="text-muted fw-bold mt-2 mb-2" style="display:flex">
           <div class="row">
             <div class="col-sm-12 col-md-12">
-              <el-input v-model="employeeId" style="width:120px" placeholder="请输入员工编号"></el-input>
-              <el-input v-model="name" style="width:100px;margin-left:10px" placeholder="请输入姓名"></el-input>
+              <el-input v-model="employeeId" style="width:120px" placeholder="请输入员工编号"
+                        v-if="user.role"></el-input>
+              <el-input v-model="employeeName" style="width:100px;margin-left:10px" placeholder="请输入姓名"
+                        v-if="user.role"></el-input>
+              <el-select v-model="status" style="width:160px;margin-left:10px" placeholder="请选择审核状态"
+                         clearable>
+                <el-option label="通过" value="通过"/>
+                <el-option label="审核中" value="审核中"/>
+                <el-option label="未通过" value="未通过"/>
+              </el-select>
               <el-button type="primary" class="ms-2" @Click="load">
                 <el-icon>
                   <Search/>
@@ -28,66 +35,66 @@
             </div>
           </div>
           <div style="flex:1"></div>
-          <div class="" style="width:120px">
+          <div class="" style="width:120px" v-if="!user.role">
             <el-button type="success" plain @click="dialogFormVisible= true">
               <el-icon>
                 <Plus/>
               </el-icon>
-              <span>新增续约</span></el-button>
+              <span>申请离职</span></el-button>
           </div>
         </div>
         <div class="row">
           <div class="col-sm-12 p-3 ">
             <el-table :data="state.tableData" stripe class="text-center"
                       element-loading-text="拼命加载中">
-              <el-table-column type="expand">
-                <template #default="props">
-                  <div>
-                    <!--                    <h3>Family</h3>-->
-                    <el-table :data="unique(props.row.resignationList)" max-height="250">
-                      <el-table-column label="id" prop="id"/>
-                      <el-table-column label="离职类型" prop="kind"/>
-                      <el-table-column label="离职原因" prop="reason" sortable/>
-                      <el-table-column label="申请日期" prop="applyDate"/>
-                      <el-table-column label="审核日期" prop="reviewDate"/>
-                      <el-table-column label="审核人" prop="director"/>
-                      <el-table-column prop="state" label="审核状态" align="center" sortable>
-                        <template #default="scope">
-                          <el-tag
-                              :type="scope.row.state === '通过' ? '' :scope.row.state ==='未通过'?'danger': 'warning'"
-                              disable-transitions
-                          >{{ scope.row.state }}
-                          </el-tag>
-                          <a v-show="scope.row.state ==='未通过'?true:false">查看原因</a>
-                        </template>
-                      </el-table-column>
-                      <el-table-column fixed="right" align="center" label="操作" width="120">
-                        <template #default="scope">
-                          <el-button size="small" style="background-color:#66b1ff" @click="EditRenewal(scope.row)">
-                            <el-icon>
-                              <Edit style="color:#213d5b"/>
-                            </el-icon>
-                          </el-button>
-                          <el-popconfirm @confirm="DelRenewal(scope.row.id)" title="确认删除?"
-                                         confirm-button-text="确认"
-                                         cancel-button-text="取消">
-                            <template #reference>
-                              <el-button type="danger" size="small">
-                                <el-icon>
-                                  <Delete style="color:#582e2e"/>
-                                </el-icon>
-                              </el-button>
-                            </template>
-                          </el-popconfirm>
-                        </template>
-                      </el-table-column>
-                    </el-table>
+              <el-table-column label="UID" prop="employeeId" align="center"/>
+              <el-table-column label="姓名" prop="employeeName" align="center"/>
+              <el-table-column label="部门" prop="departmentName" align="center"/>
+              <el-table-column label="离职类型" prop="kind" align="center"/>
+              <el-table-column label="离职原因" prop="reason" min-width="120"/>
+              <el-table-column label="申请日期" prop="applyDate" sortable min-width="120"/>
+              <el-table-column label="审核日期" prop="reviewDate" sortable min-width="120"/>
+              <el-table-column v-if="user.role" label="部门意见" prop="departmentComment" min-width="120"/>
+              <el-table-column label="审核人" prop="director"/>
+              <el-table-column prop="state" label="审核状态" align="center" sortable width="110">
+                <template #default="scope">
+                  <el-tag
+                      :type="scope.row.state === '通过' ? '' :scope.row.state ==='未通过'?'danger': 'warning'"
+                      disable-transitions
+                  >{{ scope.row.state }}
+                  </el-tag
+                  >
+                </template>
+              </el-table-column>
+              <el-table-column fixed="right" align="center" label="流程" width="80">
+                <template #default="scope">
+                  <el-link @click="handleMordChange(scope.row)" type="primary"> 查看详情</el-link>
+                </template>
+              </el-table-column>
+              <el-table-column fixed="right" align="center" label="操作" width="120" v-if="user.role">
+                <template #default="scope">
+                  <div v-if="user.role">
+                    <el-button size="small" style="background-color:#66b1ff" @click="EditRenewal(scope.row)"
+                               v-if="scope.row.state== '审核中'&&user.role">
+                      <el-icon>
+                        <Edit style="color:#213d5b"/>
+                      </el-icon>
+                    </el-button>
+                    <el-popconfirm @confirm="DelEntity(scope.row.id)" title="确认删除?"
+                                   confirm-button-text="确认"
+                                   cancel-button-text="取消">
+                      <template #reference>
+                        <el-button type="danger" size="small">
+                          <el-icon>
+                            <Delete style="color:#582e2e"/>
+                          </el-icon>
+                        </el-button>
+                      </template>
+                    </el-popconfirm>
                   </div>
                 </template>
               </el-table-column>
-              <el-table-column label="UID" prop="employeeId"/>
-              <el-table-column label="姓名" prop="employeeName"/>
-              <el-table-column label="部门" prop="departmentName"/>
+
             </el-table>
           </div>
         </div>
@@ -111,40 +118,28 @@
           </div>
         </div>
       </el-tab-pane>
+      <el-tab-pane name="second">
+        <template #label>
+        <span class="custom-tabs-label">
+          <el-icon><calendar/></el-icon>
+          <span>复职管理</span>
+        </span>
+        </template>
+        <Resignation/>
+      </el-tab-pane>
       <Foot/>
     </el-tabs>
   </div>
 
   <!--  新增续约表单-->
   <div>
-    <el-dialog v-model="dialogFormVisible" title="续约申请" align-center center class="" width="350"
+    <el-dialog v-model="dialogFormVisible" title="离职信息" align-center center class="" width="350"
                style="border-radius: 0.875rem 1rem;">
       <el-form :model="state.formData" class="" status-icon :rules="rules" ref="ruleFormRef">
-        <el-form-item prop="employeeId" size="large" label="员工编号：">
-          <el-input v-model="state.formData.employeeId" placeholder="请输入员工编号"></el-input>
-        </el-form-item>
-        <el-form-item prop="renewalAge" size="large" label="续约年数：">
-          <el-select v-model="state.formData.renewalAge" placeholder="请选择续约年数" style="width:2250px">
-            <el-option
-                v-for="(item,index) in 5"
-                :key="index"
-                :label="item+'年'"
-                :value="item"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item prop="departmentComment" size="large" label="部门意见：">
-          <el-input v-model="state.formData.departmentComment" type="textarea" placeholder="请输入部门意见"></el-input>
-        </el-form-item>
-        <el-form-item prop="state" size="large" label="审核结果：">
-          <el-select v-model="state.formData.state" placeholder="请选择审核结果" style="width:2250px">
-            <el-option label="通过" value="通过"/>
-            <el-option label="审核中" value="审核中"/>
-            <el-option label="未通过" value="未通过"/>
-          </el-select>
+        <el-form-item prop="reason" size="large" label="离职原因：">
+          <el-input v-model="state.formData.reason" type="textarea" placeholder="请输入离职原因"></el-input>
         </el-form-item>
       </el-form>
-
       <template #footer>
       <span class="dialog-footer">
         <el-button @click="save" type="primary">申请</el-button>
@@ -157,22 +152,9 @@
   </div>
   <!--  续约审核表单-->
   <div>
-    <el-dialog v-model="dialogUpdateVisible" title="续约修改" align-center center class="" width="350"
+    <el-dialog v-model="dialogUpdateVisible" title="离职审核" align-center center class="" width="400"
                style="border-radius: 0.875rem 1rem;">
       <el-form :model="state.updateData" class="" status-icon :rules="rules" ref="ruleFormRef">
-        <el-form-item prop="employeeId" size="large" label="员工编号：">
-          <el-input v-model="state.updateData.employeeId" placeholder="请输入员工编号" disabled></el-input>
-        </el-form-item>
-        <el-form-item prop="renewalAge" size="large" label="续约年数：">
-          <el-select v-model="state.updateData.renewalAge" placeholder="请选择续约年数" style="width:225px" disabled>
-            <el-option
-                v-for="(item,index) in 5"
-                :key="index"
-                :label="item+'年'"
-                :value="item"
-            />
-          </el-select>
-        </el-form-item>
         <el-form-item prop="departmentComment" size="large" label="部门意见：">
           <el-input v-model="state.updateData.departmentComment" type="textarea"
                     placeholder="请输入部门意见"></el-input>
@@ -195,23 +177,76 @@
       </template>
     </el-dialog>
   </div>
+
+  <!--  审核详情-->
+  <div>
+    <el-dialog v-model="dialogMoreVisiblee" title="审核详情" align-center center class="" width="600"
+               style="border-radius: 0.875rem 1rem;">
+      <el-form :model="state.updateData" class="" status-icon :rules="rules"
+               label-position="top" ref="ruleFormRef">
+        <el-timeline>
+          <el-timeline-item icon="MoreFilled" type="primary" size="large" :timestamp="state.updateData.applyDate">
+            提交审核
+          </el-timeline-item>
+          <el-timeline-item icon="MoreFilled" type="warning" size="large" :timestamp="state.updateData.applyDate">
+            审核中
+          </el-timeline-item>
+          <el-timeline-item icon="close" type="danger" size="large" :timestamp="state.updateData.reviewDate"
+                            v-if="state.updateData.state=='未通过'">
+            未通过
+            <p class="text-muted " style="font-size:13px">审核人:{{ state.updateData.director }}</p>
+            <el-form-item prop="departmentComment" size="large" label="部门意见：">
+              <el-input v-model="state.updateData.departmentComment"
+                        :autosize="{ minRows: 4, maxRows: 8 }"
+                        type="textarea" disabled></el-input>
+            </el-form-item>
+
+          </el-timeline-item>
+          <el-timeline-item icon="check" type="success" size="large" :timestamp="state.updateData.reviewDate"
+                            v-else-if="state.updateData.state=='通过'">
+            通过
+            <p class="text-muted " style="font-size:13px">审核人:{{ state.updateData.director }}</p>
+            <el-form-item prop="departmentComment" size="large" label="部门意见：">
+              <el-input v-model="state.updateData.departmentComment"
+                        :autosize="{ minRows: 4, maxRows: 8 }"
+                        type="textarea" disabled></el-input>
+            </el-form-item>
+
+          </el-timeline-item>
+        </el-timeline>
+      </el-form>
+      <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="clearFormData" type="primary">确认</el-button>
+        <el-button @click="clearFormData">
+          取消
+        </el-button>
+      </span>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 
 <script setup>
-//加载后端合同数据
+//请求方法
 import request from "@/request.js";
 import {getCurrentInstance, reactive, ref} from "vue";
-import {useContract} from "@/stores/employee.js";
+//复职组件
+import Resignation from "@/components/department/Resignation.vue"
+//部门信息
 import {useDepartment} from "@/stores/department.js"
+//通知组件
 import {ElMessage, ElNotification} from "element-plus";
+//获取用户信息
 import {useUser} from '@/stores/user.js'
-import {unique} from '@/utils/tableUtils.js'
 
+const departmentStore = useDepartment();
 const {proxy} = getCurrentInstance();
 const userStore = useUser();
-const contractStore = useContract();
-const departmentStore = useDepartment();
+const user = userStore.getUser();
+//头部面包屑
 const activeName = ref('first')
+//表单数据
 const state = reactive({
   tableData: [],
   formData: {},
@@ -222,7 +257,7 @@ const state = reactive({
     state: ''
   },
 })
-
+//表单校验
 const rules = reactive({
   employeeId: [
     {required: true, message: '请输入员工编号', trigger: 'blur'},
@@ -238,15 +273,15 @@ const rules = reactive({
 //打开新增续约视图
 const dialogFormVisible = ref(false)
 const dialogUpdateVisible = ref(false)
+const dialogMoreVisiblee = ref(false);
 //模糊查询条件
 const currentPage = ref(1);//当前页
 const pageSize = ref(5);//页码展示数量
 const total = ref(10);//页码总数
 const employeeId = ref('');//查询员工编号
-const name = ref('');//员工姓名
-const DepartmentId = ref('');//部门编号
+const employeeName = ref('');//员工姓名
 const status = ref('');//审核状态
-
+//分页
 const handleSizeChange = (val) => {
   pageSize.value = val;
   load();
@@ -255,40 +290,50 @@ const handleCurrentChange = (val) => {
   currentPage.value = val;
   load()
 }
+const handleMordChange = (row) => {
+  dialogMoreVisiblee.value = true;
+  state.updateData = JSON.parse(JSON.stringify(row));
+}
+//打开修改窗口
 const EditRenewal = (row) => {
   dialogUpdateVisible.value = true;
   state.updateData = JSON.parse(JSON.stringify(row));
 }
+//清除表单
 const clearFormData = () => {
   let clearData = {}
   state.formData = clearData;
   dialogFormVisible.value = false;
   dialogUpdateVisible.value = false;
+  dialogMoreVisiblee.value = false;
 }
-
+//保存
 const save = () => {
   //表单校检
   proxy.$refs.ruleFormRef.validate((valid) => {
     if (valid) {
-      state.formData.director = userStore.getUser().username
+      state.formData.employeeId = user.employeeId;
+      state.formData.kind = '辞职';
       //发送后台请求
-      request.post('admin/employee/renewal/save', state.formData).then(res => {
+      request.post('admin/department/resignation/save', state.formData).then(res => {
         if (res.code == '200') {
-          ElNotification.success('续约申请成功！')
+          ElNotification.success('申请离职成功，请等待管理员审核！')
         } else {
-          ElMessage.error('系统服务异常，请稍后再试~')
+          ElMessage.warning(res.msg)
         }
         clearFormData();
         load();
       })
     } else {
-      ElMessage.error('续约申请信息填写错误')
+      ElMessage.error('申请信息填写错误')
     }
   })
 }
-//修改员工资料
+//修改
 const update = () => {
-  request.put('admin/employee/renewal/update', state.updateData).then((res) => {
+  //传入审核人参数
+  state.updateData.director = user.employeeVo.name;
+  request.put('admin/department/resignation/update', state.updateData).then((res) => {
     try {
       if (res.code == 200) {
         ElNotification.success(res.msg);
@@ -303,17 +348,17 @@ const update = () => {
     }
   })
 }
-
-//
+//加载
 const load = () => {
   request.get('/admin/department/resignation/page', {
     params: {
       currentPage: currentPage.value,
       pageSize: pageSize.value,
-      name: name.value,
+      employeeName: employeeName.value,
       employeeId: employeeId.value,
-      DepartmentId: DepartmentId.value,
-      status: status.value,
+      state: status.value,
+      userEmpId: user.employeeId,
+      userRole: user.role
     }
   }).then(res => {
     try {
@@ -321,7 +366,7 @@ const load = () => {
         state.tableData = res.data?.records
         total.value = res.data.total - 0;
         if (res.data.records.length == 0) {
-          ElMessage.warning('暂无待审核列表～');
+          ElMessage.warning('查找结果不存在～');
         }
       } else {
         state.tableData = [];
@@ -333,9 +378,9 @@ const load = () => {
     }
   })
 }
-//删除员工资料
-const DelRenewal = (id) => {
-  request.delete('admin/employee/renewal/delete/' + id).then((res) => {
+//删除
+const DelEntity = (id) => {
+  request.delete('admin/department/resignation/delete/' + id).then((res) => {
     try {
       if (res.code == 200) {
         ElNotification.success(res.msg);

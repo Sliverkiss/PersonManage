@@ -23,7 +23,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-@TableName("personal")
+@TableName("employee_info")
 public class Personal extends BaseEntity implements Serializable {
     @TableId
     private Integer id;

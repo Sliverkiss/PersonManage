@@ -1,5 +1,26 @@
 <template>
-  <div class="container" style="height: 100%" id="container" :class="{ 'right-panel-active': isActive }" >
+  <div class="m-0 p-0" style="width:100vw;height:100vh;overflow: hidden;display: flex">
+    <div style="flex:1;">
+      <el-image style="width:100%;height:100%;" fit="cover"
+                src="https://img1.baidu.com/it/u=1878063085,1538548069&fm=253&fmt=auto&app=120&f=JPEG?w=1422&h=800"></el-image>
+      <div class="welcome-title">
+        <div class="p-4">
+          <p class="fs-3 fw-semibold text-white">
+            Get Inspired and Create.
+          </p>
+          <p class="text-white fw-medium">
+            Copyright © <span>2023</span>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div style="width:400px;">
+      <router-view/>
+      测试动态路由跳转页面
+      <el-button @click="router.push('/text')"></el-button>
+    </div>
+  </div>
+  <div class="container" style="height: 100%" id="container" :class="{ 'right-panel-active': isActive }">
     <!-- 注册页面 -->
     <div class="form-container sign-up-container">
       <div class="form">
@@ -7,8 +28,8 @@
         <input type="text" placeholder="用户名"/>
         <input type="email" placeholder="邮箱地址"/>
         <input type="password" placeholder="密码" @focus="infoStatus = true" @blur="infoStatus = false"/>
-        <div  v-show="infoStatus">6-18位,包括数字和字母</div>
-        <input type="password" placeholder="再次输入密码" />
+        <div v-show="infoStatus">6-18位,包括数字和字母</div>
+        <input type="password" placeholder="再次输入密码"/>
         <button>注册</button>
       </div>
     </div>
@@ -72,7 +93,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ElMessage } from "element-plus";
+import {ElMessage} from "element-plus";
 import {ref} from "vue";
 // 信息提示
 // 弹出错误信息

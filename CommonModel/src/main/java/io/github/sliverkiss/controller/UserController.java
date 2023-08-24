@@ -7,10 +7,7 @@ import io.github.sliverkiss.enums.AppHttpCodeEnum;
 import io.github.sliverkiss.exception.SystemException;
 import io.github.sliverkiss.service.impl.UserServiceImpl;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author SliverKiss
@@ -28,6 +25,11 @@ public class UserController extends BaseController<UserServiceImpl, User> {
             throw new SystemException ( AppHttpCodeEnum.REQUIRE_USERNAME );
         }
         return service.login ( user );
+    }
+
+    @GetMapping("/activityRoute/{userId}")
+    public ResponseResult activityRoute(@PathVariable Integer userId) {
+        return service.activityRoute ( userId );
     }
 
 }

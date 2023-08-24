@@ -27,7 +27,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-@TableName("employee")
+@TableName("employee_work")
 public class Employee extends BaseEntity implements Serializable {
     @TableId(type = IdType.AUTO)
     @ExcelProperty(value = "员工编号", index = 0)

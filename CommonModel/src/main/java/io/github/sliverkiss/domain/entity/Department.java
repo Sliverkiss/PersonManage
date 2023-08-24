@@ -22,7 +22,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-@TableName("department")
+@TableName("department_info")
 public class Department extends BaseEntity implements Serializable {
     @TableId
     private Integer id;

@@ -1,14 +1,16 @@
 package io.github.sliverkiss.domain.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Optional;
 
 /**
@@ -22,7 +24,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-@TableName("resignation")
+@TableName("department_resignation")
 public class Resignation extends BaseEntity implements Serializable {
     @TableId
     private Integer id;
@@ -35,9 +37,15 @@ public class Resignation extends BaseEntity implements Serializable {
     // 部门意见
     private String departmentComment;
     // 申请日期
-    private Date applyDate;
+    @JSONField(format = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private String applyDate;
     // 审核日期
-    private Date reviewDate;
+    @JSONField(format = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private String reviewDate;
     // 审核人
     private String director;
     // 审核状态

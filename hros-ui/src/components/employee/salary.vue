@@ -10,7 +10,7 @@
                 员工薪资管理
               </div>
               <div style="flex:1"></div>
-              <div class="" style="width:120px">
+              <div class="" style="width:120px" v-if="user.role">
                 <el-button type="success" plain @click="dialogFormVisible= true">
                   <el-icon>
                     <Plus/>
@@ -32,6 +32,7 @@
                       placeholder="请选择工资月份"
                       :size="10"/>
                   <el-input v-model="employeeId" style="width:160px;margin-left:10px"
+                            v-if="user.role"
                             placeholder="请输入员工编号"></el-input>
                   <el-select v-model="status" style="width:140px;margin-left:10px" placeholder="请选择发放状态"
                              clearable>
@@ -48,7 +49,7 @@
               </div>
               <div class="row">
                 <div class="col-sm-12 p-3">
-                  <el-table :data="state.tableData" stripe class="text-center">
+                  <el-table :data="state.tableData" stripe class="text-center" height="400" max-height="400">
                     <template v-for="(col,index) in toRaw(salaryStore.salaryMap)" :key="index">
                       <el-table-column :prop="col.key" :label="col.value" align="center" sortable></el-table-column>
                     </template>
@@ -62,7 +63,7 @@
                     </el-table-column>
                     <!--修改删除-->
                     <el-table-column fixed="right" align="center" label="操作" width="120">
-                      <template #default="scope">
+                      <template #default="scope" v-if="user.role">
                         <el-button size="small" style="background-color:#66b1ff" @click="EditSalary(scope.row)">
                           <el-icon>
                             <Edit style="color:#213d5b"/>
@@ -84,12 +85,13 @@
                   </el-table>
                 </div>
               </div>
-              <div class="row">
-                <div class="col-sm-12 col-md-4">
+              <div style="display:flex">
+                <div>
                   <div class="dataTables_info" id="usersList_info" role="status" aria-live="polite"><span
                       class="text-muted ">共有 {{ total }} 条 / {{ currentPage }} 页</span></div>
                 </div>
-                <div class="col-sm-12 col-md-7">
+                <div style="flex:1"></div>
+                <div>
                   <el-pagination
                       background
                       :page-sizes="[1,10,20,30]"
@@ -259,7 +261,10 @@ import {getCurrentInstance, reactive, ref, toRaw} from "vue";
 import request from "@/request.js";
 import {ElMessage, ElNotification} from "element-plus";
 import {useSalary} from "@/stores/employee.js";
+import {useUser} from '@/stores/user.js'
 
+const useStore = useUser();
+const user = useStore.getUser();
 const {proxy} = getCurrentInstance();
 
 const salaryStore = useSalary();
@@ -399,7 +404,9 @@ const load = () => {
       pageSize: pageSize.value,
       employeeId: employeeId.value,
       salaryDate: salaryDate.value,
-      status: status.value
+      status: status.value,
+      userId: user.id,
+      Role: user.role
     }
   }).then(res => {
     try {

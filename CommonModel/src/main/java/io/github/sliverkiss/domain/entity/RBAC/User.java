@@ -6,14 +6,15 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.github.sliverkiss.domain.entity.BaseEntity;
+import io.github.sliverkiss.domain.vo.EmployeeVo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * 用户(User)表实体类
@@ -40,9 +41,15 @@ public class User extends BaseEntity implements Serializable {
     private Integer employeeId;
 
     @TableField(exist = false)
-    private String token;
+    private EmployeeVo employeeVo;
+
     @TableField(exist = false)
-    private Set<Permission> permissions;
+    private String token;
+
+    @TableField(exist = false)
+    private List<Permission> permissions;
+
+    private Integer role;// 角色权限，1为管理员，0为用户
 
     // 单例模式构造器
     public User(User user) {
@@ -54,6 +61,7 @@ public class User extends BaseEntity implements Serializable {
             this.employeeId = e.getEmployeeId ();
             this.token = e.getToken ();
             this.permissions = getPermissions ();
+            this.role = e.getRole ();
         } );
     }
 

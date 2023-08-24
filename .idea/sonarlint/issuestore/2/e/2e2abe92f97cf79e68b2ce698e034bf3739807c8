@@ -1,18 +1,0 @@
-
-g	java:S1125"FDefine and throw a dedicated exception instead of using a generic one.(¸º…„ùÿÿÿÿ8óùË’—1
-L
-java:S3740"/Provide the parametrized type for this generic.(ƒËš­8Àª¼’—1
-L
-java:S3740""/Provide the parametrized type for this generic.(¨¤Ý©8Àª¼’—1
-L
-java:S3740)"/Provide the parametrized type for this generic.(¾‡ß«8Àª¼’—1
-L
-java:S3740."/Provide the parametrized type for this generic.(Â¼¨¾8Àª¼’—1
-b
-java:S3252$"EUse static access with "com.alibaba.fastjson.JSON" for "parseObject".(¥«¢„8Òª¼’—1
-b
-java:S32520"EUse static access with "com.alibaba.fastjson.JSON" for "parseObject".(¥«¢„8Óª¼’—1
-j
-java:S53619"HReplace this call to "replaceAll()" by a call to the "replace()" method.(æâ’ºøÿÿÿÿ8Õª¼’—1
-j
-java:S3252<"HUse static access with "com.alibaba.excel.EasyExcelFactory" for "write".(Õ¢þÛûÿÿÿÿ8×ª¼’—1

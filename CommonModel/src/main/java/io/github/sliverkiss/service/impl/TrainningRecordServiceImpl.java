@@ -2,15 +2,17 @@ package io.github.sliverkiss.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.github.sliverkiss.constants.UserContants;
+import io.github.sliverkiss.controller.DTO.TrainningRecordDTO;
 import io.github.sliverkiss.dao.EmployeeDao;
 import io.github.sliverkiss.dao.PersonalDao;
 import io.github.sliverkiss.dao.TrainingPlanDao;
 import io.github.sliverkiss.dao.TrainningRecordDao;
-import io.github.sliverkiss.domain.DTO.TrainningRecordDTO;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.Employee;
 import io.github.sliverkiss.domain.entity.Personal;
@@ -18,7 +20,6 @@ import io.github.sliverkiss.domain.entity.TrainingPlan;
 import io.github.sliverkiss.domain.entity.TrainningRecord;
 import io.github.sliverkiss.domain.vo.TrainningRecordVo;
 import io.github.sliverkiss.enums.AppHttpCodeEnum;
-import io.github.sliverkiss.exception.SystemException;
 import io.github.sliverkiss.service.TrainningRecordService;
 import io.github.sliverkiss.utils.CheckUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,13 +64,17 @@ public class TrainningRecordServiceImpl extends ServiceImpl<TrainningRecordDao, 
                     .like ( StringUtils.isNotBlank ( employeeId ), TrainningRecord::getEmployeeId, employeeId )
                     .in ( planIds.size () > 0, TrainningRecord::getPlanId, planIds )
                     .like ( StringUtils.isNotBlank ( planState ), TrainningRecord::getPlanState, planState );
+            // 如果等于普通用户，进行数据过滤
+            if (UserContants.ROLE_USER.equals ( trainningRecordDTO.getUserRole () )) {
+                wrapper.eq ( TrainningRecord::getEmployeeId, trainningRecordDTO.getUserEmpId () );
+            }
             Page<TrainningRecord> trainningRecordPage = this.page ( page, wrapper );
             IPage<TrainningRecordVo> trainningRecordVoIPage = EntityUtils.toPage ( trainningRecordPage, TrainningRecordVo::new );
             // 属性注入
             this.recordInnerPersonal ( trainningRecordVoIPage.getRecords () );
             return ResponseResult.okResult ( trainningRecordVoIPage );
         } catch (Exception e) {
-            throw new SystemException ( AppHttpCodeEnum.FIND_NOT_FOUND );
+            throw e;
         }
     }
 
@@ -79,6 +84,9 @@ public class TrainningRecordServiceImpl extends ServiceImpl<TrainningRecordDao, 
      * @param trainningRecordVoIPage 培训记录签证官ipage
      */
     public void recordInnerPersonal(List<TrainningRecordVo> trainningRecordVoIPage) {
+        if (ObjectUtils.isEmpty ( trainningRecordVoIPage )) {
+            return;
+        }
         List<Integer> employeeIds = trainningRecordVoIPage.stream ().map ( TrainningRecordVo::getEmployeeId ).collect ( Collectors.toList () );
         Map<Integer, Employee> map = this.getEmployeeMap ( employeeDao, employeeIds );
         trainningRecordVoIPage.forEach ( trainningRecordVo -> {

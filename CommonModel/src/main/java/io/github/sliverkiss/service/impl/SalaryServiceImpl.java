@@ -6,20 +6,24 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.github.sliverkiss.constants.UserContants;
+import io.github.sliverkiss.controller.DTO.SalaryQueryDTO;
 import io.github.sliverkiss.dao.DepartmentDao;
 import io.github.sliverkiss.dao.EmployeeDao;
 import io.github.sliverkiss.dao.PersonalDao;
+import io.github.sliverkiss.dao.RBAC.UserDao;
 import io.github.sliverkiss.dao.SalaryDao;
-import io.github.sliverkiss.domain.DTO.SalaryQueryDTO;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.Department;
 import io.github.sliverkiss.domain.entity.Employee;
 import io.github.sliverkiss.domain.entity.Personal;
+import io.github.sliverkiss.domain.entity.RBAC.User;
 import io.github.sliverkiss.domain.entity.Salary;
 import io.github.sliverkiss.domain.vo.SalaryVo;
 import io.github.sliverkiss.enums.AppHttpCodeEnum;
 import io.github.sliverkiss.exception.SystemException;
 import io.github.sliverkiss.service.SalaryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xin.altitude.cms.common.util.EntityUtils;
 
@@ -43,25 +47,32 @@ public class SalaryServiceImpl extends ServiceImpl<SalaryDao, Salary> implements
     private EmployeeDao employeeDao;
     @Resource
     private DepartmentDao departmentDao;
+    @Autowired
+    private UserDao userDao;
 
     @Override
     public ResponseResult selectSalaryPage(SalaryQueryDTO salaryQueryDTO) {
-        Integer currentPage = salaryQueryDTO.getCurrentPage ();
-        Integer pageSize = salaryQueryDTO.getPageSize ();
+        Page<Salary> page = toPage ( salaryQueryDTO );
         String employeeId = salaryQueryDTO.getEmployeeId ();
         String salaryDate = salaryQueryDTO.getSalaryDate ();
         String status = salaryQueryDTO.getStatus ();
-
-        if (currentPage == null || pageSize <= 0 || pageSize == null || pageSize < 1) {
-            throw new SystemException ( AppHttpCodeEnum.SYSTEM_ERROR );
-        }
-        Page<Salary> page = new Page<> ( currentPage, pageSize );
+        Integer userId = salaryQueryDTO.getUserId ();
+        Integer role = salaryQueryDTO.getRole ();
         try {
             // 模糊查询
             LambdaQueryWrapper<Salary> salaryWrapper = Wrappers.lambdaQuery ( Salary.class )
                     .like ( StringUtils.isNotBlank ( employeeId ), Salary::getEmployeeId, employeeId )
                     .like ( StringUtils.isNotBlank ( salaryDate ), Salary::getSalaryDate, salaryDate )
                     .like ( StringUtils.isNotBlank ( status ), Salary::getStatus, status );
+            // 判断用户角色，筛选信息
+            if (role.equals ( UserContants.ROLE_USER )) {
+                User user = userDao.selectById ( userId );
+                Employee employee = employeeDao.selectById ( user.getEmployeeId () );
+                if (employee == null) {
+                    throw new SystemException ( AppHttpCodeEnum.FIND_NOT_FOUND );
+                }
+                salaryWrapper.eq ( Salary::getEmployeeId, employee.getId () );
+            }
             Page<Salary> salaryPage = this.page ( page, salaryWrapper );
             IPage<SalaryVo> salaryVoIPage = EntityUtils.toPage ( salaryPage, SalaryVo::new );
             // 注入属性

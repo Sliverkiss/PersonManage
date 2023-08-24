@@ -4,6 +4,7 @@ package io.github.sliverkiss.domain.entity;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -23,6 +24,7 @@ import java.util.Optional;
 @NoArgsConstructor
 @Accessors(chain = true)
 @TableName("trainning_record")
+@Builder
 public class TrainningRecord extends BaseEntity implements Serializable {
     @TableId
     private Integer id;

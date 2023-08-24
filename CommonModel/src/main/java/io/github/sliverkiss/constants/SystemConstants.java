@@ -12,12 +12,20 @@ package io.github.sliverkiss.constants;
 public class SystemConstants {
     // 文章是草稿
     public static final int ARTICLE_STATUS_DRAFT = 1;
-    // 文章是正常发布状态
-    public static final int ARTICLE_STATUS_NORMAL = 0;
+    /*审核状态*/
+    public static final String PLANE_STATUS_DRAFT = "未开始";
 
-    public static final String STATUS_NORMAL = "0";
+    public static final String SYSTEM_STATUS_NONE = "审核中";
 
-    public static final String LINK_STATUS_NORMAL = "0";
+    public static final String SYSTEM_STATUS_YES = "通过";
 
+    public static final String SYSTEM_STATUS_NO = "未通过";
+    /*分页*/
+    public static final Integer SYSTEM_DEFAULT_CURRENTPAGE = 1;
+    public static final Integer SYSTEM_DEFAULT_PAGESIZE = 10;
 
+    public static final String ASSESSSTAF_TYPE_REVIEWED = "受考核人员";
+    public static final String ASSESSSTAF_TYPE_PERMISSION = "有审批权限人员";
+
+    public static final Integer DECLARE_TYPE_ROOT = 0;
 }

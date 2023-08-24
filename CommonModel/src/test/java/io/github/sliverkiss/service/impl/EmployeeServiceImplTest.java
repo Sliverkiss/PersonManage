@@ -1,7 +1,7 @@
 package io.github.sliverkiss.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import io.github.sliverkiss.domain.DTO.EmployeeQueryDTO;
+import io.github.sliverkiss.controller.DTO.EmployeeQueryDTO;
 import io.github.sliverkiss.domain.vo.EmployeeVo;
 import io.github.sliverkiss.service.EmployeeService;
 import org.junit.jupiter.api.Test;

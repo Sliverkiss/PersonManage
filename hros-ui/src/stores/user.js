@@ -3,16 +3,7 @@ import {defineStore} from "pinia";
 export const useUser = defineStore('user', {
     state: () => {
         return {
-            user: {
-                username: '',
-                password: '',
-                employee: {
-                    employeeId: '',
-
-                },
-                img: '',
-                role: ''
-            }
+            user: {}
         }
     },
     actions: {
@@ -33,7 +24,6 @@ export const useUser = defineStore('user', {
         strategies: [{
             key: 'my_user',
             storage: localStorage,
-            // path:['username','password','role','img']
         }]
     }
 })

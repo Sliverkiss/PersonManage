@@ -15,6 +15,8 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors(chain = true)
 public class Page {
+    private Integer userRole;
+    private Integer userEmpId;
     private Integer currentPage;
     private Integer pageSize;
 }
