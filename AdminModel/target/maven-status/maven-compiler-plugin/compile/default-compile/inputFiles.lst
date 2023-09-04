@@ -1,13 +1,1 @@
-/Volumes/Marginist/PersonManage/AdminModel/src/main/java/io/github/sliverkiss/controller/TrainingPlanController.java
-/Volumes/Marginist/PersonManage/AdminModel/src/main/java/io/github/sliverkiss/controller/TrainningRecordController.java
-/Volumes/Marginist/PersonManage/AdminModel/src/main/java/io/github/sliverkiss/controller/EmployeeController.java
-/Volumes/Marginist/PersonManage/AdminModel/src/main/java/io/github/sliverkiss/controller/ResignationController.java
 /Volumes/Marginist/PersonManage/AdminModel/src/main/java/io/github/sliverkiss/filter/JwtAuthenticationTokenFilter.java
-/Volumes/Marginist/PersonManage/AdminModel/src/main/java/io/github/sliverkiss/controller/SalaryController.java
-/Volumes/Marginist/PersonManage/AdminModel/src/main/java/io/github/sliverkiss/controller/RenewalController.java
-/Volumes/Marginist/PersonManage/AdminModel/src/main/java/io/github/sliverkiss/controller/NoticeController.java
-/Volumes/Marginist/PersonManage/AdminModel/src/main/java/io/github/sliverkiss/controller/ContractController.java
-/Volumes/Marginist/PersonManage/AdminModel/src/main/java/io/github/sliverkiss/controller/DepartmentController.java
-/Volumes/Marginist/PersonManage/AdminModel/src/main/java/io/github/sliverkiss/controller/ReinstatementController.java
-/Volumes/Marginist/PersonManage/AdminModel/src/main/java/io/github/sliverkiss/controller/IndicatorController.java
-/Volumes/Marginist/PersonManage/AdminModel/src/main/java/io/github/sliverkiss/controller/TransferController.java

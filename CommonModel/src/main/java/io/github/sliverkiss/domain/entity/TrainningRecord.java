@@ -1,6 +1,7 @@
 package io.github.sliverkiss.domain.entity;
 
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
@@ -38,6 +39,8 @@ public class TrainningRecord extends BaseEntity implements Serializable {
     private String level;
     // 培训状态
     private String planState;
+    @TableField(exist = false)
+    private Employee employee;
 
     public TrainningRecord(TrainningRecord train) {
         Optional.ofNullable ( train ).ifPresent ( e -> {

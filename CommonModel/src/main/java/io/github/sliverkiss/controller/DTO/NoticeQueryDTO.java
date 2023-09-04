@@ -12,5 +12,5 @@ import lombok.Data;
 public class NoticeQueryDTO extends Page {
     private String title;
     private String createDate;
-    private String user;
+    private String director;
 }

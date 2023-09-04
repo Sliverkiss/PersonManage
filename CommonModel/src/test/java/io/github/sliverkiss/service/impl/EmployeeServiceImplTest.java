@@ -2,9 +2,11 @@ package io.github.sliverkiss.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.github.sliverkiss.controller.DTO.EmployeeQueryDTO;
+import io.github.sliverkiss.dao.PersonalDao;
 import io.github.sliverkiss.domain.vo.EmployeeVo;
 import io.github.sliverkiss.service.EmployeeService;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -23,6 +25,9 @@ class EmployeeServiceImplTest {
     @Resource
     private EmployeeService employeeService;
 
+    @Autowired
+    private PersonalDao personalDao;
+
     @MockBean
     EmployeeQueryDTO employeeQueryDTO;
 
@@ -34,4 +39,10 @@ class EmployeeServiceImplTest {
         List<EmployeeVo> list = page.getRecords ();
         System.out.println ( list );
     }
+
+    @Test
+    void getEmployee() {
+
+    }
+
 }

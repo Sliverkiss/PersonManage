@@ -4,6 +4,7 @@ package io.github.sliverkiss.domain.entity;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -70,7 +71,8 @@ public class Employee extends BaseEntity implements Serializable {
     // 聘用形式
     @ExcelProperty(value = "聘用形式", index = 23)
     private String engageForm;
-
+    @TableField(exist = false)
+    private Personal personal;
 
     public Employee(Employee employee) {
         Optional.ofNullable ( employee ).ifPresent ( e -> {
@@ -79,6 +81,7 @@ public class Employee extends BaseEntity implements Serializable {
             this.hireDate = e.getHireDate ();
             this.departmentId = e.getDepartmentId ();
             this.post = e.getPost ();
+            this.personal = e.getPersonal ();
             this.level = e.getLevel ();
             this.workState = e.getWorkState ();
             this.startContract = e.getStartContract ();

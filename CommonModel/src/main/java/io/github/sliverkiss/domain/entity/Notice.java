@@ -33,7 +33,7 @@ public class Notice extends BaseEntity implements Serializable {
     // 发布时间
     private String createDate;
     // 发布人
-    private String user;
+    private String director;
     // 封面
     private String img;
     // 公告类型
@@ -46,7 +46,7 @@ public class Notice extends BaseEntity implements Serializable {
             this.content = e.getContent ();
             this.type = e.getType ();
             this.img = e.getImg ();
-            this.user = e.getUser ();
+            this.director = e.getDirector ();
             this.createDate = e.getCreateDate ();
         } );
     }

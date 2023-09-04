@@ -91,11 +91,15 @@ export const basicRouter = [
         }, {
             path: '/report',
             name: 'report',
-            component: () => import('@/views/Pages/report.vue'),
+            component: () => import('@/views/report/index.vue'),
         }, {
             path: '/system/notice',
             name: 'notice',
             component: () => import('@/views/system/notice/index.vue'),
+        }, {
+            path: '/system/user',
+            name: 'user',
+            component: () => import('@/views/system/user/index.vue'),
         }]
     }, {
         path: '/login',

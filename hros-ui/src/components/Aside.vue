@@ -8,11 +8,11 @@
           @close="handleClose"
       >
         <div style="height:160px;background-color:#F5F5F5" class="p-3 demo-type text-center">
-          <div>
-            <el-avatar :size="70"
-                       src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-            />
-          </div>
+          <!--          <div>-->
+          <!--            <el-avatar :size="70"-->
+          <!--                       src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"-->
+          <!--            />-->
+          <!--          </div>-->
           <div class="mt-3 text-dual" style="font-weight: bold;font-size:17px">{{ userStore.user.username }}
             <Setting class="ms-1" width="18px"/>
             <Expand class="ms-1" width="18px"/>

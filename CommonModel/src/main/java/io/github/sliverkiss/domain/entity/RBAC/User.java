@@ -58,6 +58,7 @@ public class User extends BaseEntity implements Serializable {
             this.username = e.getUsername ();
             this.password = e.getPassword ();
             this.img = e.getImg ();
+            this.employeeVo = e.getEmployeeVo ();
             this.employeeId = e.getEmployeeId ();
             this.token = e.getToken ();
             this.permissions = getPermissions ();

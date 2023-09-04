@@ -11,12 +11,15 @@
         <div class="text-muted fw-bold mt-2 mb-2" style="display:flex">
           <div class="row">
             <div class="col-sm-12 col-md-12">
-              <el-input v-model="title" style="width:180px" clearable
-                        placeholder="请输入主题">
+              <el-input v-model="title" style="width:180px" clearable class="me-2"
+                        placeholder="请输入标题">
               </el-input>
-              <el-input v-model="title" style="width:180px" clearable
-                        placeholder="请输入状态">
-              </el-input>
+              <el-select v-model="status" style="width:150px;;margin-left: 10px" placeholder="请选择培训状态"
+                         clearable>
+                <el-option label="未申报" value="未申报"/>
+                <el-option label="已申报，等待审批" value="已申报，等待审批"/>
+                <el-option label="审核通过" value="审核通过"/>
+              </el-select>
               <el-button type="primary" class="ms-2" @Click="load">
                 <el-icon>
                   <Search/>
@@ -201,8 +204,8 @@ const dialogUpdateVisible = ref(false)
 const currentPage = ref(1);//当前页
 const pageSize = ref(5);//页码展示数量
 const total = ref(10);//页码总数
-const title = ref('');
-const status = ref('');
+const title = ref('');//主题
+const status = ref('');//审核状态
 //状态tag样式
 const statusColorTag = (status) => {
   switch (status) {
@@ -315,7 +318,6 @@ const load = () => {
       if (res.code === 200) {
         state.tableData = res.data?.records
         total.value = res.data.total - 0;
-        console.log(toRaw(state.tableData))
         if (res.data.records.length == 0) {
           ElMessage.warning('查询结果为空～');
         }
@@ -346,20 +348,6 @@ const getAssessList = () => {
     }
   })
 }
-//部门列表
-const selectDepartmentList = () => {
-  request.get('admin/department/list').then(res => {
-    try {
-      if (res.code === 200) {
-        state.departmentList = res.data;
-        console.log(toRaw(state.departmentList))
-      }
-    } catch (e) {
-      ElMessage.error(e);
-    }
-  })
-}
-
 const Del = (id) => {
   request.delete('admin/training/record/delete/' + id).then((res) => {
     try {
@@ -377,7 +365,6 @@ const Del = (id) => {
 }
 load()
 getAssessList()
-selectDepartmentList()
 </script>
 
 <style scoped>

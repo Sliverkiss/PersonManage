@@ -17,5 +17,6 @@ import org.apache.ibatis.cache.decorators.ScheduledCache;
 @CacheNamespace(flushInterval = 5 * 60 * 1000, eviction = ScheduledCache.class, blocking = true)
 public interface UserRoleDao extends ICrudDao<UserRole> {
 
+
 }
 

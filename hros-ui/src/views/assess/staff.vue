@@ -254,7 +254,7 @@ const save = () => {
 }
 //修改员工资料
 const update = () => {
-  request.post('/admin/assess/set/update', state.updateData).then((res) => {
+  request.post('/admin/assess/staff/update', state.updateData).then((res) => {
     try {
       if (res.code == 200) {
         ElNotification.success(res.msg);
@@ -313,22 +313,8 @@ const getAssessList = () => {
     }
   })
 }
-//部门列表
-const selectDepartmentList = () => {
-  request.get('admin/department/list').then(res => {
-    try {
-      if (res.code === 200) {
-        state.departmentList = res.data;
-        console.log(toRaw(state.departmentList))
-      }
-    } catch (e) {
-      ElMessage.error(e);
-    }
-  })
-}
-
 const Del = (id) => {
-  request.delete('admin/training/record/delete/' + id).then((res) => {
+  request.delete('/admin/assess/staff/delete/' + id).then((res) => {
     try {
       if (res.code == 200) {
         ElNotification.success(res.msg);
@@ -344,7 +330,6 @@ const Del = (id) => {
 }
 load()
 getAssessList()
-selectDepartmentList()
 </script>
 
 <style scoped>

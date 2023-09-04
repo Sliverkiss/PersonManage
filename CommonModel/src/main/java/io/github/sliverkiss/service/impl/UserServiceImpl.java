@@ -2,25 +2,29 @@ package io.github.sliverkiss.service.impl;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.sliverkiss.constants.TreeConstants;
 import io.github.sliverkiss.constants.UserContants;
+import io.github.sliverkiss.controller.DTO.UserQueryDTO;
 import io.github.sliverkiss.dao.RBAC.*;
 import io.github.sliverkiss.domain.ResponseResult;
-import io.github.sliverkiss.domain.entity.Employee;
 import io.github.sliverkiss.domain.entity.RBAC.Permission;
 import io.github.sliverkiss.domain.entity.RBAC.RolePermission;
 import io.github.sliverkiss.domain.entity.RBAC.User;
 import io.github.sliverkiss.domain.entity.RBAC.UserRole;
 import io.github.sliverkiss.domain.vo.EmployeeVo;
+import io.github.sliverkiss.domain.vo.UserVo;
 import io.github.sliverkiss.enums.AppHttpCodeEnum;
 import io.github.sliverkiss.exception.SystemException;
 import io.github.sliverkiss.service.EmployeeService;
 import io.github.sliverkiss.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import xin.altitude.cms.common.util.EntityUtils;
 
 import java.util.Comparator;
 import java.util.List;
@@ -38,6 +42,8 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
     @Autowired
     private RoleDao roleDao;
+    @Autowired
+    private UserDao userDao;
     @Autowired
     private UserRoleDao userRoleDao;
     @Autowired
@@ -75,6 +81,38 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         return ResponseResult.okResult ( loginUser );
     }
 
+    @Override
+    public ResponseResult selectPage(UserQueryDTO dto) {
+        Page<User> page = toPage ( dto );
+        String username = dto.getUsername ();
+        LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery ( User.class );
+        if (StringUtils.isNotBlank ( username )) {
+            wrapper.like ( User::getUsername, username );
+        }
+        Page<User> aPage = this.page ( page, wrapper );
+        IPage<UserVo> voIPage = EntityUtils.toPage ( aPage, UserVo::new );
+        // 属性注入
+        this.setTableFiled ( voIPage.getRecords () );
+        return ResponseResult.okResult ( voIPage );
+    }
+
+    /**
+     * 注入列表属性
+     *
+     * @param list 列表
+     */
+    public <E extends User> void setTableFiled(List<E> list) {
+        list.forEach ( user -> {
+            if (user.getEmployeeId () != null) {
+                EmployeeVo employeeVo = employeeService.getEmployeeVo ( user.getEmployeeId () );
+                user.setEmployeeVo ( employeeVo );
+            }
+            // 从用户权限通过用户id查询所有的资源信息
+            this.setPermissionByUser ( user );
+        } );
+
+    }
+
     /**
      * 动态路由
      *
@@ -85,7 +123,6 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     public ResponseResult activityRoute(Integer userId) {
         try {
             User user = this.getById ( userId );
-            Employee employe = employeeService.getById ( user );
             if (Objects.isNull ( user )) {
                 return ResponseResult.errorResult ( AppHttpCodeEnum.FIND_NOT_FOUND );
             }
@@ -109,8 +146,13 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         if (StringUtils.isBlank ( user.getPassword () )) {
             user.setPassword ( UserContants.DEFAULT_PASS );
         }
-        // user.setPassword ( SecureUtil.md5(user.getPassword()) )
-        this.save ( user );
+        // 新建用户
+        userDao.insert ( user );
+        // 为用户分配角色
+        UserRole userRole = new UserRole ();
+        userRole.setUserId ( user.getId () ).setRoleId ( user.getRole () );
+        userRoleDao.insert ( userRole );
+
         return ResponseResult.okResult ();
     }
     /**

@@ -5,6 +5,7 @@ import com.sun.org.slf4j.internal.LoggerFactory;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.BaseEntity;
 import io.github.sliverkiss.enums.AppHttpCodeEnum;
+import io.github.sliverkiss.exception.SystemException;
 import io.github.sliverkiss.service.ICrudService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,9 @@ public abstract class BaseController<S extends ICrudService<T>, T extends BaseEn
     @ApiOperation(value = "修改", notes = "ID存在修改，不存在添加")
     public ResponseResult update(@RequestBody T entity) throws Exception {
         try {
+            if (!checkUpdate ( entity )) {
+                throw new SystemException ( AppHttpCodeEnum.SYSTEM_ERROR );
+            }
             beforeUpdate ( entity );
             return service.updateEntity ( entity );
         } catch (Exception e) {
@@ -68,7 +72,6 @@ public abstract class BaseController<S extends ICrudService<T>, T extends BaseEn
 
     @DeleteMapping("/delete/{id}")
     public ResponseResult delete(@PathVariable Integer id) {
-
         return service.deleteEntity ( id );
     }
 
@@ -80,6 +83,10 @@ public abstract class BaseController<S extends ICrudService<T>, T extends BaseEn
      * @throws Exception
      */
     public void beforeSave(T entity) throws Exception {
+    }
+
+    public boolean checkUpdate(T entity) throws Exception {
+        return true;
     }
 
     /**

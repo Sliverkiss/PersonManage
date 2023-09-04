@@ -4,6 +4,8 @@ import io.github.sliverkiss.controller.DTO.NoticeQueryDTO;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.Notice;
 import io.github.sliverkiss.service.impl.NoticeServiceImpl;
+import io.github.sliverkiss.utils.DateUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +20,7 @@ import java.io.IOException;
  * @apiNote
  * @date 2023/8/14
  */
-
+@Slf4j
 @RestController
 @RequestMapping("/admin/notice")
 public class NoticeController extends BaseController<NoticeServiceImpl, Notice> {
@@ -31,6 +33,7 @@ public class NoticeController extends BaseController<NoticeServiceImpl, Notice> 
 
     @PostMapping("/upload")
     public String upload(MultipartFile file) {
+        log.warn ( "文件上传开始" );
         // 使用MultipartFile类型接受前端发来的文件
         // 获取到文件的全名
         String filename = file.getOriginalFilename ();
@@ -38,7 +41,7 @@ public class NoticeController extends BaseController<NoticeServiceImpl, Notice> 
         String newname = System.currentTimeMillis () + filename.substring ( filename.lastIndexOf ( '.' ) );
         System.out.println ( newname );
         // 设置文件存储目录
-        String path = "/Volumes/Marginist/PersonManage/hros-ui/public/upload_photo";
+        String path = "/Volumes/Marginist/PersonManage/hros-ui/src/assets/img/upload_photo/";
         // 创建目录文件
         File newpath = new File ( path );
         // 判断目录是否存在，不存在则创建
@@ -53,6 +56,12 @@ public class NoticeController extends BaseController<NoticeServiceImpl, Notice> 
         } catch (IOException e) {
             throw new RuntimeException ( e );
         }
-        return path + newname;
+        log.warn ( "文件上传结束" );
+        return newname;
+    }
+
+    @Override
+    public void beforeSave(Notice entity) throws Exception {
+        entity.setCreateDate ( DateUtil.currentDateFormat () );
     }
 }

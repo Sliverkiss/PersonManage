@@ -1,9 +1,9 @@
 package io.github.sliverkiss.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import io.github.sliverkiss.domain.entity.Employee;
 import io.github.sliverkiss.domain.entity.Personal;
-import org.apache.ibatis.annotations.CacheNamespace;
-import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.cache.decorators.ScheduledCache;
 
 /**
@@ -15,6 +15,13 @@ import org.apache.ibatis.cache.decorators.ScheduledCache;
 @Mapper
 @CacheNamespace(flushInterval = 5 * 60 * 1000, eviction = ScheduledCache.class, blocking = true)
 public interface PersonalDao extends BaseMapper<Personal> {
+
+    @Select("select * from employee_info where id=#{personalId}")
+    Personal getByEmployeeId(Integer personalId);
+
+    @Select("select * from employee_work where id=#{employeeId}")
+    @Results({@Result(property = "personal", column = "personal_id", one = @One(select = "getByEmployeeId"))})
+    Employee getById(@Param("employeeId") Integer employeeId);
 
 }
 

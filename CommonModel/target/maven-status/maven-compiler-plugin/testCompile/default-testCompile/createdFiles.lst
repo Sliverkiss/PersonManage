@@ -1,2 +1,3 @@
 io/github/sliverkiss/utils/DateUtilTest.class
+io/github/sliverkiss/controller/AssessStaffControllerTest.class
 io/github/sliverkiss/service/impl/EmployeeServiceImplTest.class

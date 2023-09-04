@@ -17,8 +17,10 @@ import io.github.sliverkiss.domain.entity.assess.AssessDeclare;
 import io.github.sliverkiss.domain.entity.assess.AssessSet;
 import io.github.sliverkiss.domain.entity.assess.AssessStaff;
 import io.github.sliverkiss.domain.vo.AssessStaffVo;
+import io.github.sliverkiss.enums.AppHttpCodeEnum;
 import io.github.sliverkiss.service.AssessStaffService;
 import io.github.sliverkiss.utils.DateUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +37,7 @@ import java.util.stream.Collectors;
  * @since 2023-08-17 16:39:46
  */
 @Service("assessStaffService")
+@Slf4j
 public class AssessStaffServiceImpl extends ServiceImpl<AssessStaffDao, AssessStaff> implements AssessStaffService {
 
     @Autowired
@@ -61,8 +64,14 @@ public class AssessStaffServiceImpl extends ServiceImpl<AssessStaffDao, AssessSt
             if (StringUtils.isNotBlank ( title )) {
                 List<Integer> assessSetIds = assessSetDao.selectList ( Wrappers.lambdaQuery ( AssessSet.class )
                         .like ( AssessSet::getTitle, title ) ).stream ().map ( AssessSet::getId ).collect ( Collectors.toList () );
-                wrapper.in ( assessSetIds.size () > 0, AssessStaff::getAssessId, assessSetIds );
+                System.out.println ( assessSetIds );
+                if (assessSetIds.size () > 0) {
+                    wrapper.in ( AssessStaff::getAssessId, assessSetIds );
+                } else {
+                    return ResponseResult.errorResult ( AppHttpCodeEnum.FIND_NOT_FOUND );
+                }
             }
+
             // 数据隔离
             Page<AssessStaff> tPage = this.page ( page, wrapper );
             IPage<AssessStaffVo> voIPage = EntityUtils.toPage ( tPage, AssessStaffVo::new );
@@ -86,8 +95,11 @@ public class AssessStaffServiceImpl extends ServiceImpl<AssessStaffDao, AssessSt
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult saveStaffAndDeclare(AssessStaff staff) {
+        log.warn ( "开始" );
         staff.setCreateDate ( DateUtil.currentDateFormat () );
         Integer deptId = staff.getDeptId ();
+        System.out.println ( staff );
+        log.warn ( "结束" );
         // 1.获取部门下所有员工
         List<Employee> employeeList = employeeDao.selectList ( Wrappers.lambdaQuery ( Employee.class )
                 .in ( Employee::getDepartmentId, deptId ) );

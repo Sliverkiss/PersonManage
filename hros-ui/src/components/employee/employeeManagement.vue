@@ -44,8 +44,8 @@
                   </el-select>
                   <el-input v-model="post" style="width:120px;margin-left:10px" placeholder="请输入岗位"
                             clearable></el-input>
-                  <el-input v-model="hireDate" style="width:120px;margin-left:10px" placeholder="请输入入职日期"
-                            clearable></el-input>
+                  <!--                  <el-input v-model="hireDate" style="width:120px;margin-left:10px" placeholder="请输入入职日期"-->
+                  <!--                            clearable></el-input>-->
                   <el-button type="primary" class="ms-2" @click="load">
                     <el-icon>
                       <Search/>
@@ -603,7 +603,7 @@ const state = reactive({
 })
 //分页数据
 const currentPage = ref(1);
-const pageSize = ref(2);
+const pageSize = ref(10);
 const total = ref(10);
 const employeeId = ref('');
 const name = ref('');
@@ -645,7 +645,7 @@ const load = () => {
       state.tableData = res.data?.records
       total.value = res.data.total - 0;
       if (res.data.records.length == 0) {
-        ElMessage.warning('查找结果不存在～');
+        // ElMessage.warning('查找结果不存在～');
       }
     } else {
       state.tableData = [];

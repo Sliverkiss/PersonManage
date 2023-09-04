@@ -3,9 +3,12 @@ package io.github.sliverkiss.controller;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSONObject;
 import io.github.sliverkiss.controller.DTO.EmployeeQueryDTO;
+import io.github.sliverkiss.dao.TrainningRecordDao;
 import io.github.sliverkiss.domain.ResponseResult;
+import io.github.sliverkiss.domain.entity.TrainningRecord;
 import io.github.sliverkiss.domain.vo.EmployeeVo;
 import io.github.sliverkiss.service.EmployeeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -22,12 +25,22 @@ import java.util.List;
 @RequestMapping("/admin")
 public class EmployeeController {
 
+    @Autowired
+    private TrainningRecordDao personalDao;
+
     @Resource
     private EmployeeService employeeService;
-    
+
+
+    @RequestMapping("/test")
+    public List<TrainningRecord> getById() {
+        return personalDao.getRecordListByEmployeeId ( 1 );
+    }
+
+
     @GetMapping("/employee/page")
     public ResponseResult getEmployeeList(EmployeeQueryDTO employeeQueryDTO) {
-        return employeeService.selectEmployeePage (employeeQueryDTO );
+        return employeeService.selectEmployeePage ( employeeQueryDTO );
     }
 
     @PostMapping("employee/save")

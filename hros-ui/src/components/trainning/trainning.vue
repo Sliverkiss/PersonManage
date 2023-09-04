@@ -46,7 +46,7 @@
         </div>
         <div class="row">
           <div class="col-sm-12 p-3 ">
-            <el-table :data="state.tableData" stripe class="text-center"
+            <el-table :data="state.tableData" stripe class="text-center" height="400" max-height="400"
                       element-loading-text="拼命加载中">
               <el-table-column v-for="(col,index) in state.planTitleMap" :key="index"
                                :prop="col.key" :label="col.value" align="center"
@@ -338,7 +338,7 @@ const dialogFormVisible = ref(false)
 const dialogUpdateVisible = ref(false)
 //模糊查询条件
 const currentPage = ref(1);//当前页
-const pageSize = ref(5);//页码展示数量
+const pageSize = ref(10);//页码展示数量
 const total = ref(10);//页码总数
 const planName = ref('');
 const status = ref('');

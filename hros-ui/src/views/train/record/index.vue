@@ -362,7 +362,6 @@ const selectDepartmentList = () => {
 load()
 selectDepartmentList();
 </script>
-
 <style scoped>
 .notice-card {
   border-radius: 0.875rem 1rem;

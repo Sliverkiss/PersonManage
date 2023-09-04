@@ -1,6 +1,7 @@
 package io.github.sliverkiss.service;
 
 
+import io.github.sliverkiss.controller.DTO.UserQueryDTO;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.RBAC.User;
 
@@ -12,5 +13,7 @@ import io.github.sliverkiss.domain.entity.RBAC.User;
  */
 public interface UserService extends ICrudService<User> {
     public ResponseResult login(User user);
+
+    ResponseResult selectPage(UserQueryDTO dto);
 }
 

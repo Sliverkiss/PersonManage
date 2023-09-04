@@ -18,6 +18,7 @@ import io.github.sliverkiss.domain.entity.assess.AssessDeclare;
 import io.github.sliverkiss.domain.entity.assess.AssessItem;
 import io.github.sliverkiss.domain.entity.assess.AssessSet;
 import io.github.sliverkiss.domain.vo.AssessDeclareVo;
+import io.github.sliverkiss.enums.AppHttpCodeEnum;
 import io.github.sliverkiss.service.AssessDeclareService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,7 +47,6 @@ public class AssessDeclareServiceImpl extends ServiceImpl<AssessDeclareDao, Asse
     private DepartmentDao departmentDao;
     @Autowired
     private AssessItemDao itemDao;
-    ;
 
     @Override
     public boolean existDeclare(AssessDeclare declare) {
@@ -69,14 +69,19 @@ public class AssessDeclareServiceImpl extends ServiceImpl<AssessDeclareDao, Asse
         try {
             // 状态模糊查询
             LambdaQueryWrapper<AssessDeclare> wrapper = Wrappers.lambdaQuery ( AssessDeclare.class )
-                    .eq ( AssessDeclare::getType, SystemConstants.DECLARE_TYPE_ROOT )
-                    .like ( StringUtils.isNotBlank ( status ), AssessDeclare::getStatus, status );
+                    .eq ( AssessDeclare::getType, SystemConstants.DECLARE_TYPE_ROOT );
+            // 模糊查询状态
+            if (StringUtils.isNotBlank ( status )) {
+                wrapper.like ( AssessDeclare::getStatus, status );
+            }
             // 标题模糊查询
             if (StringUtils.isNotBlank ( title )) {
                 List<Integer> setIds = setDao.selectList ( Wrappers.lambdaQuery ( AssessSet.class ).like ( AssessSet::getTitle, title ) )
                         .stream ().map ( AssessSet::getId ).collect ( Collectors.toList () );
                 if (setIds.size () > 0) {
                     wrapper.in ( AssessDeclare::getAssessId, setIds );
+                } else {
+                    return ResponseResult.errorResult ( AppHttpCodeEnum.FIND_NOT_FOUND );
                 }
             }
             // 数据隔离

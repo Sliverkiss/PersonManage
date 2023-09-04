@@ -285,7 +285,7 @@ const save = () => {
 }
 //修改员工资料
 const update = () => {
-  request.put('adminassess/item/update', state.updateData).then((res) => {
+  request.put('admin/assess/item/update', state.updateData).then((res) => {
     try {
       if (res.code == 200) {
         ElNotification.success(res.msg);
