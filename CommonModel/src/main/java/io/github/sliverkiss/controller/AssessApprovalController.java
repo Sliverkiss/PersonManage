@@ -27,6 +27,11 @@ public class AssessApprovalController extends BaseController<AssessApprovalServi
     @Autowired
     private AssessDeclareService declareService;
 
+    @GetMapping("/list")
+    public ResponseResult list() {
+        return ResponseResult.okResult ( service.getList () );
+    }
+
     @GetMapping("/info/{employeeId}/{assesId}")
     public ResponseResult getDeclareList(@PathVariable Integer employeeId, @PathVariable Integer assesId) {
         AssessDeclare declare = declareService.getDeclare ( assesId, employeeId, 0 );
@@ -99,5 +104,6 @@ public class AssessApprovalController extends BaseController<AssessApprovalServi
                 .setStatus ( finalState );
         declareService.updateById ( declare );
     }
+
 
 }

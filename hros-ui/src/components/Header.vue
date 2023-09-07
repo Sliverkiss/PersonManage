@@ -13,7 +13,7 @@
         <template v-slot:dropdown>
           <el-dropdown-menu>
             <div class="px-2 py-3 bg-light rounded-top">
-              <h5 class="h6 text-center mb-0">{{ userStore.user.username + treeData }}</h5>
+              <h5 class="h6 text-center mb-0">{{ userStore.user.username }}</h5>
             </div>
             <el-dropdown-item>个人资料
               <el-icon class="ms-4">
@@ -35,17 +35,18 @@
 <script setup>
 import {useUser} from '@/stores/user.js'
 import {useRouter} from "vue-router";
+import {toRaw} from "vue";
 
 const router = useRouter();
 const userStore = useUser();
-
+const user = userStore.getUser();
+console.log(toRaw(user));
 const logout = () => {
   userStore.setUser('');
   router.push('/login')
 }
 
 const props = defineProps(['treeData'])
-console.log(props.treeData)
 </script>
 
 <style>

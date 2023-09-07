@@ -12,3 +12,12 @@ export function delUser(id) {
     return request.delete('/user/delete/' + id);
 
 }
+
+export function changeUser(query) {
+    return request.post('/user/change', query);
+
+}
+
+export function getUser(query) {
+    return request.post('/user/userInfo/' + query);
+}

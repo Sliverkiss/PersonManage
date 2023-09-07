@@ -15,5 +15,6 @@ public interface ReportService {
 
     public List<Map<String, Object>> DepartmentBar();
 
-    public List<Map<String, Object>> ResignationBar();
+
+    public List<Map<String, Object>> assessPointBar(Integer assessId);
 }

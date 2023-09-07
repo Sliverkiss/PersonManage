@@ -1,6 +1,7 @@
 package io.github.sliverkiss.service.impl;
 
 
+import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
@@ -62,9 +63,10 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
      */
     @Override
     public ResponseResult login(User user) {
+        String password = SecureUtil.md5 ( user.getPassword () + UserContants.MD5_SALT );
         LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery ( User.class )
                 .eq ( User::getUsername, user.getUsername () )
-                .eq ( User::getPassword, user.getPassword () );
+                .eq ( User::getPassword, password );
         User loginUser = this.getOne ( wrapper );
         // 用户不存在，返回报错信息
         if (Objects.isNull ( loginUser )) {
@@ -94,6 +96,44 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         // 属性注入
         this.setTableFiled ( voIPage.getRecords () );
         return ResponseResult.okResult ( voIPage );
+    }
+
+    @Override
+    public User getUser(Integer employeeId) {
+        List<User> userList = this.list ( Wrappers.lambdaQuery ( User.class ).eq ( User::getEmployeeId, employeeId ) );
+        User user = userList.get ( 0 );
+        EmployeeVo employeeVo = employeeService.getEmployeeVo ( user.getEmployeeId () );
+        user.setEmployeeVo ( employeeVo );
+        // 从用户权限通过用户id查询所有的资源信息
+        this.setPermissionByUser ( user );
+        return user;
+    }
+
+    /**
+     * 修改密码
+     *
+     * @param dto
+     *
+     * @return {@link ResponseResult}
+     */
+    @Override
+    public ResponseResult changePassword(UserQueryDTO dto) {
+        String oldPassword = dto.getOldPassword ();
+        String newPassword = dto.getNewPassword ();
+        String secNewPassword = dto.getSecNewPassword ();
+        String password = SecureUtil.md5 ( oldPassword + UserContants.MD5_SALT );
+        List<User> userList = this.list ( Wrappers.lambdaQuery ( User.class ).eq ( User::getUsername, dto.getUsername () ) );
+        User user = userList.get ( 0 );
+        if (!user.getPassword ().equals ( password )) {
+            return ResponseResult.errorResult ( AppHttpCodeEnum.LOGIN_ERROR );
+        }
+        if (!newPassword.equals ( secNewPassword )) {
+            return ResponseResult.errorResult ( AppHttpCodeEnum.LOGIN_ERROR.getCode (), "两次密码输入不一致～" );
+        }
+        String resPassword = SecureUtil.md5 ( newPassword + UserContants.MD5_SALT );
+        user.setPassword ( resPassword );
+        this.updateById ( user );
+        return ResponseResult.okResult ();
     }
 
     /**
@@ -143,8 +183,13 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
      * @return {@link ResponseResult}
      */
     public ResponseResult register(User user) {
+        List<User> list = this.list ( Wrappers.lambdaQuery ( User.class ).eq ( User::getUsername, user.getUsername () ) );
+        if (list.size () > 0) {
+            return ResponseResult.errorResult ( AppHttpCodeEnum.USERNAME_EXIST );
+        }
         if (StringUtils.isBlank ( user.getPassword () )) {
-            user.setPassword ( UserContants.DEFAULT_PASS );
+            String password = SecureUtil.md5 ( UserContants.DEFAULT_PASS + UserContants.MD5_SALT );
+            user.setPassword ( password );
         }
         // 新建用户
         userDao.insert ( user );

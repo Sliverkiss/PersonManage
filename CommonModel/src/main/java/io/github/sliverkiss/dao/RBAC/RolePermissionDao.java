@@ -3,9 +3,7 @@ package io.github.sliverkiss.dao.RBAC;
 
 import io.github.sliverkiss.dao.ICrudDao;
 import io.github.sliverkiss.domain.entity.RBAC.RolePermission;
-import org.apache.ibatis.annotations.CacheNamespace;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.cache.decorators.ScheduledCache;
 
 /**
  * (RolePermission)表数据库访问层
@@ -14,7 +12,7 @@ import org.apache.ibatis.cache.decorators.ScheduledCache;
  * @since 2023-08-07 18:24:18
  */
 @Mapper
-@CacheNamespace(flushInterval = 5 * 60 * 1000, eviction = ScheduledCache.class, blocking = true)
+// @CacheNamespace(flushInterval = 5 * 60 * 1000, eviction = ScheduledCache.class, blocking = true)
 public interface RolePermissionDao extends ICrudDao<RolePermission> {
 
 }

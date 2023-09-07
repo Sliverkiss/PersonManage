@@ -73,6 +73,8 @@ public class Employee extends BaseEntity implements Serializable {
     private String engageForm;
     @TableField(exist = false)
     private Personal personal;
+    @TableField(exist = false)
+    private Department department;
 
     public Employee(Employee employee) {
         Optional.ofNullable ( employee ).ifPresent ( e -> {
@@ -88,6 +90,7 @@ public class Employee extends BaseEntity implements Serializable {
             this.endContract = e.getEndContract ();
             this.contractTerm = e.getContractTerm ();
             this.engageForm = e.getEngageForm ();
+            this.department = e.getDepartment ();
         } );
     }
 

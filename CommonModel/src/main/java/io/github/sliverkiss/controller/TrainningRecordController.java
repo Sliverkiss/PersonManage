@@ -21,6 +21,11 @@ public class TrainningRecordController extends BaseController<TrainningRecordSer
         return service.selectPage ( trainningRecordDTO );
     }
 
+    @GetMapping("/list")
+    public ResponseResult list() {
+        return ResponseResult.okResult ( service.list () );
+    }
+
 
     @Override
     public void beforeSave(TrainningRecord trainningRecord) throws Exception {

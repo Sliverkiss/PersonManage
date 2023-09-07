@@ -2,9 +2,12 @@ package io.github.sliverkiss.controller;
 
 import io.github.sliverkiss.constants.PieContants;
 import io.github.sliverkiss.domain.ResponseResult;
+import io.github.sliverkiss.service.AssessApprovalService;
 import io.github.sliverkiss.service.ReportService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,12 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2023/9/1
  */
 
-
+@Slf4j
 @RestController
 @RequestMapping("/admin/report")
 public class ReportController {
     @Autowired
     private ReportService service;
+    @Autowired
+    private AssessApprovalService approvalService;
 
     /**
      * 员工性别统计
@@ -81,9 +86,10 @@ public class ReportController {
         return ResponseResult.okResult ( service.DepartmentBar () );
     }
 
-    @GetMapping("/text")
-    public ResponseResult resign() {
-        return ResponseResult.okResult ( service.ResignationBar () );
+    @GetMapping("/assess/{assessId}")
+    public ResponseResult assessPointBar(@PathVariable Integer assessId) {
+        return ResponseResult.okResult ( service.assessPointBar ( assessId ) );
+
     }
 
 

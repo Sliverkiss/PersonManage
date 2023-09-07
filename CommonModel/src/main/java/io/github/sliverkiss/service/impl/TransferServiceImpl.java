@@ -6,8 +6,6 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import io.github.sliverkiss.constants.EmployeeConstants;
-import io.github.sliverkiss.constants.UserContants;
 import io.github.sliverkiss.controller.DTO.TransferQueryDTO;
 import io.github.sliverkiss.dao.DepartmentDao;
 import io.github.sliverkiss.dao.EmployeeDao;
@@ -20,6 +18,7 @@ import io.github.sliverkiss.domain.entity.Personal;
 import io.github.sliverkiss.domain.entity.Transfer;
 import io.github.sliverkiss.domain.vo.TransferVo;
 import io.github.sliverkiss.service.TransferService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xin.altitude.cms.common.util.EntityUtils;
@@ -37,6 +36,7 @@ import java.util.stream.Collectors;
  * @since 2023-07-27 15:00:20
  */
 @Service("transferService")
+@Slf4j
 public class TransferServiceImpl extends ServiceImpl<TransferDao, Transfer> implements TransferService {
 
     @Autowired
@@ -48,7 +48,9 @@ public class TransferServiceImpl extends ServiceImpl<TransferDao, Transfer> impl
 
     @Override
     public ResponseResult selectPage(TransferQueryDTO transferQueryDTO) {
+        log.warn ( "开始" );
         System.out.println ( transferQueryDTO );
+        log.warn ( "结束" );
         Page<Transfer> page = toPage ( transferQueryDTO );
         String employeeId = transferQueryDTO.getEmployeeId ();
         String employeeName = transferQueryDTO.getEmployeeName ();
@@ -66,22 +68,22 @@ public class TransferServiceImpl extends ServiceImpl<TransferDao, Transfer> impl
             LambdaQueryWrapper<Transfer> wrapper = Wrappers.lambdaQuery ( Transfer.class )
                     .like ( StringUtils.isNotBlank ( employeeId ), Transfer::getEmployeeId, employeeId )
                     .like ( StringUtils.isNotBlank ( state ), Transfer::getState, state );
-            // 数据隔离
-            if (userRole.equals ( UserContants.ROLE_USER )) {
-                // 如果为普通用户，则查询自己数据
-                wrapper.eq ( userEmpId != null, Transfer::getEmployeeId, userEmpId );
-            } else {
-                Employee employee = employeeDao.selectById ( userEmpId );
-                Integer departmentId = employee.getDepartmentId ();
-                // 如果不是人事处
-                if (!departmentId.equals ( EmployeeConstants.DEPARTMENT_PERSONAL_ID )) {
-                    // 获取调出部门和调入部门的数据
-                    wrapper.eq ( userEmpId != null, Transfer::getBeforeDepartment, departmentId )
-                            .or ()
-                            .eq ( userEmpId != null, Transfer::getAfterDepartment, departmentId );
-                }
-
-            }
+            // // 数据隔离
+            // if (userRole.equals ( UserContants.ROLE_USER )) {
+            //     // 如果为普通用户，则查询自己数据
+            //     wrapper.eq ( userEmpId != null, Transfer::getEmployeeId, userEmpId );
+            // } else {
+            //     Employee employee = employeeDao.selectById ( userEmpId );
+            //     Integer departmentId = employee.getDepartmentId ();
+            //     // 如果不是人事处
+            //     if (!departmentId.equals ( EmployeeConstants.DEPARTMENT_PERSONAL_ID )) {
+            //         // 获取调出部门和调入部门的数据
+            //         wrapper.eq ( userEmpId != null, Transfer::getBeforeDepartment, departmentId )
+            //                 .or ()
+            //                 .eq ( userEmpId != null, Transfer::getAfterDepartment, departmentId );
+            //     }
+            //
+            // }
             Page<Transfer> transferPage = this.page ( page, wrapper );
             IPage<TransferVo> transferVoIPage = EntityUtils.toPage ( transferPage, TransferVo::new );
             // 属性注入，员工姓名，调出部门，调入部门

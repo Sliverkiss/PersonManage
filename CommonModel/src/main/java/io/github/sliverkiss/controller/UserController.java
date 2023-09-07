@@ -72,4 +72,13 @@ public class UserController extends BaseController<UserServiceImpl, User> {
         userRoleDao.update ( userRole, Wrappers.lambdaQuery ( UserRole.class ).eq ( UserRole::getUserId, user.getId () ) );
     }
 
+    @GetMapping("/userInfo/{employeeId}")
+    public ResponseResult getUser(@PathVariable Integer employeeId) {
+        return ResponseResult.okResult ( service.getUser ( employeeId ) );
+    }
+
+    @PostMapping("/change")
+    public ResponseResult changePassword(@RequestBody UserQueryDTO dto) {
+        return service.changePassword ( dto );
+    }
 }

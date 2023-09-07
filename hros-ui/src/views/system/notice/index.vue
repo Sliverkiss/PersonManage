@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div v-if="user.employeeVo.workState=='离职'">无权限</div>
+  <div v-else>
     <el-tabs v-model="activeName" class="demo-tabs bg-white p-3 notice-card " @tab-click="handleClick">
       <el-tab-pane name="first">
         <template #label>
@@ -48,16 +49,16 @@
               <el-table-column label="标题" prop="title" align="center"/>
               <el-table-column label="内容" prop="content" align="center">
                 <template #default="scope">
-                  <el-link>查看内容</el-link>
+                  <el-link @click="openDialog(scope.row)">查看内容</el-link>
                 </template>
               </el-table-column>
               <el-table-column label="发布日期" prop="createDate" align="center"/>
               <el-table-column label="发布人" prop="director" align="center"/>
-              <el-table-column label="封面" prop="img" align="center">
-                <template #default="scope">
-                  <el-image style="height:80px" :src="getImageUrl(scope.row.img)"></el-image>
-                </template>
-              </el-table-column>
+              <!--              <el-table-column label="封面" prop="img" align="center">-->
+              <!--                <template #default="scope">-->
+              <!--                  <el-image style="height:80px" :src="getImageUrl(scope.row.img)"></el-image>-->
+              <!--                </template>-->
+              <!--              </el-table-column>-->
               <el-table-column fixed="right" align="center" label="操作" width="120">
                 <template #default="scope" v-if="user.role">
                   <el-button size="small" style="background-color:#66b1ff" @click="handleUpdate(scope.row)">
@@ -127,22 +128,22 @@
               <el-input v-model="state.formData.title" placeholder="请输入公告标题"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="24">
-            <el-form-item prop="img" size="img" label="封面：" label-width="100">
-              <el-upload
-                  class="avatar-uploader"
-                  action="http://localhost:9090/admin/notice/upload"
-                  :show-file-list="true"
-                  :auto-upload="true"
-                  :on-success="handleAvatarSuccess"
-                  :before-upload="beforeAvatarUpload">
-                <img style="height:200px" v-if="imageUrl" :src="imageUrl" class="avatar"/>
-                <el-icon v-else class="avatar-uploader-icon">
-                  <Plus/>
-                </el-icon>
-              </el-upload>
-            </el-form-item>
-          </el-col>
+          <!--          <el-col :span="24">-->
+          <!--            <el-form-item prop="img" size="img" label="封面：" label-width="100">-->
+          <!--              <el-upload-->
+          <!--                  class="avatar-uploader"-->
+          <!--                  action="http://localhost:9090/admin/notice/upload"-->
+          <!--                  :show-file-list="true"-->
+          <!--                  :auto-upload="true"-->
+          <!--                  :on-success="handleAvatarSuccess"-->
+          <!--                  :before-upload="beforeAvatarUpload">-->
+          <!--                <img style="height:200px" v-if="imageUrl" :src="imageUrl" class="avatar"/>-->
+          <!--                <el-icon v-else class="avatar-uploader-icon">-->
+          <!--                  <Plus/>-->
+          <!--                </el-icon>-->
+          <!--              </el-upload>-->
+          <!--            </el-form-item>-->
+          <!--          </el-col>-->
           <el-col :span="24">
             <el-form-item prop="content" label="内容: " label-width="100">
               <div id="richText"></div>
@@ -152,7 +153,7 @@
       </el-form>
       <template #footer>
       <span class="dialog-footer">
-        <el-button @click="submitForm" type="primary">添加</el-button>
+        <el-button @click="submitForm" type="primary">确定</el-button>
         <el-button @click="cancel" type="primary">
           取消
         </el-button>
@@ -160,11 +161,21 @@
       </template>
     </el-dialog>
   </div>
+  <el-drawer
+      v-model="tableDialog"
+      title="公告详情"
+      direction="rtl"
+      size="50%">
+    <template #header="{ close, titleId, titleClass }">
+      <h4 :id="titleId" class="titleClass text-center">{{ state.noticeDetail.title }}</h4>
+    </template>
+    <div v-html="state.noticeDetail.content"></div>
+  </el-drawer>
 </template>
 
 <script setup>
 import request from "@/request.js";
-import {getCurrentInstance, onMounted, reactive, ref} from "vue";
+import {getCurrentInstance, onMounted, reactive, ref, toRaw} from "vue";
 import {ElMessage, ElNotification} from "element-plus";
 //接口api
 import {addNotice, delNotice, updateNotice} from "@/api/system/notice.js";
@@ -204,6 +215,7 @@ const handleAvatarSuccess = (response, uploadFile) => {
 //数据
 const state = reactive({
   tableData: [],
+  noticeDetail: {},
   formData: {},
   updateData: {},
 })
@@ -217,6 +229,15 @@ const title = ref('');
 const currentPage = ref(1);//当前页
 const pageSize = ref(15);//页码展示数量
 const total = ref(10);//页码总数
+//抽屉
+const tableDialog = ref(false);
+
+const openDialog = (notice) => {
+  tableDialog.value = true;
+  state.noticeDetail = JSON.parse(JSON.stringify(notice));
+  console.log(toRaw(state.noticeDetail))
+}
+
 const handleSizeChange = (val) => {
   pageSize.value = val;
   load();
@@ -230,6 +251,10 @@ const planName = ref('');
 const status = ref('');
 //初始化加载数据
 const load = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.get('/admin/notice/page', {
     params: {
       currentPage: currentPage.value,
@@ -267,6 +292,10 @@ const reset = () => {
 }
 //新增按钮操作
 const handleAdd = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   reset();
   open.value = true
   title.value = "发布公告"
@@ -278,27 +307,32 @@ const createEditer = () => {
   //创建富文本公告框
   proxy.$nextTick(() => {
     if (!editor) {
-      editor = new E("#richText")
+      editor = new E("#richText");
+      editor.config.uploadImgServer = 'http://localhost:9090/admin/notice/file/uploadImg';
+      editor.config.uploadFileName = 'file';
       // 或者 const editor = new E(document.getElementById('div1'))
-      editor.create()
-    } else {
-      editor.destroy();
-      editor = new E("#richText")
       editor.create();
     }
   })
 }
 //修改按钮操作
 const handleUpdate = (row) => {
-  reset();
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   open.value = true
   title.value = "修改公告"
-  state.formData = JSON.parse(JSON.stringify(row));
   createEditer();
-  state.formData.content = editor.txt.html();
+  state.formData = JSON.parse(JSON.stringify(row));
+  editor.txt.html(state.formData.content);
 }
 //提交按钮
 const submitForm = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   //表单校检
   proxy.$refs.ruleFormRef.validate((valid) => {
     if (valid) {
@@ -325,6 +359,10 @@ const submitForm = () => {
 }
 //删除按钮操作
 const handleDelete = (id) => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   delNotice(id).then((res) => {
     res.code == 200 ? ElNotification.success(res.msg) : ElMessage.error(res.msg);
     load();

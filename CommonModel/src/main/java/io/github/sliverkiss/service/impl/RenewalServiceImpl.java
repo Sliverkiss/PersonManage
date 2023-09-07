@@ -32,8 +32,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static io.github.sliverkiss.utils.CheckUtil.checkStr;
-
 /**
  * 续约申请表(Renewal)表服务实现类
  *
@@ -72,22 +70,31 @@ public class RenewalServiceImpl extends ServiceImpl<RenewalDao, Renewal> impleme
         List<Integer> personalIds = personalDao.selectList ( personalWrapper )
                 .stream ().map ( Personal::getId ).collect ( Collectors.toList () );
         // 多条件模糊查询员工工作表，包括personalId、departmentId、employeeId
-        List<Integer> employeeIds = employeeDao.selectList ( Wrappers.lambdaQuery ( Employee.class )
-                        .in ( personalIds.size () > 0, Employee::getPersonalId, personalIds )
-                        .eq ( Employee::getDepartmentId, departmentId ) )
-                .stream ().map ( Employee::getId ).collect ( Collectors.toList () );
-        // 后端数据校验
-        if (checkStr ( name, personalIds ) || checkStr ( employeeId, employeeIds )) {
+        LambdaQueryWrapper<Employee> employeeWrapper = Wrappers.lambdaQuery ( Employee.class );
+        // 模糊查询员工姓名
+        if (personalIds.size () > 0) {
+            employeeWrapper.in ( Employee::getPersonalId, personalIds );
+        } else {
             return ResponseResult.errorResult ( AppHttpCodeEnum.FIND_NOT_FOUND );
         }
+        // 模糊查询部门
+        if (StringUtils.isNotBlank ( departmentId )) {
+            employeeWrapper.eq ( Employee::getDepartmentId, departmentId );
+        }
+        List<Integer> employeeIds = employeeDao.selectList ( employeeWrapper )
+                .stream ().map ( Employee::getId ).collect ( Collectors.toList () );
         try {
             // 对续约表 进行模糊查询
-            LambdaQueryWrapper<Renewal> renewalWrapper = Wrappers.lambdaQuery ( Renewal.class )
-                    .like ( StringUtils.isNotBlank ( employeeId ), Renewal::getEmployeeId, employeeId )
-                    .in ( employeeIds.size () > 0, Renewal::getEmployeeId, employeeIds )
-                    .eq ( StringUtils.isNotBlank ( status ), Renewal::getState, status )
+            LambdaQueryWrapper<Renewal> renewalWrapper = Wrappers.lambdaQuery ( Renewal.class );
+            if (employeeIds.size () > 0) {
+                renewalWrapper.in ( employeeIds.size () > 0, Renewal::getEmployeeId, employeeIds );
+            }
+            renewalWrapper.eq ( StringUtils.isNotBlank ( status ), Renewal::getState, status )
                     .orderByDesc ( Renewal::getApprovedDate );
             // 将模糊查询结果进行分页
+            if (StringUtils.isNotBlank ( employeeId )) {
+                renewalWrapper.like ( Renewal::getEmployeeId, employeeId );
+            }
             // 数据隔离
             if (userRole.equals ( UserContants.ROLE_USER )) {
                 renewalWrapper.eq ( userEmpId != null, Renewal::getEmployeeId, userEmpId );
@@ -101,7 +108,6 @@ public class RenewalServiceImpl extends ServiceImpl<RenewalDao, Renewal> impleme
         } catch (Exception e) {
             throw new SystemException ( AppHttpCodeEnum.FIND_NOT_FOUND );
         }
-
     }
 
     /**

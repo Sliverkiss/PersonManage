@@ -21,7 +21,7 @@
         </div>
       </div>
       <div style="flex:1"></div>
-      <div class="" style="width:120px" v-if="!user.role">
+      <div class="" style="width:120px">
         <el-button type="success" plain @click="dialogFormVisiblee= true">
           <el-icon>
             <Plus/>
@@ -38,9 +38,9 @@
           <el-table-column label="部门" prop="departmentName" align="center"/>
           <el-table-column label="复职原因" prop="reason" min-width="120"/>
           <el-table-column label="申请日期" prop="applyDate" sortable min-width="120"/>
-          <el-table-column label="审核日期" prop="reinDate" sortable min-width="120"/>
-          <el-table-column v-if="user.role" label="部门意见" prop="departmentComment" min-width="120"/>
-          <el-table-column label="审核人" prop="director"/>
+          <!--          <el-table-column label="审核日期" prop="reinDate" sortable min-width="120"/>-->
+          <!--          <el-table-column v-if="user.role" label="部门意见" prop="departmentComment" min-width="120"/>-->
+          <!--          <el-table-column label="审核人" prop="director"/>-->
           <el-table-column prop="state" label="审核状态" align="center" sortable width="110">
             <template #default="scope">
               <el-tag
@@ -269,6 +269,10 @@ const handleMordChange = (row) => {
 }
 //打开修改窗口
 const EditRenewal = (row) => {
+  if (user.employeeId == row.employeeId) {
+    ElMessage.warning("sorry,不允许审核自己~")
+    return;
+  }
   dialogUpdateVisiblee.value = true;
   state.updateData = JSON.parse(JSON.stringify(row));
 }
@@ -337,9 +341,6 @@ const load = () => {
       if (res.code === 200) {
         state.tableData = res.data?.records
         total.value = res.data.total - 0;
-        if (res.data.records.length == 0) {
-          ElMessage.warning('查找结果不存在～');
-        }
       } else {
         state.tableData = [];
         total.value = 0
@@ -352,7 +353,7 @@ const load = () => {
 }
 //删除
 const DelEntity = (id) => {
-  request.delete('admin/department/resignation/delete/' + id).then((res) => {
+  request.delete('/admin/reinstatement/delete/' + id).then((res) => {
     try {
       if (res.code == 200) {
         ElNotification.success(res.msg);

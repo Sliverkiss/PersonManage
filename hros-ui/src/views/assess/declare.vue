@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div v-if="user.employeeVo.workState=='离职'">无权限</div>
+  <div v-else>
     <el-tabs v-model="activeName" class="demo-tabs bg-white p-3 notice-card " @tab-click="handleClick">
       <el-tab-pane name="first">
         <template #label>
@@ -14,7 +15,7 @@
               <el-input v-model="title" style="width:180px" clearable class="me-2"
                         placeholder="请输入标题">
               </el-input>
-              <el-select v-model="status" style="width:150px;;margin-left: 10px" placeholder="请选择培训状态"
+              <el-select v-model="status" style="width:150px;;margin-left: 10px" placeholder="请选择审核状态"
                          clearable>
                 <el-option label="未申报" value="未申报"/>
                 <el-option label="已申报，等待审批" value="已申报，等待审批"/>
@@ -57,15 +58,26 @@
                   </el-tag>
                 </template>
               </el-table-column>
-              <el-table-column fixed="right" align="center" label="操作" width="120" v-if="user.role">
+              <el-table-column fixed="right" align="center" label="操作" width="120">
                 <template #default="scope">
-                  <el-link type="primary" @click="Reviewed(scope.row)" v-if="(!user.role)&&scope.row.status=='未申报'">
+                  <el-link type="primary" @click="Reviewed(scope.row)" v-if="user.role==0">
                     申报
                   </el-link>
-                  <el-link type="primary" @click="Approval(scope.row)"
-                           v-else-if="user.role&&scope.row.status=='已申报，等待审批'">
-                    审批
-                  </el-link>
+                  <div v-else>
+                    <el-link type="primary" @click="Approval(scope.row)"
+                    >
+                      审批
+                    </el-link>
+                    <el-popconfirm @confirm="Del(scope.row.id)" title="确认删除?"
+                                   confirm-button-text="确认"
+                                   cancel-button-text="取消">
+                      <template #reference>
+                        <el-link type="danger" class="ms-2">
+                          重置
+                        </el-link>
+                      </template>
+                    </el-popconfirm>
+                  </div>
                 </template>
               </el-table-column>
             </el-table>
@@ -230,6 +242,10 @@ const handleCurrentChange = (val) => {
   load()
 }
 const EditRenewal = (row) => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   dialogUpdateVisible.value = true;
   state.updateData = JSON.parse(JSON.stringify(row));
   console.log(toRaw(state.updateData))
@@ -242,6 +258,10 @@ const clearFormData = () => {
 }
 
 const save = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   //表单校检
   proxy.$refs.ruleFormRef.validate((valid) => {
     if (valid) {
@@ -264,6 +284,10 @@ const save = () => {
 }
 //修改员工资料
 const update = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.post('/admin/assess/set/update', state.updateData).then((res) => {
     try {
       if (res.code == 200) {
@@ -282,27 +306,47 @@ const update = () => {
 
 //个人绩效申报
 const Reviewed = (row) => {
-  router.push({
-    path: '/assess/declare/review',
-    query: {
-      // employeeId:row.employeeId,
-      assessId: row.assessId,
-    }
-  })
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
+  if (row.status != '未申报') {
+    ElMessage.warning("您已申报，无需重复申报～")
+  } else {
+    router.push({
+      path: '/assess/declare/review',
+      query: {
+        // employeeId:row.employeeId,
+        assessId: row.assessId,
+      }
+    })
+  }
 }
 //绩效审批
 const Approval = (row) => {
-  router.push({
-    path: '/assess/declare/approval',
-    query: {
-      declareId: row.id,
-      employeeId: row.employeeId,
-      assessId: row.assessId,
-    }
-  })
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
+  if (row.status == '未申报') {
+    ElMessage.warning("该记录未申报，无法审批")
+  } else {
+    router.push({
+      path: '/assess/declare/approval',
+      query: {
+        declareId: row.id,
+        employeeId: row.employeeId,
+        assessId: row.assessId,
+      }
+    })
+  }
 }
 //
 const load = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.get('/admin/assess/declare/page', {
     params: {
       currentPage: currentPage.value,
@@ -349,7 +393,11 @@ const getAssessList = () => {
   })
 }
 const Del = (id) => {
-  request.delete('admin/training/record/delete/' + id).then((res) => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
+  request.delete('/admin/assess/declare/delete/' + id).then((res) => {
     try {
       if (res.code == 200) {
         ElNotification.success(res.msg);

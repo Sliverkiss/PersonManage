@@ -11,4 +11,7 @@ import lombok.Data;
 @Data
 public class UserQueryDTO extends Page {
     private String username;
+    private String oldPassword;
+    private String newPassword;
+    private String secNewPassword;
 }

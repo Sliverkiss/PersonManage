@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div v-if="user.employeeVo.workState=='离职'">无权限</div>
+  <div v-else>
     <el-tabs v-model="activeName" class="demo-tabs bg-white p-3 notice-card " @tab-click="handleClick">
       <el-tab-pane name="first">
         <template #label>
@@ -70,7 +71,7 @@
                             <el-form-item prop="assessId" size="large" label="" label-width="120">
                               <el-form-item>
                                 <el-button type="primary" @click="save()">确定</el-button>
-                                <el-button type="warning" @click="resetForm(ruleFormRef)">返回</el-button>
+                                <el-button type="warning" @click="router.push('/assess/declare')">返回</el-button>
                               </el-form-item>
                             </el-form-item>
                           </el-col>
@@ -149,6 +150,10 @@ const handleCurrentChange = (val) => {
   load()
 }
 const EditRenewal = (row) => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   dialogUpdateVisible.value = true;
   state.updateData = JSON.parse(JSON.stringify(row));
   console.log(toRaw(state.updateData))
@@ -161,6 +166,10 @@ const clearFormData = () => {
 }
 
 const save = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   //表单校检
   proxy.$refs.ruleFormRef.validate((valid) => {
     if (valid) {
@@ -192,6 +201,7 @@ const save = () => {
       request.post('/admin/assess/declare/save', state.declare).then(res => {
         try {
           ElMessage.success("已发送数据");
+          router.push('/assess/declare')
         } catch {
           ElMessage.error(res.msg);
         }
@@ -203,6 +213,10 @@ const save = () => {
 }
 //修改员工资料
 const update = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.post('/admin/assess/set/update', state.updateData).then((res) => {
     try {
       if (res.code == 200) {
@@ -220,6 +234,10 @@ const update = () => {
 }
 
 const load = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.get('/admin/assess/set/info/' + route.query.assessId).then(res => {
     try {
       state.tableData = res
@@ -247,6 +265,10 @@ const getAssessList = () => {
 }
 
 const Del = (id) => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.delete('admin/training/record/delete/' + id).then((res) => {
     try {
       if (res.code == 200) {

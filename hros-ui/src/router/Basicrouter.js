@@ -43,7 +43,15 @@ export const basicRouter = [
         }, {
             path: '/department/reinstatement',
             name: 'reinstatement',
-            component: () => import('@/components/department/reinstatement.vue'),
+            component: () => import('@/views/department/reinstatement/index.vue'),
+        }, {
+            path: '/department/resignation',
+            name: 'resignation',
+            component: () => import('@/views/department/resignation/index.vue'),
+        }, {
+            path: '/department/post',
+            name: 'post',
+            component: () => import('@/views/department/post/index.vue'),
         }, {
             path: '/assess',
             name: 'assess',
@@ -93,6 +101,14 @@ export const basicRouter = [
             name: 'report',
             component: () => import('@/views/report/index.vue'),
         }, {
+            path: '/report/personal',
+            name: 'reportPersonal',
+            component: () => import('@/views/report/index.vue'),
+        }, {
+            path: '/report/assess',
+            name: 'reportAssess',
+            component: () => import('@/views/report/assess.vue'),
+        }, {
             path: '/system/notice',
             name: 'notice',
             component: () => import('@/views/system/notice/index.vue'),
@@ -100,6 +116,10 @@ export const basicRouter = [
             path: '/system/user',
             name: 'user',
             component: () => import('@/views/system/user/index.vue'),
+        }, {
+            path: '/system/userDetail',
+            name: 'userDetail',
+            component: () => import('@/views/system/user/detail.vue'),
         }]
     }, {
         path: '/login',

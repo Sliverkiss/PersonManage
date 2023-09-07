@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div v-if="user.employeeVo.workState=='离职'">无权限</div>
+  <div v-else>
     <el-tabs v-model="activeName" class="demo-tabs bg-white p-3 notice-card " @tab-click="handleClick">
       <el-tab-pane name="first">
         <template #label>
@@ -95,7 +96,7 @@
         <el-row :gutter="24">
           <el-col :span="24">
             <el-form-item prop="assessId" size="large" label="考核主题：" label-width="120">
-              <el-select v-model="state.formData.assessId" style="width:250px;" placeholder="请选择审核状态"
+              <el-select v-model="state.formData.assessId" style="width:250px;" placeholder="请选择考核主题"
                          clearable>
                 <el-option :label="item.title" :value="item.id" v-for="(item,index) in state.assessSetList"/>
               </el-select>
@@ -132,7 +133,7 @@
       <el-form :model="state.updateData" class="" status-icon :rules="rules" ref="ruleFormRef">
         <el-row :gutter="24">
           <el-form-item prop="assessId" size="large" label="考核主题：" label-width="120">
-            <el-select v-model="state.updateData.assessId" style="width:250px;" placeholder="请选择审核状态"
+            <el-select v-model="state.updateData.assessId" style="width:250px;" placeholder="请选择考核主题"
                        clearable>
               <el-option :label="item.title" :value="item.id" v-for="(item,index) in state.assessSetList"/>
             </el-select>
@@ -156,7 +157,7 @@
 <script setup>
 //加载后端合同数据
 import request from "@/request.js";
-import {getCurrentInstance, reactive, ref, toRaw} from "vue";
+import {getCurrentInstance, onMounted, reactive, ref, toRaw} from "vue";
 import {useContract} from "@/stores/employee.js";
 import {ElMessage, ElNotification} from "element-plus";
 import {flexWidth} from '@/utils/tableUtils.js'
@@ -220,11 +221,19 @@ const handleCurrentChange = (val) => {
   load()
 }
 const EditRenewal = (row) => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   dialogUpdateVisible.value = true;
   state.updateData = JSON.parse(JSON.stringify(row));
   console.log(toRaw(state.updateData))
 }
 const clearFormData = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   let clearData = {}
   state.formData = clearData;
   dialogFormVisible.value = false;
@@ -232,6 +241,10 @@ const clearFormData = () => {
 }
 
 const save = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   //表单校检
   proxy.$refs.ruleFormRef.validate((valid) => {
     if (valid) {
@@ -254,6 +267,10 @@ const save = () => {
 }
 //修改员工资料
 const update = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.post('/admin/assess/staff/update', state.updateData).then((res) => {
     try {
       if (res.code == 200) {
@@ -272,6 +289,10 @@ const update = () => {
 
 //
 const load = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.get('/admin/assess/staff/page', {
     params: {
       currentPage: currentPage.value,
@@ -314,6 +335,10 @@ const getAssessList = () => {
   })
 }
 const Del = (id) => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.delete('/admin/assess/staff/delete/' + id).then((res) => {
     try {
       if (res.code == 200) {
@@ -328,8 +353,23 @@ const Del = (id) => {
     }
   })
 }
-load()
-getAssessList()
+const selectDepartmentList = () => {
+  request.get('admin/department/list').then(res => {
+    try {
+      if (res.code === 200) {
+        state.departmentList = res.data;
+      }
+    } catch (e) {
+      ElMessage.error(e);
+    }
+  })
+}
+onMounted(() => {
+  load();
+  getAssessList();
+  selectDepartmentList()
+})
+
 </script>
 
 <style scoped>

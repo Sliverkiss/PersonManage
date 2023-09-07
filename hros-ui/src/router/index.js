@@ -16,16 +16,20 @@ router.beforeEach((to, from, next) => {
     // 验证token,只有存在token的时候，才能跳转到内容页
     const userStore = useUser();
     const user = userStore.getUser();
-    console.log("路由")
-    console.log(user.employeeVo?.workState);
+    //访问注册页面，放行
+    if (to.path == "/register") next();
+    //访问找回密码，放行
+    if (to.path == "/find") next();
+    //如果用户未登录或访问非登录页面，拦截并跳转到登录页面
     if (!(user || to.path === "/login")) {
         next("/login");
-        // }
-        // else if (!(user.employeeVo?.workState=="离职"||to.path ==="/404")){
-        //     next("/404")
-    } else {
-        next();
     }
+    //如果用户已登录且为离职状态，拦截并跳转到复职页面
+    // if (!(user.employeeVo.workState == '离职' || to.path == "/department/reinstatement")) {
+    //     console.log(user)
+    //     next("/department/reinstatement")
+    // }
+    next();
 
 
 });

@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div v-if="user.employeeVo.workState=='离职'">无权限</div>
+  <div v-else>
     <el-tabs v-model="activeName" class="demo-tabs bg-white p-3 notice-card ">
       <el-tab-pane name="first" @tab-Click="router.push('/console/employee/contract')">
         <template #label>
@@ -57,8 +58,8 @@
               <el-table-column label="合同起始日期" prop="startContract" align="center" width="120"/>
               <el-table-column label="合同终止日期" prop="endContract" align="center" width="120"/>
               <el-table-column label="续约年数" prop="renewalAge" align="center"/>
-              <el-table-column label="审核日期" prop="approvedDate" sortable align="center" width="120"/>
-              <el-table-column label="审核人" prop="director" align="center"/>
+              <!--              <el-table-column label="审核日期" prop="approvedDate" sortable align="center" width="120"/>-->
+              <!--              <el-table-column label="审核人" prop="director" align="center"/>-->
               <el-table-column prop="state" label="审核状态" align="center" sortable width="120">
                 <template #default="scope">
                   <el-tag
@@ -153,22 +154,9 @@
   </div>
   <!--  续约审核表单-->
   <div>
-    <el-dialog v-model="dialogUpdateVisible" title="续约修改" align-center center class="" width="350"
+    <el-dialog v-model="dialogUpdateVisible" title="续约审核" align-center center class="" width="350"
                style="border-radius: 0.875rem 1rem;">
       <el-form :model="state.updateData" class="" status-icon :rules="rules" ref="ruleFormRef">
-        <el-form-item prop="employeeId" size="large" label="员工编号：">
-          <el-input v-model="state.updateData.employeeId" placeholder="请输入员工编号" disabled></el-input>
-        </el-form-item>
-        <el-form-item prop="renewalAge" size="large" label="续约年数：">
-          <el-select v-model="state.updateData.renewalAge" placeholder="请选择续约年数" style="width:225px" disabled>
-            <el-option
-                v-for="(item,index) in 5"
-                :key="index"
-                :label="item+'年'"
-                :value="item"
-            />
-          </el-select>
-        </el-form-item>
         <el-form-item prop="departmentComment" size="large" label="部门意见：">
           <el-input v-model="state.updateData.departmentComment" type="textarea"
                     placeholder="请输入部门意见"></el-input>
@@ -306,10 +294,18 @@ const handleCurrentChange = (val) => {
   load()
 }
 const EditRenewal = (row) => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   dialogUpdateVisible.value = true;
   state.updateData = JSON.parse(JSON.stringify(row));
 }
 const handleMordChange = (row) => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   dialogMoreVisible.value = true;
   state.updateData = JSON.parse(JSON.stringify(row));
 }
@@ -322,6 +318,10 @@ const clearFormData = () => {
 }
 
 const save = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   //表单校检
   proxy.$refs.ruleFormRef.validate((valid) => {
     if (valid) {
@@ -343,6 +343,14 @@ const save = () => {
 }
 //修改员工资料
 const update = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
+  if (user.employeeId == row.employeeId) {
+    ElMessage.warning("sorry,不允许审核自己~")
+    return;
+  }
   state.updateData.director = user.employeeVo.name;
   request.put('admin/employee/renewal/update', state.updateData).then((res) => {
     try {
@@ -362,6 +370,10 @@ const update = () => {
 
 //
 const load = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.get('/admin/employee/renewal/page', {
     params: {
       currentPage: currentPage.value,
@@ -393,6 +405,10 @@ const load = () => {
 }
 //删除员工资料
 const DelRenewal = (id) => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.delete('admin/employee/renewal/delete/' + id).then((res) => {
     try {
       if (res.code == 200) {
@@ -409,6 +425,10 @@ const DelRenewal = (id) => {
 }
 //获取部门列表
 const selectDepartmentList = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.get('admin/department/list').then(res => {
     try {
       if (res.code === 200) {

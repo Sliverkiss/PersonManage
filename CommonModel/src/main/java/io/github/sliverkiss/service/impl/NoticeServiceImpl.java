@@ -1,6 +1,7 @@
 package io.github.sliverkiss.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -14,6 +15,8 @@ import io.github.sliverkiss.domain.vo.NoticeVo;
 import io.github.sliverkiss.service.NoticeService;
 import org.springframework.stereotype.Service;
 import xin.altitude.cms.common.util.EntityUtils;
+
+import java.util.List;
 
 /**
  * 公告(Notice)表服务实现类
@@ -44,5 +47,20 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeDao, Notice> implements
             throw e;
         }
     }
+
+    /**
+     * 返回公告通知的时间最新的10条数据
+     *
+     * @return {@link List}<{@link Notice}>
+     */
+    @Override
+    public List<Notice> getNoticeList() {
+        QueryWrapper<Notice> wrapper = new QueryWrapper<Notice> ();
+        wrapper.orderByDesc ( "create_date" ).last ( "limit 10" );
+        List<Notice> result = this.list ( wrapper );
+        return result;
+    }
+
+
 }
 

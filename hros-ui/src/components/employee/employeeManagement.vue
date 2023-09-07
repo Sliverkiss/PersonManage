@@ -1,5 +1,6 @@
 <template>
-  <div class="">
+  <div v-if="user.employeeVo.workState=='离职'">无权限</div>
+  <div v-else>
     <div class="content" id="pjax-container">
       <div class="block block-rounded">
         <el-card class="notice-card ">
@@ -11,7 +12,7 @@
               </div>
               <div style="flex:1"></div>
               <div class="" style="width:120px" v-if="user.role">
-                <el-button type="success" plain @click="dialogFormVisible= true">
+                <el-button type="success" plain @click="openAdd">
                   <el-icon>
                     <Plus/>
                   </el-icon>
@@ -254,20 +255,27 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item prop="departmentName" label="部门:">
-              <el-select v-model="state.formData.departmentName" style="width:220px">
+            <el-form-item prop="departmentId" label="部门:">
+              <el-select v-model="state.formData.departmentId" style="width:220px">
                 <el-option
-                    v-for="department in  departmentStore.departmentList"
+                    v-for="department in departmentStore.departmentList"
                     :key="department.id"
                     :label="department.departmentName"
-                    :value="department.departmentName"
+                    :value="department.id"
                 />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="10">
             <el-form-item prop="post" label="岗位:">
-              <el-input v-model="state.formData.post"></el-input>
+              <el-select v-model="state.formData.post" placeholder="">
+                <el-option
+                    v-for="post in fitPostList"
+                    :key="post.id"
+                    :label="post.name"
+                    :value="post.name"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -450,57 +458,57 @@
                 </el-select>
               </el-form-item>
             </el-col>
-          <el-col :span="12">
-            <el-form-item prop="departmentName" label="部门:">
-              <el-select v-model="state.updateData.departmentName" style="width:220px" disabled>
-                <el-option
-                    v-for="department in  departmentStore.departmentList"
-                    :key="department.id"
-                    :label="department.departmentName"
-                    :value="department.departmentName"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="10">
-            <el-form-item prop="post" label="岗位:">
-              <el-input v-model="state.updateData.post" disabled></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item prop="startContract" label="合同起始日期:">
-              <div class="demo-date-picker">
-                <div class="block" style="width:50px">
-                  <el-date-picker
-                      v-model="state.updateData.startContract"
-                      type="date"
-                      disabled
-                      format="YYYY/MM/DD"
-                      value-format="YYYY-MM-DD"
-                      placeholder=""
-                      style="width:165px"
-                      :size="10"/>
+            <el-col :span="12">
+              <el-form-item prop="departmentName" label="部门:">
+                <el-select v-model="state.updateData.departmentName" style="width:220px" disabled>
+                  <el-option
+                      v-for="department in  departmentStore.departmentList"
+                      :key="department.id"
+                      :label="department.departmentName"
+                      :value="department.departmentName"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="10">
+              <el-form-item prop="post" label="岗位:">
+                <el-input v-model="state.updateData.post" disabled></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item prop="startContract" label="合同起始日期:">
+                <div class="demo-date-picker">
+                  <div class="block" style="width:50px">
+                    <el-date-picker
+                        v-model="state.updateData.startContract"
+                        type="date"
+                        disabled
+                        format="YYYY/MM/DD"
+                        value-format="YYYY-MM-DD"
+                        placeholder=""
+                        style="width:165px"
+                        :size="10"/>
+                  </div>
                 </div>
-              </div>
-            </el-form-item>
-          </el-col>
-          <el-col :span="10">
-            <el-form-item label="职称:" prop="level">
-              <el-input v-model="state.updateData.level"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item prop="contractTerm" label="合同年限:">
-              <el-select v-model="state.updateData.contractTerm" placeholder="Select" disabled>
-                <el-option
-                    v-for="(item,index) in 5"
-                    :key="index"
-                    :label="item+'年'"
-                    :value="item"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
+              </el-form-item>
+            </el-col>
+            <el-col :span="10">
+              <el-form-item label="职称:" prop="level">
+                <el-input v-model="state.updateData.level"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item prop="contractTerm" label="合同年限:">
+                <el-select v-model="state.updateData.contractTerm" placeholder="Select" disabled>
+                  <el-option
+                      v-for="(item,index) in 5"
+                      :key="index"
+                      :label="item+'年'"
+                      :value="item"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
           </el-row>
         </div>
       </el-form>
@@ -519,7 +527,7 @@
 
 <script setup>
 import request from "@/request.js";
-import {getCurrentInstance, reactive, ref, toRaw} from "vue";
+import {computed, getCurrentInstance, onMounted, reactive, ref, toRaw, watch} from "vue";
 import {ElMessage, ElNotification} from "element-plus";
 import {flexWidth} from '@/utils/tableUtils.js'
 import {useEmployee} from "@/stores/employee.js";
@@ -527,6 +535,7 @@ import axios from "axios";
 import {useUser} from '@/stores/user.js'
 //部门列表
 import {useDepartment} from "@/stores/department.js"
+import {getPostList} from "@/api/department/post.js";
 
 const useStore = useUser();
 const user = useStore.getUser();
@@ -600,6 +609,7 @@ const state = reactive({
   formData: {},
   updateData: {},
   departmentList: [],
+  postList: []
 })
 //分页数据
 const currentPage = ref(1);
@@ -628,6 +638,10 @@ const clearFormData = () => {
 }
 //加载后端员工数据
 const load = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.get('/admin/employee/page', {
     params: {
       currentPage: currentPage.value,
@@ -667,7 +681,18 @@ const selectDepartmentList = () => {
   })
 }
 
+const openAdd = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
+  dialogFormVisible.value = true;
+}
 const downloadList = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   axios({ // 用axios发送get请求
     method: 'get',
     url: 'http://localhost:9090/admin/employee/download', // 请求地址
@@ -693,6 +718,10 @@ const downloadList = () => {
 
 //入职登记调用接口
 const save = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry，您已离职，无操作权限～")
+    return;
+  }
   //表单校检
   proxy.$refs.ruleFormRef.validate((valid) => {
     if (valid) {
@@ -713,11 +742,19 @@ const save = () => {
 }
 //打开修改员工资料视图
 const EditEmployee = (row) => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   dialogUpdateVisible.value = true;
   state.updateData = JSON.parse(JSON.stringify(row));
 }
 //修改员工资料
 const update = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.post('admin/employee/update', state.updateData).then((res) => {
     try {
       if (res.code == 200) {
@@ -735,6 +772,10 @@ const update = () => {
 }
 //删除员工资料
 const DelEmployee = (id) => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.delete('admin/employee/delete/' + id).then((res) => {
     try {
       if (res.code == 200) {
@@ -749,9 +790,32 @@ const DelEmployee = (id) => {
     }
   })
 }
+//获取岗位信息
+const postList = (() => {
+  getPostList().then((res) => {
+    state.postList = res.data;
+  });
+})
+//动态绑定生成可选岗位列表
+const fitPostList = computed(() => state.postList.filter(item => item.departmentId == state.formData.departmentId))
+//当部门列表发生变化时，清除岗位列表信息
+watch(() => state.formData.departmentId, (newValue, oldValue) => {
+  state.formData.post = '';
+})
+//
+// const userInfo = (id) => {
+//   getUser(user.employeeId).then((res) => {
+//     useStore.setUser(res.data);
+//   });
+// }
 //数据初始化
-selectDepartmentList();
-load();
+onMounted(() => {
+  selectDepartmentList();
+  postList();
+  // userInfo();
+  load();
+})
+
 </script>
 
 <style scoped>

@@ -1,8 +1,10 @@
 package io.github.sliverkiss.domain.entity.assess;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.github.sliverkiss.domain.entity.BaseEntity;
+import io.github.sliverkiss.domain.entity.Employee;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,6 +42,9 @@ public class AssessApproval extends BaseEntity implements Serializable {
     private String createDate;
     // 更新时间
     private String updateDate;
-
+    @TableField(exist = false)
+    private Employee employee;
+    @TableField(exist = false)
+    private AssessDeclare declare;
 
 }

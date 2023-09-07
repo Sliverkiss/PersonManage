@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div v-if="user.employeeVo.workState=='离职'">无权限</div>
+  <div v-else>
     <el-tabs v-model="activeName" class="demo-tabs bg-white p-3 notice-card " @tab-click="handleClick">
       <el-tab-pane name="first">
         <template #label>
@@ -63,17 +64,6 @@
                           <Delete style="color:#582e2e"/>
                         </el-icon>
                       </el-button>
-                    </template>
-                  </el-popconfirm>
-                </template>
-                <template #default="scope" v-else>
-                  <el-popconfirm @confirm="signUp(scope.row)" title="确认报名?"
-                                 confirm-button-text="确认"
-                                 cancel-button-text="取消">
-                    <template #reference>
-                      <el-link size="small" type="warning">
-                        报名
-                      </el-link>
                     </template>
                   </el-popconfirm>
                 </template>
@@ -185,6 +175,10 @@ const handleCurrentChange = (val) => {
 const username = ref('');
 //初始化加载数据
 const load = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   console.log(toRaw(user))
   request.get('/user/page', {
     params: {
@@ -222,6 +216,10 @@ const reset = () => {
 }
 //新增按钮操作
 const handleAdd = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   reset();
   open.value = true
   title.value = "创建用户"
@@ -229,6 +227,10 @@ const handleAdd = () => {
 }
 //修改按钮操作
 const handleUpdate = (row) => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   reset();
   open.value = true
   title.value = "修改用户"
@@ -236,6 +238,10 @@ const handleUpdate = (row) => {
 }
 //提交按钮
 const submitForm = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   //表单校检
   proxy.$refs.ruleFormRef.validate((valid) => {
     if (valid) {
@@ -261,6 +267,10 @@ const submitForm = () => {
 }
 //删除按钮操作
 const handleDelete = (id) => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   delUser(id).then((res) => {
     res.code == 200 ? ElNotification.success(res.msg) : ElMessage.error(res.msg);
     load();

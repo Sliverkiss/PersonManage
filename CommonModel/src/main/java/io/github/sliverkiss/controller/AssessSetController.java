@@ -1,6 +1,5 @@
 package io.github.sliverkiss.controller;
 
-import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import io.github.sliverkiss.controller.DTO.AssessSetQueryDTO;
 import io.github.sliverkiss.domain.ResponseResult;
@@ -47,6 +46,20 @@ public class AssessSetController extends BaseController<AssessSetServiceImpl, As
     }
 
     @Override
+    public void beforeSave(AssessSet set) throws Exception {
+        set.setCrateDate ( DateUtil.currentDateFormat () );
+    }
+
+    @PostMapping("/save")
+    public ResponseResult save(@RequestBody AssessSet set) throws Exception {
+        beforeSave ( set );
+        service.save ( set );
+        // 存储关系子项
+        this.setItemBySet ( set );
+        return ResponseResult.okResult ();
+    }
+
+    @Override
     @PostMapping("/update")
     @ApiOperation(value = "修改", notes = "ID存在修改，不存在添加")
     public ResponseResult update(@RequestBody AssessSet set) {
@@ -56,25 +69,16 @@ public class AssessSetController extends BaseController<AssessSetServiceImpl, As
         List<Integer> ids = assessAndItemService.list ( Wrappers.lambdaQuery ( AssessAndItem.class )
                 .eq ( AssessAndItem::getAssessId, set.getId () ) ).stream ().map ( AssessAndItem::getId ).collect ( Collectors.toList () );
         assessAndItemService.deleteBatchIds ( ids );
-        List<Integer> items = set.getItemIdList ();
-        List<AssessAndItem> list = new ArrayList<> ();
-        Integer assessId = set.getId ();
-        for (Integer id : items) {
-            AssessAndItem item = new AssessAndItem ();
-            item.setAssessId ( assessId );
-            item.setItemId ( id );
-            list.add ( item );
-        }
-        assessAndItemService.saveBatch ( list );
+        this.setItemBySet ( set );
         return ResponseResult.okResult ();
     }
 
     @Override
     @DeleteMapping("/delete/{id}")
     public ResponseResult delete(@PathVariable Integer id) {
-        AssessDeclare assessDeclare = declareService.getOne ( Wrappers.lambdaQuery ( AssessDeclare.class ).eq ( AssessDeclare::getAssessId, id ) );
+        List<AssessDeclare> assessDeclareList = declareService.list ( Wrappers.lambdaQuery ( AssessDeclare.class ).eq ( AssessDeclare::getAssessId, id ) );
         // 1.判断该考核是否被使用
-        if (ObjectUtils.isEmpty ( assessDeclare )) {
+        if (assessDeclareList.size () > 0) {
             return ResponseResult.errorResult ( AppHttpCodeEnum.SYSTEM_ERROR.getCode (), "该考核已被使用，无法删除" );
         }
         // 2.删除考核与考核项关联记录
@@ -101,4 +105,16 @@ public class AssessSetController extends BaseController<AssessSetServiceImpl, As
         return set;
     }
 
+    public void setItemBySet(AssessSet set) {
+        List<Integer> items = set.getItemIdList ();
+        List<AssessAndItem> list = new ArrayList<> ();
+        Integer assessId = set.getId ();
+        for (Integer id : items) {
+            AssessAndItem item = new AssessAndItem ();
+            item.setAssessId ( assessId );
+            item.setItemId ( id );
+            list.add ( item );
+        }
+        assessAndItemService.saveBatch ( list );
+    }
 }

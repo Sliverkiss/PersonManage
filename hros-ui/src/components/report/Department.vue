@@ -21,8 +21,7 @@ const data = ref([])
 const options = computed(() => {
   return {
     xAxis: {
-      type: 'category',
-      data: data.value.map(item => item.name)
+      type: 'value'
     },
     toolbox: {// 工具栏。内置有导出图片，数据视图，动态类型切换，数据区域缩放，重置五个工具。
       feature: {
@@ -34,7 +33,8 @@ const options = computed(() => {
       show: true,
     },
     yAxis: {
-      type: 'value'
+      type: 'category',
+      data: data.value.map(item => item.name)
     },
     series: [
       {
@@ -64,7 +64,7 @@ export default {
 </script>
 <style scoped>
 .chart {
-  height: 300px;
+  height: 800px;
   width: 1050px;
 }
 

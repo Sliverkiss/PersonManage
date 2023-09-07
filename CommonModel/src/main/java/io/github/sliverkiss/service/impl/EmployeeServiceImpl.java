@@ -8,15 +8,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.sliverkiss.constants.UserContants;
 import io.github.sliverkiss.controller.DTO.EmployeeQueryDTO;
-import io.github.sliverkiss.dao.DepartmentDao;
-import io.github.sliverkiss.dao.EmployeeDao;
-import io.github.sliverkiss.dao.PersonalDao;
+import io.github.sliverkiss.dao.*;
 import io.github.sliverkiss.dao.RBAC.UserDao;
 import io.github.sliverkiss.domain.ResponseResult;
-import io.github.sliverkiss.domain.entity.Department;
-import io.github.sliverkiss.domain.entity.Employee;
-import io.github.sliverkiss.domain.entity.Personal;
+import io.github.sliverkiss.domain.entity.*;
 import io.github.sliverkiss.domain.entity.RBAC.User;
+import io.github.sliverkiss.domain.entity.assess.AssessApproval;
+import io.github.sliverkiss.domain.entity.assess.AssessDeclare;
+import io.github.sliverkiss.domain.entity.assess.AssessStaff;
 import io.github.sliverkiss.domain.vo.ContractVo;
 import io.github.sliverkiss.domain.vo.EmployeeVo;
 import io.github.sliverkiss.enums.AppHttpCodeEnum;
@@ -55,6 +54,24 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
     private DepartmentDao departmentDao;
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private SalaryDao salaryDao;
+    @Autowired
+    private RenewalDao renewalDao;
+    @Autowired
+    private TransferDao transferDao;
+    @Autowired
+    private ReinstatementDao reinstatementDao;
+    @Autowired
+    private ResignationDao resignationDao;
+    @Autowired
+    private AssessStaffDao staffDao;
+    @Autowired
+    private AssessDeclareDao declareDao;
+    @Autowired
+    private TrainningRecordDao recordDao;
+    @Autowired
+    private AssessApprovalDao approvalDao;
 
     /**
      * 员工检索，实现员工信息的多方位检索，包活员工编号、入职日期、部门、岗位和姓名检索
@@ -171,8 +188,10 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
     @Override
     public EmployeeVo getEmployeeVo(Integer employeeId) {
         Employee employee = this.getById ( employeeId );
+        Department department = departmentDao.selectById ( employee.getDepartmentId () );
         Personal personal = personalDao.selectById ( employee.getPersonalId () );
         EmployeeVo employeeVo = EntityUtils.toObj ( employee, EmployeeVo::new );
+        employeeVo.setDepartmentName ( department.getDepartmentName () );
         Optional.ofNullable ( personal ).ifPresent ( e -> employeeVo.addPersonalInfo ( personal ) );
         return employeeVo;
     }
@@ -190,8 +209,8 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
         // 将视图分解成对应实体类
         Employee employee = BeanCopyUtils.copyBean ( employeeVo, Employee.class );
         Personal personal = BeanCopyUtils.copyBean ( employeeVo, Personal.class );
-        String departmentName = employeeVo.getDepartmentName ();
-        Department department = departmentDao.selectOne ( Wrappers.lambdaQuery ( Department.class ).eq ( Department::getDepartmentName, departmentName ) );
+        // String departmentName = employeeVo.getDepartmentName ();
+        // Department department = departmentDao.selectOne ( Wrappers.lambdaQuery ( Department.class ).eq ( Department::getDepartmentName, departmentName ) );
         try {
             personalDao.insert ( personal );
             // 计算合同截止日期
@@ -199,7 +218,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
                 e.setEndContract ( DateUtil.endContract ( e.getStartContract (), e.getContractTerm () ) );
             } );
             employee.setPersonalId ( personal.getId () )
-                    .setDepartmentId ( department.getId () )
+                    // .setDepartmentId ( department.getId () )
                     .setWorkState ( "在职" )
                     .setHireDate ( employee.getStartContract () );
             this.save ( employee );
@@ -247,6 +266,9 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult deleteEmployee(Integer id) {
+        if (delCheck ( id )) {
+            return ResponseResult.errorResult ( AppHttpCodeEnum.SYSTEM_ERROR, "该记录已被使用，无法删除" );
+        }
         if (id != null) {
             Employee employee = this.getById ( id );
             Personal personal = personalDao.selectById ( employee.getPersonalId () );
@@ -264,6 +286,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
             return ResponseResult.errorResult ( AppHttpCodeEnum.SYSTEM_ERROR );
         }
     }
+
 
     /**
      * 无筛选条件分页查询合同 列表
@@ -308,6 +331,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
         EmployeeQueryDTO employeeQueryDTO = new EmployeeQueryDTO ();
         employeeQueryDTO.setCurrentPage ( 1 );
         employeeQueryDTO.setPageSize ( 100 );
+        employeeQueryDTO.setUserRole ( 1 );
         IPage<EmployeeVo> page = (IPage<EmployeeVo>) this.selectEmployeePage ( employeeQueryDTO ).getData ();
         List<EmployeeVo> list = page.getRecords ();
         return list;
@@ -341,6 +365,67 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
     public List<Integer> getEmployeeIdsByDepartmentId(String departmentId) {
         return this.list ( Wrappers.lambdaQuery ( Employee.class ).eq ( Employee::getDepartmentId, departmentId ) )
                 .stream ().map ( Employee::getId ).collect ( Collectors.toList () );
+    }
+
+    /**
+     * 删除数据校验，即实现外键功能
+     *
+     * @param id
+     *
+     * @return boolean
+     */
+    public boolean delCheck(Integer id) {
+        // 薪资表校验
+        List<Salary> salaryList = salaryDao.selectList ( Wrappers.lambdaQuery ( Salary.class ).eq ( Salary::getEmployeeId, id ) );
+        if (salaryList.size () > 0) {
+            return true;
+        }
+        // 合同表校验
+        List<Renewal> renewalList = renewalDao.selectList ( Wrappers.lambdaQuery ( Renewal.class ).eq ( Renewal::getEmployeeId, id ) );
+        if (renewalList.size () > 0) {
+            return true;
+        }
+        // 调岗表校验
+        List<Transfer> transferList = transferDao.selectList ( Wrappers.lambdaQuery ( Transfer.class ).eq ( Transfer::getEmployeeId, id ) );
+        if (transferList.size () > 0) {
+            return true;
+        }
+        // 复职表校验
+        List<Reinstatement> reinstatementList = reinstatementDao.selectList ( Wrappers.lambdaQuery ( Reinstatement.class ).eq ( Reinstatement::getEmployeeId, id ) );
+        if (reinstatementList.size () > 0) {
+            return true;
+        }
+        // 离职表校验
+        List<Resignation> resignationList = resignationDao.selectList ( Wrappers.lambdaQuery ( Resignation.class ).eq ( Resignation::getEmployeeId, id ) );
+        if (resignationList.size () > 0) {
+            return true;
+        }
+        // 考核名单表校验
+        List<AssessStaff> staffList = staffDao.selectList ( Wrappers.lambdaQuery ( AssessStaff.class ).eq ( AssessStaff::getEmployeeId, id ) );
+        if (staffList.size () > 0) {
+            return true;
+        }
+        // 员工考核表校验
+        List<AssessDeclare> declareList = declareDao.selectList ( Wrappers.lambdaQuery ( AssessDeclare.class ).eq ( AssessDeclare::getEmployeeId, id ) );
+        if (declareList.size () > 0) {
+            return true;
+        }
+        // 培训记录表校验
+        List<TrainningRecord> recordList = recordDao.selectList ( Wrappers.lambdaQuery ( TrainningRecord.class ).eq ( TrainningRecord::getEmployeeId, id ) );
+        if (recordList.size () > 0) {
+            return true;
+        }
+        // 用户表校验
+        List<User> userList = userDao.selectList ( Wrappers.lambdaQuery ( User.class ).eq ( User::getEmployeeId, id ) );
+        if (userList.size () > 0) {
+            return true;
+        }
+        // 绩效审核表校验
+        List<AssessApproval> approvalList = approvalDao.selectList ( Wrappers.lambdaQuery ( AssessApproval.class ).eq ( AssessApproval::getEmployeeId, id ) );
+        if (approvalList.size () > 0) {
+            return true;
+        }
+        return false;
     }
 
 }

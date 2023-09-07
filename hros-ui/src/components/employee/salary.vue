@@ -1,5 +1,6 @@
 <template>
-  <div class="">
+  <div v-if="user.employeeVo.workState=='离职'">无权限</div>
+  <div v-else>
     <div class="content" id="pjax-container">
       <div class="block block-rounded">
         <el-card class="notice-card ">
@@ -330,6 +331,10 @@ const handleCurrentChange = (val) => {
 }
 
 const EditRenewal = (row) => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   dialogUpdateVisible.value = true;
   state.updateData = JSON.parse(JSON.stringify(row));
 }
@@ -340,11 +345,19 @@ const clearFormData = () => {
   dialogUpdateVisible.value = false;
 }
 const EditSalary = (row) => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   dialogUpdateVisible.value = true;
   state.updateData = JSON.parse(JSON.stringify(row));
 }
 //新增薪资记录
 const save = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   //表单校检
   proxy.$refs.ruleFormRef.validate((valid) => {
     if (valid) {
@@ -365,6 +378,10 @@ const save = () => {
 }
 //修改
 const update = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.put('admin/employee/salary/update', state.updateData).then((res) => {
     try {
       if (res.code == 200) {
@@ -382,6 +399,10 @@ const update = () => {
 }
 //删除
 const DeleteSalary = (id) => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.delete('admin/employee/salary/delete/' + id).then((res) => {
     try {
       if (res.code == 200) {
@@ -398,6 +419,10 @@ const DeleteSalary = (id) => {
 }
 //加载数据
 const load = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.get('/admin/employee/salary/page', {
     params: {
       currentPage: currentPage.value,

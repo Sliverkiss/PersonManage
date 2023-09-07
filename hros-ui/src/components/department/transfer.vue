@@ -159,7 +159,14 @@
           </el-col>
           <el-col :span="12">
             <el-form-item prop="transferPost" size="large" label="调动岗位：" label-width="100">
-              <el-input v-model="state.formData.transferPost" placeholder="请输入调动岗位"></el-input>
+              <el-select v-model="state.formData.transferPost" placeholder="" style="width:2250px">
+                <el-option
+                    v-for="post in fitPostList"
+                    :key="post.id"
+                    :label="post.name"
+                    :value="post.name"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <!--          <el-col :span="12" v-if="user.role">-->
@@ -345,12 +352,13 @@
 </template>
 
 <script setup>
-import {getCurrentInstance, reactive, ref, toRaw} from 'vue'
+import {computed, getCurrentInstance, onMounted, reactive, ref, toRaw, watch} from 'vue'
 import {useDepartment} from "@/stores/department.js"
 import request from "@/request.js";
 import {ElMessage, ElNotification} from "element-plus";
 import {flexWidth} from '@/utils/tableUtils.js'
 import {useUser} from '@/stores/user.js'
+import {getPostList} from "@/api/department/post.js";
 
 const useStore = useUser();
 const user = useStore.getUser();
@@ -361,6 +369,8 @@ const activeName = ref('first')
 const state = reactive({
   tableData: [],
   secTableData: [],
+  departmentList: [],
+  postList: [],
   formData: {},
   updateData: {},
 })
@@ -499,8 +509,6 @@ const DeleteEntity = (id) => {
   })
 }
 const load = () => {
-  console.log("用户权限" + user.role)
-  console.log("用户员工编号" + user.employeeId)
   request.get('/admin/department/transfer/page', {
     params: {
       currentPage: currentPage.value,
@@ -538,9 +546,23 @@ const selectDepartmentList = () => {
     }
   })
 }
-
-load()
-selectDepartmentList();
+//获取岗位信息
+const postList = (() => {
+  getPostList().then((res) => {
+    state.postList = res.data;
+  });
+})
+//动态绑定生成可选岗位列表
+const fitPostList = computed(() => state.postList.filter(item => item.departmentId == state.formData.afterDepartment))
+//当部门列表发生变化时，清除岗位列表信息
+watch(() => state.formData.afterDepartment, (newValue, oldValue) => {
+  state.formData.transferPost = '';
+})
+onMounted(() => {
+  load();
+  postList();
+  selectDepartmentList();
+})
 </script>
 
 <style scoped>

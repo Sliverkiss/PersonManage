@@ -7,6 +7,8 @@ import io.github.sliverkiss.controller.DTO.ResignationDTO;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.Employee;
 import io.github.sliverkiss.domain.entity.Resignation;
+import io.github.sliverkiss.enums.AppHttpCodeEnum;
+import io.github.sliverkiss.exception.SystemException;
 import io.github.sliverkiss.service.EmployeeService;
 import io.github.sliverkiss.service.impl.ResignationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,10 @@ public class ResignationController extends BaseController<ResignationServiceImpl
 
     @Override
     public boolean beforeSaveCheck(Resignation resignation) {
+        Employee employee = employeeService.getById ( resignation.getEmployeeId () );
+        if (employee.getWorkState ().equals ( EmployeeConstants.WORK_STATE_LEAVES )) {
+            throw new SystemException ( AppHttpCodeEnum.RESIGNATION_ERROR );
+        }
         List<Resignation> list = service.list ( Wrappers.lambdaQuery ( Resignation.class ).eq ( Resignation::getEmployeeId, resignation.getEmployeeId () )
                 .eq ( Resignation::getState, SystemConstants.SYSTEM_STATUS_NONE ) );
         if (list.size () == 0) {

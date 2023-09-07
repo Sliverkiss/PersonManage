@@ -1,8 +1,7 @@
 package io.github.sliverkiss.dao;
 
 import io.github.sliverkiss.domain.entity.Employee;
-import org.apache.ibatis.annotations.CacheNamespace;
-import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.cache.decorators.ScheduledCache;
 
 /**
@@ -15,5 +14,11 @@ import org.apache.ibatis.cache.decorators.ScheduledCache;
 @CacheNamespace(flushInterval = 5 * 60 * 1000, eviction = ScheduledCache.class, blocking = true)
 public interface EmployeeDao extends ICrudDao<Employee> {
 
+    @Select("select * from hros.employee_work where id=#{id}")
+    @Results({
+            @Result(property = "personal", column = "personal_id", one = @One(select = "io.github.sliverkiss.dao.PersonalDao.getByEmployeeId")),
+            @Result(property = "department", column = "department_id", one = @One(select = "io.github.sliverkiss.dao.DepartmentDao.getById"))
+    })
+    public Employee getEmployeeById(Integer id);
 }
 

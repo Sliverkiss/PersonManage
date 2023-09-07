@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div v-if="user.employeeVo.workState=='离职'">无权限</div>
+  <div v-else>
     <el-tabs v-model="activeName" class="demo-tabs bg-white p-3 notice-card " @tab-click="handleClick">
       <el-tab-pane name="first">
         <template #label>
@@ -53,9 +54,9 @@
               <el-table-column label="离职类型" prop="kind" align="center"/>
               <el-table-column label="离职原因" prop="reason" min-width="120"/>
               <el-table-column label="申请日期" prop="applyDate" sortable min-width="120"/>
-              <el-table-column label="审核日期" prop="reviewDate" sortable min-width="120"/>
-              <el-table-column v-if="user.role" label="部门意见" prop="departmentComment" min-width="120"/>
-              <el-table-column label="审核人" prop="director"/>
+              <!--              <el-table-column label="审核日期" prop="reviewDate" sortable min-width="120"/>-->
+              <!--              <el-table-column v-if="user.role" label="部门意见" prop="departmentComment" min-width="120"/>-->
+              <!--              <el-table-column label="审核人" prop="director"/>-->
               <el-table-column prop="state" label="审核状态" align="center" sortable width="110">
                 <template #default="scope">
                   <el-tag
@@ -331,6 +332,10 @@ const save = () => {
 }
 //修改
 const update = () => {
+  if (user.employeeId == row.employeeId) {
+    ElMessage.warning("sorry,不允许审核自己~")
+    return;
+  }
   //传入审核人参数
   state.updateData.director = user.employeeVo.name;
   request.put('admin/department/resignation/update', state.updateData).then((res) => {

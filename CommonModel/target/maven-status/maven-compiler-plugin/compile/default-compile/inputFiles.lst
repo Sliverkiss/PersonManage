@@ -9,6 +9,7 @@
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/service/ReinstatementService.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/domain/entity/Reinstatement.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/service/UserService.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/controller/PostController.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/controller/DTO/AssessDeclareQueryDTO.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/utils/ExcelUtils.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/config/SecurityConfig.java
@@ -17,6 +18,7 @@
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/dao/EmployeeDao.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/dao/AssessDeclareDao.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/controller/DTO/ReinstatementQueryDTO.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/controller/DTO/PostQueryDTO.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/service/impl/AssessApprovalServiceImpl.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/constants/EmployeeConstants.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/dao/AssessItemDao.java
@@ -26,11 +28,13 @@
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/enums/WorkState.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/controller/DTO/AssessStaffQueryDTO.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/domain/entity/Employee.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/domain/vo/PostVo.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/domain/entity/RBAC/RolePermission.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/dao/SalaryDao.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/controller/DTO/ResignationDTO.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/dao/DepartmentDao.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/dao/TransferDao.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/service/impl/PostServiceImpl.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/controller/DTO/AssessSetQueryDTO.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/enums/AppHttpCodeEnum.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/utils/DateUtil.java
@@ -39,9 +43,11 @@
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/service/TransferService.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/dao/AssessApprovalDao.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/controller/DTO/NoticeQueryDTO.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/domain/entity/Post.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/service/impl/TransferServiceImpl.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/service/DepartmentService.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/service/IndicatorService.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/controller/DTO/UserQueryDTO.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/config/FastJsonRedisSerializer.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/domain/vo/AssessDeclareVo.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/service/impl/PersonalServiceImpl.java
@@ -68,12 +74,16 @@
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/service/impl/NoticeServiceImpl.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/utils/MD5Util.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/dao/RBAC/UserRoleDao.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/service/ReportService.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/domain/vo/NoticeVo.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/annotation/DataFilter.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/domain/entity/RBAC/User.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/service/ICrudService.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/service/impl/TrainningRecordServiceImpl.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/controller/DTO/TransferQueryDTO.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/controller/ReportController.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/dao/RBAC/UserDao.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/service/PostService.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/domain/entity/Renewal.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/domain/entity/TrainningRecord.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/domain/entity/assess/AssessDeclare.java
@@ -110,6 +120,7 @@
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/controller/UserController.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/domain/entity/TrainingPlan.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/service/AssessApprovalService.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/domain/vo/UserVo.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/controller/DTO/RenewalQueryDTO.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/service/impl/EmployeeServiceImpl.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/controller/RenewalController.java
@@ -118,6 +129,7 @@
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/service/EmployeeService.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/dao/ICrudDao.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/domain/entity/RBAC/Permission.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/service/impl/ReportServiceImpl.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/PersonManageApplication.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/handler/security/AuthenticationEntryPointImpl.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/service/NoticeService.java
@@ -160,10 +172,12 @@
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/service/AssessAndItemService.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/controller/AssessApprovalController.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/service/PersonalService.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/dao/PostDao.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/utils/RedisCache.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/domain/entity/assess/AssessAndItem.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/dao/ResignationDao.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/service/AssessStaffService.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/service/impl/TrainingPlanServiceImpl.java
+/Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/constants/PieContants.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/domain/vo/DepartmentVo.java
 /Volumes/Marginist/PersonManage/CommonModel/src/main/java/io/github/sliverkiss/utils/WebUtils.java

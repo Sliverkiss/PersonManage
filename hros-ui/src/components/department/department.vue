@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div v-if="user.employeeVo.workState=='离职'">无权限</div>
+  <div v-else>
     <div class="content" id="pjax-container">
       <div class="block block-rounded">
         <el-card class="notice-card ">
@@ -26,14 +27,14 @@
                   <el-select v-model="departmentId" style="width:150px" clearable
                              placeholder="请选择部门名称">
                     <el-option
-                        v-for="department in departmentStore.departmentList"
+                        v-for="department in  state.departmentList"
                         :key="department.id"
                         :label="department.departmentName"
                         :value="department.id"
                     />
                   </el-select>
-                  <el-input v-model="manager" style="width:160px;margin-left:10px"
-                            placeholder="请输入负责人" clearable></el-input>
+                  <!--                  <el-input v-model="manager    " style="width:160px;margin-left:10px"-->
+                  <!--                            placeholder="请输入负责人" clearable></el-input>-->
                   <el-button type="primary" class="ms-2" @click="load">
                     <el-icon>
                       <Search/>
@@ -129,8 +130,8 @@
                                 </div>
                               </template>
                               <div v-show="department?.postList">
-                                <el-tag v-for="post in department?.postList">
-                                  {{ post }}
+                                <el-tag v-for="post in department?.postList" class="me-2">
+                                  {{ post.name }}
                                 </el-tag>
                               </div>
                               <div v-show="!department?.postList">无</div>
@@ -327,7 +328,7 @@ const size = ref('')
 
 //模糊查询条件
 const currentPage = ref(1);//当前页
-const pageSize = ref(5);//页码展示数量
+const pageSize = ref(10);//页码展示数量
 const total = ref(10);//页码总数
 const departmentId = ref('');//部门编号
 const manager = ref('');//部门负责人
@@ -354,6 +355,7 @@ const state = reactive({
   tableData: [],
   formData: {},
   updateData: {},
+  departmentList: [],
 })
 
 const rules = reactive({
@@ -381,6 +383,10 @@ const handleCurrentChange = (val) => {
 }
 
 const EditDepartment = (row) => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   dialogUpdateVisible.value = true;
   state.updateData = JSON.parse(JSON.stringify(row));
 }
@@ -391,6 +397,10 @@ const clearFormData = () => {
   dialogUpdateVisible.value = false;
 }
 const save = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   //表单校检
   proxy.$refs.ruleFormRef.validate((valid) => {
     if (valid) {
@@ -411,6 +421,10 @@ const save = () => {
   })
 }
 const update = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.put('admin/department/update', state.updateData).then((res) => {
     try {
       if (res.code == 200) {
@@ -428,6 +442,10 @@ const update = () => {
   })
 }
 const DeleteEntity = (id) => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.delete('admin/department/delete/' + id).then((res) => {
     try {
       if (res.code == 200) {
@@ -447,7 +465,7 @@ const selectDepartmentList = () => {
   request.get('admin/department/list').then(res => {
     try {
       if (res.code === 200) {
-        departmentStore.setDepartmentList(res.data)
+        state.departmentList = res.data;
       }
     } catch (e) {
       ElMessage.error(e);
@@ -457,6 +475,10 @@ const selectDepartmentList = () => {
 
 
 const load = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.get('/admin/department/page', {
     params: {
       currentPage: currentPage.value,

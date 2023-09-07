@@ -1,14 +1,19 @@
 package io.github.sliverkiss.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import io.github.sliverkiss.constants.TrainConstants;
 import io.github.sliverkiss.controller.DTO.TrainingPlanDTO;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.TrainingPlan;
 import io.github.sliverkiss.domain.entity.TrainningRecord;
+import io.github.sliverkiss.enums.AppHttpCodeEnum;
+import io.github.sliverkiss.service.TrainningRecordService;
 import io.github.sliverkiss.service.impl.TrainingPlanServiceImpl;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author SliverKiss
@@ -18,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("admin/training/plan")
 public class TrainingPlanController extends BaseController<TrainingPlanServiceImpl, TrainingPlan> {
+    @Autowired
+    private TrainningRecordService recordService;
 
     @GetMapping("/page")
     public ResponseResult selectPage(TrainingPlanDTO trainingPlanDTO) {
@@ -49,5 +56,18 @@ public class TrainingPlanController extends BaseController<TrainingPlanServiceIm
                 break;
         }
     }
+
+    @Override
+    @DeleteMapping("/delete/{id}")
+    public ResponseResult delete(@PathVariable Integer id) {
+        LambdaQueryWrapper<TrainningRecord> wrapper = Wrappers.lambdaQuery ( TrainningRecord.class );
+        wrapper.eq ( TrainningRecord::getPlanId, id );
+        List<TrainningRecord> list = recordService.list ( wrapper );
+        if (list.size () > 0) {
+            return ResponseResult.errorResult ( AppHttpCodeEnum.SYSTEM_ERROR, "该计划已被使用，无法删除！" );
+        }
+        return service.deleteEntity ( id );
+    }
+
 
 }

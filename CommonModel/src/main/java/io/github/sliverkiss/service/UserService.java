@@ -15,5 +15,9 @@ public interface UserService extends ICrudService<User> {
     public ResponseResult login(User user);
 
     ResponseResult selectPage(UserQueryDTO dto);
+
+    ResponseResult changePassword(UserQueryDTO dto);
+
+    public User getUser(Integer employeeId);
 }
 

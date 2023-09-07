@@ -23,3 +23,7 @@ export function departmentBar() {
 export function politicBar() {
     return request.get('/admin/report/politic');
 }
+
+export function assessPointBar(assessId) {
+    return request.get('/admin/report/assess/' + assessId);
+}

@@ -59,7 +59,7 @@ const test = ref("测试");
 const routes = computed(() => store.routes)
 // 初始化时加载动态路由
 onBeforeMount(() => {
-  GetDynamicRoutes(1).then(res => {
+  GetDynamicRoutes(user.id).then(res => {
     state.treeData = res.data.permissions;
 
   })

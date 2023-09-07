@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div v-if="user.employeeVo.workState=='离职'">无权限</div>
+  <div v-else>
     <el-tabs v-model="activeName" class="demo-tabs bg-white p-3 notice-card " @tab-click="handleClick">
       <el-tab-pane name="first">
         <template #label>
@@ -184,6 +185,10 @@ const clearFormData = () => {
 }
 
 const save = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   //表单校检
   proxy.$refs.ruleFormRef.validate((valid) => {
     if (valid) {
@@ -193,7 +198,8 @@ const save = () => {
       //将数据发送到后端
       request.post('/admin/assess/approval/save', state.formData).then(res => {
         try {
-          ElMessage.success("已发送数据");
+          res.code == 200 ? ElMessage.success("审批成功！") : ElMessage.error(res.msg);
+          router.push('/assess/declare')
         } catch {
           ElMessage.error(res.msg);
         }
@@ -205,6 +211,10 @@ const save = () => {
 }
 //修改员工资料
 const load = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.get('/admin/assess/set/info/' + route.query.assessId).then(res => {
     try {
       state.tableData = res

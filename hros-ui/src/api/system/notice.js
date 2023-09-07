@@ -1,5 +1,9 @@
 import request from "@/request.js";
 
+export function getNoticeList() {
+    return request.get('/admin/notice/list');
+}
+
 export function addNotice(query) {
     return request.post('/admin/notice/save', query);
 }

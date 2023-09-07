@@ -4,6 +4,8 @@ import io.github.sliverkiss.controller.DTO.NoticeQueryDTO;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.Notice;
 
+import java.util.List;
+
 /**
  * 公告(Notice)表服务接口
  *
@@ -13,5 +15,7 @@ import io.github.sliverkiss.domain.entity.Notice;
 public interface NoticeService extends ICrudService<Notice> {
 
     ResponseResult selectPage(NoticeQueryDTO noticeQueryDTO);
+
+    List<Notice> getNoticeList();
 }
 

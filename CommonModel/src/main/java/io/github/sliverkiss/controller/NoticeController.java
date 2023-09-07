@@ -1,5 +1,7 @@
 package io.github.sliverkiss.controller;
 
+
+import cn.hutool.json.JSONUtil;
 import io.github.sliverkiss.controller.DTO.NoticeQueryDTO;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.Notice;
@@ -24,6 +26,11 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/admin/notice")
 public class NoticeController extends BaseController<NoticeServiceImpl, Notice> {
+
+    @GetMapping("/list")
+    public ResponseResult list() {
+        return ResponseResult.okResult ( service.getNoticeList () );
+    }
 
 
     @GetMapping("/page")
@@ -58,6 +65,43 @@ public class NoticeController extends BaseController<NoticeServiceImpl, Notice> 
         }
         log.warn ( "文件上传结束" );
         return newname;
+    }
+
+    /**
+     * 图片上传接口
+     *
+     * @param file
+     *
+     * @return {@link String}
+     */
+    @PostMapping("/file/uploadImg")
+    public Object uploadimg(MultipartFile file) {
+        log.warn ( "文件上传开始" );
+        // 使用MultipartFile类型接受前端发来的文件
+        // 获取到文件的全名
+        String filename = file.getOriginalFilename ();
+        // 给文件重新命名
+        String newname = System.currentTimeMillis () + filename.substring ( filename.lastIndexOf ( '.' ) );
+        System.out.println ( newname );
+        // 设置文件存储目录
+        String path = "/Volumes/Marginist/PersonManage/hros-ui/static/upload_photo";
+        // 创建目录文件
+        File newpath = new File ( path );
+        // 判断目录是否存在，不存在则创建
+        if (!newpath.exists ()) {
+            newpath.mkdir ();
+        }
+        try {
+            // 根据newpath和newname创建一个全新的File实例
+            File newfile = new File ( newpath, newname );
+            // 将前端的初始化file转换为全新的newfile
+            file.transferTo ( newfile );
+        } catch (IOException e) {
+            throw new RuntimeException ( e );
+        }
+        log.warn ( "文件上传结束" );
+        String url = "http://localhost:8080/static/upload_photo/" + newname;
+        return JSONUtil.parseObj ( "{\"errno\":0,\"data\":[{\"url\":\"" + url + "\"}]}" );
     }
 
     @Override

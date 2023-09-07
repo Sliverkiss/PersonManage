@@ -1,6 +1,7 @@
 package io.github.sliverkiss.domain.vo;
 
 import io.github.sliverkiss.domain.entity.Department;
+import io.github.sliverkiss.domain.entity.Post;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,9 +24,8 @@ public class DepartmentVo extends Department {
     private Department parentDepartment;
     // 部门下员工名单
     private List<EmployeeVo> employeeVoList;
-
     // 岗位列表
-    private List<String> postList;
+    private List<Post> postList;
 
     public DepartmentVo(Department department) {
         super ( department );

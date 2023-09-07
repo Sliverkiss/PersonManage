@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div v-if="user.employeeVo.workState=='离职'">无权限</div>
+  <div v-else>
     <el-tabs v-model="activeName" class="demo-tabs bg-white p-3 notice-card " @tab-click="handleClick">
       <el-tab-pane name="first">
         <template #label>
@@ -185,7 +186,7 @@
 <script setup>
 //加载后端合同数据
 import request from "@/request.js";
-import {getCurrentInstance, reactive, ref} from "vue";
+import {getCurrentInstance, onMounted, reactive, ref} from "vue";
 import {useContract} from "@/stores/employee.js";
 import {useDepartment} from "@/stores/department.js"
 import {ElMessage, ElNotification} from "element-plus";
@@ -256,8 +257,16 @@ const handleCurrentChange = (val) => {
   load()
 }
 const EditRenewal = (row) => {
-  dialogUpdateVisible.value = true;
-  state.updateData = JSON.parse(JSON.stringify(row));
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
+  if (row.planState != '已结束') {
+    ElMessage.warning("该培训未结束，无需录入成绩～")
+  } else {
+    dialogUpdateVisible.value = true;
+    state.updateData = JSON.parse(JSON.stringify(row));
+  }
 }
 const clearFormData = () => {
   let clearData = {}
@@ -267,6 +276,10 @@ const clearFormData = () => {
 }
 
 const save = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   //表单校检
   proxy.$refs.ruleFormRef.validate((valid) => {
     if (valid) {
@@ -288,6 +301,10 @@ const save = () => {
 }
 //修改员工资料
 const update = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.put('admin/training/record/update', state.updateData).then((res) => {
     try {
       if (res.code == 200) {
@@ -304,15 +321,19 @@ const update = () => {
   })
 }
 
-//
 const load = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.get('/admin/training/record/page', {
     params: {
       currentPage: currentPage.value,
       pageSize: pageSize.value,
       planName: planName.value,
       planState: planState.value,
-      employeeId: user.role ? employeeId.value : user.employeeId || 1
+      employeeId: user.employeeId,
+      userRole: user.role
     }
   }).then(res => {
     try {
@@ -334,6 +355,10 @@ const load = () => {
 }
 
 const Del = (id) => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.delete('admin/training/record/delete/' + id).then((res) => {
     try {
       if (res.code == 200) {
@@ -359,8 +384,11 @@ const selectDepartmentList = () => {
     }
   })
 }
-load()
-selectDepartmentList();
+
+onMounted(() => {
+  load();
+  selectDepartmentList();
+})
 </script>
 <style scoped>
 .notice-card {

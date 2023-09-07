@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div v-if="user.employeeVo.workState=='离职'">无权限</div>
+  <div v-else>
     <el-tabs v-model="activeName" class="demo-tabs bg-white p-3 notice-card " @tab-click="handleClick">
       <el-tab-pane name="first">
         <template #label>
@@ -352,6 +353,10 @@ const handleCurrentChange = (val) => {
   load()
 }
 const EditRenewal = (row) => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   dialogUpdateVisible.value = true;
   state.updateData = JSON.parse(JSON.stringify(row));
 }
@@ -363,6 +368,10 @@ const clearFormData = () => {
 }
 
 const save = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   //表单校检
   proxy.$refs.ruleFormRef.validate((valid) => {
     if (valid) {
@@ -384,6 +393,10 @@ const save = () => {
 }
 //修改员工资料
 const update = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.put('admin/training/plan/update', state.updateData).then((res) => {
     try {
       if (res.code == 200) {
@@ -400,29 +413,40 @@ const update = () => {
   })
 }
 const signUp = (row) => {
-  console.log(row.id)
-  request.get('admin/training/plan/sign', {
-    params: {
-      planId: row.id,
-      employeeId: 1,
-    }
-  }).then((res) => {
-    try {
-      if (res.code == 200) {
-        ElNotification.success(res.msg);
-      } else {
-        ElMessage.error(res.msg);
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
+  if (row.status != '未开始') {
+    ElMessage.warning("该培训计划已停止报名～")
+  } else {
+    request.get('admin/training/plan/sign', {
+      params: {
+        planId: row.id,
+        employeeId: 1,
       }
-    } catch {
-      ElMessage.error(res.msg);
-    } finally {
-      clearFormData();
-      load();
-    }
-  })
+    }).then((res) => {
+      try {
+        if (res.code == 200) {
+          ElNotification.success(res.msg);
+        } else {
+          ElMessage.error(res.msg);
+        }
+      } catch {
+        ElMessage.error(res.msg);
+      } finally {
+        clearFormData();
+        load();
+      }
+    })
+  }
 }
 //
 const load = () => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.get('/admin/training/plan/page', {
     params: {
       currentPage: currentPage.value,
@@ -450,6 +474,10 @@ const load = () => {
 }
 //删除员工资料
 const DelRenewal = (id) => {
+  if (user.employeeVo.workState == '离职') {
+    ElMessage.warning("sorry,您已离职，无操作权限~")
+    return;
+  }
   request.delete('admin/training/plan/delete/' + id).then((res) => {
     try {
       if (res.code == 200) {

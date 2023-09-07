@@ -3,6 +3,7 @@ package io.github.sliverkiss.dao;
 import io.github.sliverkiss.domain.entity.assess.AssessDeclare;
 import org.apache.ibatis.annotations.CacheNamespace;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.cache.decorators.ScheduledCache;
 
 /**
@@ -15,5 +16,8 @@ import org.apache.ibatis.cache.decorators.ScheduledCache;
 @CacheNamespace(flushInterval = 5 * 60 * 1000, eviction = ScheduledCache.class, blocking = true)
 public interface AssessDeclareDao extends ICrudDao<AssessDeclare> {
 
+    // 根据assessId获取delcare
+    @Select("select * from hros.assess_declare where id=#{id}")
+    AssessDeclare getById(Integer id);
 }
 

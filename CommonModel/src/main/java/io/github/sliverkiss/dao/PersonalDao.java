@@ -20,7 +20,10 @@ public interface PersonalDao extends BaseMapper<Personal> {
     Personal getByEmployeeId(Integer personalId);
 
     @Select("select * from employee_work where id=#{employeeId}")
-    @Results({@Result(property = "personal", column = "personal_id", one = @One(select = "getByEmployeeId"))})
+    @Results({
+            @Result(property = "personal", column = "personal_id", one = @One(select = "getByEmployeeId")),
+            @Result(property = "department", column = "department_id", one = @One(select = "io.github.sliverkiss.dao.DepartmentDao.getById"))
+    })
     Employee getById(@Param("employeeId") Integer employeeId);
 
 }
