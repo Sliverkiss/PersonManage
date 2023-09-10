@@ -28,6 +28,12 @@ public class SalaryController extends BaseController<SalaryServiceImpl, Salary> 
 
     @Override
     public void beforeSave(Salary salary) throws Exception {
+        // List<Salary> salaryList=service.list ( Wrappers.lambdaQuery (Salary.class)
+        //         .eq ( Salary::getEmployeeId,salary.getEmployeeId () )
+        //         .eq ( Salary::getSalaryDate,salary.getSalaryDate () ));
+        // if (salaryList.size()>0){
+        //     throw new RuntimeException ("员工该月份薪资记录已存在，无需重复新增～");
+        // }
         // 获取当前日期并注入renewal
         String payDate = new SimpleDateFormat ( "yyy-MM-dd" ).format ( new Date () );
         Double netSalary = this.netSalary ( salary );

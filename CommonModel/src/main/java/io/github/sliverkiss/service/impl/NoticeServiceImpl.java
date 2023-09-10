@@ -32,13 +32,15 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeDao, Notice> implements
         Page<Notice> page = this.toPage ( noticeQueryDTO );
         String title = noticeQueryDTO.getTitle ();
         String createDate = noticeQueryDTO.getCreateDate ();
-        String director = noticeQueryDTO.getDirector ();
         try {
             // 模糊查询
-            LambdaQueryWrapper<Notice> wrapper = Wrappers.lambdaQuery ( Notice.class )
-                    .like ( StringUtils.isNotBlank ( title ), Notice::getTitle, title )
-                    .like ( StringUtils.isNotBlank ( createDate ), Notice::getCreateDate, createDate )
-                    .like ( StringUtils.isNotBlank ( director ), Notice::getDirector, director );
+            LambdaQueryWrapper<Notice> wrapper = Wrappers.lambdaQuery ( Notice.class );
+            if (StringUtils.isNotBlank ( title )) {
+                wrapper.like ( Notice::getTitle, title );
+            }
+            if (StringUtils.isNotBlank ( createDate )) {
+                wrapper.like ( Notice::getCreateDate, createDate );
+            }
             Page<Notice> NoticeVoPage = this.page ( page, wrapper );
             IPage<NoticeVo> NoticeVoIPage = EntityUtils.toPage ( NoticeVoPage, NoticeVo::new );
             // 属性注入

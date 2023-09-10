@@ -21,7 +21,7 @@
         </div>
       </div>
       <div style="flex:1"></div>
-      <div class="" style="width:120px">
+      <div class="" style="width:120px" v-if="user.role==0">
         <el-button type="success" plain @click="dialogFormVisiblee= true">
           <el-icon>
             <Plus/>

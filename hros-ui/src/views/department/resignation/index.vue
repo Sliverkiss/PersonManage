@@ -291,6 +291,10 @@ const handleMordChange = (row) => {
 }
 //打开修改窗口
 const EditRenewal = (row) => {
+  if (user.employeeId == row.employeeId) {
+    ElMessage.warning("sorry,不允许审核自己~")
+    return;
+  }
   if (user.employeeVo.workState == '离职') {
     ElMessage.warning("sorry,您已离职，无操作权限~")
     return;
@@ -334,10 +338,6 @@ const save = () => {
 }
 //修改
 const update = () => {
-  if (user.employeeId == row.employeeId) {
-    ElMessage.warning("sorry,不允许审核自己~")
-    return;
-  }
   if (user.employeeVo.workState == '离职') {
     ElMessage.warning("sorry,您已离职，无操作权限~")
     return;

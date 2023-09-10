@@ -423,7 +423,7 @@ const signUp = (row) => {
     request.get('admin/training/plan/sign', {
       params: {
         planId: row.id,
-        employeeId: 1,
+        employeeId: user.employeeId,
       }
     }).then((res) => {
       try {

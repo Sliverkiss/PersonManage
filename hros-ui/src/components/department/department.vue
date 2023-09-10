@@ -407,7 +407,7 @@ const save = () => {
       //发送后台请求
       request.post('admin/department/save', state.formData).then(res => {
         if (res.code == '200') {
-          ElNotification.success('新增薪资成功！')
+          ElNotification.success('新增成功！')
         } else {
           ElMessage.error('系统服务异常，请稍后再试~')
         }

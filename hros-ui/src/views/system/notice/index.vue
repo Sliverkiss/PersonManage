@@ -12,11 +12,11 @@
         <div class="text-muted fw-bold mt-2 mb-2" style="display:flex">
           <div class="row">
             <div class="col-sm-12 col-md-12">
-              <el-input v-model="planName" style="width:180px;margin-right:10px" clearable
+              <el-input v-model="findTitle" style="width:180px;margin-right:10px" clearable
                         placeholder="请输入公告标题">
               </el-input>
               <el-date-picker
-                  v-model="state.updateData.createDate"
+                  v-model="createDate"
                   type="date"
                   placeholder="请选择发布日期"
                   format="YYYY/MM/DD"
@@ -247,8 +247,8 @@ const handleCurrentChange = (val) => {
   load()
 }
 //模糊查询条件
-const planName = ref('');
-const status = ref('');
+const findTitle = ref('');
+const createDate = ref('');
 //初始化加载数据
 const load = () => {
   if (user.employeeVo.workState == '离职') {
@@ -259,8 +259,8 @@ const load = () => {
     params: {
       currentPage: currentPage.value,
       pageSize: pageSize.value,
-      planName: planName.value,
-      status: status.value
+      title: findTitle.value,
+      createDate: createDate.value
     }
   }).then(res => {
     try {
