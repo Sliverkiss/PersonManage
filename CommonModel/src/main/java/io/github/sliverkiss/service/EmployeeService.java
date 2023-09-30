@@ -61,8 +61,13 @@ public interface EmployeeService extends IService<Employee> {
 
     EmployeeVo getEmployeeVo(Integer employeeId);
 
+    Employee getEmployeeById(Integer id);
+
     public List<Integer> getEmployeeIdsLikeName(String employeeName);
 
     public List<Integer> getEmployeeIdsByDepartmentId(String departmentId);
+
+    public List<Employee> selectEmployeesLikeName();
+
 }
 

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -33,6 +34,8 @@ public class Post extends BaseEntity implements Serializable {
     private Integer departmentId;
     @TableField(exist = false)
     private Department department;
+    @TableField(exist = false)
+    private List<Employee> employeeList;
 
     public Post(Post post) {
         Optional.ofNullable ( post ).ifPresent ( e -> {
@@ -40,6 +43,7 @@ public class Post extends BaseEntity implements Serializable {
             this.name = e.getName ();
             this.departmentId = e.getDepartmentId ();
             this.department = e.getDepartment ();
+            this.employeeList = e.getEmployeeList ();
         } );
     }
 }

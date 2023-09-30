@@ -25,11 +25,11 @@
               <!--                    :value="department.id"-->
               <!--                />-->
               <!--              </el-select>-->
-              <el-select v-model="status" style="width:150px;;margin-left: 10px" placeholder="请选择审核状态"
+              <el-select v-model="status" style="width:150px;;margin-left: 10px" placeholder="请选择续约状态"
                          clearable>
-                <el-option label="审核中" value="审核中"/>
-                <el-option label="通过" value="通过"/>
-                <el-option label="未通过" value="未通过"/>
+                <el-option label="处理中" value="处理中"/>
+                <el-option label="同意" value="同意"/>
+                <el-option label="未同意" value="未同意"/>
               </el-select>
               <el-button type="primary" class="ms-2" @Click="load">
                 <el-icon>
@@ -40,12 +40,12 @@
             </div>
           </div>
           <div style="flex:1"></div>
-          <div class="" style="width:120px" v-if="!user.role">
+          <div class="" style="width:120px" v-if="user.role">
             <el-button type="success" plain @click="dialogFormVisible= true">
               <el-icon>
                 <Plus/>
               </el-icon>
-              <span>申请续约</span></el-button>
+              <span>发起续约</span></el-button>
           </div>
         </div>
         <div class="row">
@@ -60,10 +60,10 @@
               <el-table-column label="续约年数" prop="renewalAge" align="center"/>
               <!--              <el-table-column label="审核日期" prop="approvedDate" sortable align="center" width="120"/>-->
               <!--              <el-table-column label="审核人" prop="director" align="center"/>-->
-              <el-table-column prop="state" label="审核状态" align="center" sortable width="120">
+              <el-table-column prop="state" label="续约状态" align="center" sortable width="120">
                 <template #default="scope">
                   <el-tag
-                      :type="scope.row.state === '通过' ? '' :scope.row.state ==='未通过'?'danger': 'warning'"
+                      :type="scope.row.state === '同意' ? '' :scope.row.state ==='未同意'?'danger': 'warning'"
                       disable-transitions
                   >{{ scope.row.state }}
                   </el-tag>
@@ -74,16 +74,16 @@
                   <el-link @click="handleMordChange(scope.row)" type="primary"> 查看详情</el-link>
                 </template>
               </el-table-column>
-              <el-table-column fixed="right" align="center" label="操作" width="120" v-if="user.role">
+              <el-table-column fixed="right" align="center" label="操作" width="120" v-if="!user.role">
                 <template #default="scope">
-                  <div v-if="user.role">
-                    <el-button size="small" style="background-color:#66b1ff" @click="EditRenewal(scope.row)"
-                               v-if="scope.row.state=='审核中'">
+                  <div>
+                    <el-button size="small" style="background-color:#66b1ff" @click="EditRenewal(scope.row)">
                       <el-icon>
                         <Edit style="color:#213d5b"/>
                       </el-icon>
                     </el-button>
-                    <el-popconfirm @confirm="DelRenewal(scope.row.id)" title="确认删除?"
+                    <el-popconfirm v-if="user.role"
+                                   @confirm="DelRenewal(scope.row.id)" title="确认删除?"
                                    confirm-button-text="确认"
                                    cancel-button-text="取消">
                       <template #reference>
@@ -124,11 +124,16 @@
     </el-tabs>
   </div>
 
-  <!--  新增续约表单-->
   <div>
-    <el-dialog v-model="dialogFormVisible" title="续约申请" align-center center class="" width="350"
+    <el-dialog v-model="dialogFormVisible" title="发起续约" align-center center class="" width="350"
                style="border-radius: 0.875rem 1rem;">
       <el-form :model="state.formData" class="" status-icon :rules="rules" ref="ruleFormRef">
+        <el-form-item prop="employeeId" size="large" label="员工编号：">
+          <el-select v-model="state.formData.employeeId" style="width:320px" placeholder="请输入或选择员工"
+                     clearable filterable>
+            <el-option v-for="item in state.empList" :label="item.id+' '+item.personal.name" :value="item.id"/>
+          </el-select>
+        </el-form-item>
         <el-form-item prop="renewalAge" size="large" label="续约年数：">
           <el-select v-model="state.formData.renewalAge" placeholder="请选择续约年数" style="width:2250px">
             <el-option
@@ -144,7 +149,7 @@
 
       <template #footer>
       <span class="dialog-footer">
-        <el-button @click="save" type="primary">申请</el-button>
+        <el-button @click="save" type="primary">确定</el-button>
         <el-button @click="clearFormData">
           取消
         </el-button>
@@ -154,24 +159,23 @@
   </div>
   <!--  续约审核表单-->
   <div>
-    <el-dialog v-model="dialogUpdateVisible" title="续约审核" align-center center class="" width="350"
+    <el-dialog v-model="dialogUpdateVisible" title="续约详情" align-center center class="" width="350"
                style="border-radius: 0.875rem 1rem;">
       <el-form :model="state.updateData" class="" status-icon :rules="rules" ref="ruleFormRef">
-        <el-form-item prop="departmentComment" size="large" label="部门意见：">
-          <el-input v-model="state.updateData.departmentComment" type="textarea"
-                    placeholder="请输入部门意见"></el-input>
+        <el-form-item prop="state" size="large" label="续约结果：">
+          <el-radio-group v-model="state.updateData.state" class="ml-4">
+            <el-radio label="同意" size="large">同意</el-radio>
+            <el-radio label="未同意" size="large">未同意</el-radio>
+          </el-radio-group>
         </el-form-item>
-        <el-form-item prop="state" size="large" label="审核结果：">
-          <el-select v-model="state.updateData.state" placeholder="请选择审核结果" style="width:2250px">
-            <el-option label="通过" value="通过"/>
-            <el-option label="审核中" value="审核中"/>
-            <el-option label="未通过" value="未通过"/>
-          </el-select>
+        <el-form-item prop="departmentComment" size="large" label="个人意见：">
+          <el-input v-model="state.updateData.departmentComment" type="textarea"
+                    placeholder="请输入个人意见"></el-input>
         </el-form-item>
       </el-form>
       <template #footer>
       <span class="dialog-footer">
-        <el-button @click="update" type="primary">审核</el-button>
+        <el-button @click="update" type="primary">确定</el-button>
         <el-button @click="clearFormData">
           取消
         </el-button>
@@ -181,22 +185,22 @@
   </div>
 
   <div>
-    <el-dialog v-model="dialogMoreVisible" title="审核详情" align-center center class="" width="600"
+    <el-dialog v-model="dialogMoreVisible" title="续约详情" align-center center class="" width="600"
                style="border-radius: 0.875rem 1rem;">
       <el-form :model="state.updateData" class="" status-icon :rules="rules"
                label-position="top" ref="ruleFormRef">
         <el-timeline>
           <el-timeline-item icon="MoreFilled" type="primary" size="large" :timestamp="state.updateData.applyDate">
-            提交审核
+            邀请续约
+            <p class="text-muted p-0 m-0" style="font-size:13px">发起人:{{ state.updateData.director }}</p>
           </el-timeline-item>
           <el-timeline-item icon="MoreFilled" type="warning" size="large" :timestamp="state.updateData.applyDate">
-            审核中
+            处理中
           </el-timeline-item>
           <el-timeline-item icon="close" type="danger" size="large" :timestamp="state.updateData.approvedDate"
-                            v-if="state.updateData.state=='未通过'">
-            未通过
-            <p class="text-muted " style="font-size:13px">审核人:{{ state.updateData.director }}</p>
-            <el-form-item prop="departmentComment" size="large" label="部门意见：">
+                            v-if="state.updateData.state=='未同意'">
+            拒绝续约
+            <el-form-item prop="departmentComment" size="large" label="员工意见：">
               <el-input v-model="state.updateData.departmentComment"
                         :autosize="{ minRows: 4, maxRows: 8 }"
                         type="textarea" disabled></el-input>
@@ -204,10 +208,9 @@
 
           </el-timeline-item>
           <el-timeline-item icon="check" type="success" size="large" :timestamp="state.updateData.approvedDate"
-                            v-else-if="state.updateData.state=='通过'">
-            通过
-            <p class="text-muted " style="font-size:13px">审核人:{{ state.updateData.director }}</p>
-            <el-form-item prop="departmentComment" size="large" label="部门意见：">
+                            v-else-if="state.updateData.state=='同意'">
+            同意续约
+            <el-form-item prop="departmentComment" size="large" label="员工意见：">
               <el-input v-model="state.updateData.departmentComment"
                         :autosize="{ minRows: 4, maxRows: 8 }"
                         type="textarea" disabled></el-input>
@@ -231,13 +234,14 @@
 <script setup>
 //加载后端合同数据
 import request from "@/request.js";
-import {getCurrentInstance, reactive, ref} from "vue";
+import {getCurrentInstance, onMounted, reactive, ref} from "vue";
 import {useContract} from "@/stores/employee.js";
 import {ElMessage, ElNotification} from "element-plus";
 import {useUser} from '@/stores/user.js'
 import {useRouter} from "vue-router";
 //部门列表
 import {useDepartment} from "@/stores/department.js"
+import {listEmployeeColumnValues} from "@/api/employee/work.js";
 
 const departmentStore = useDepartment();
 const {proxy} = getCurrentInstance();
@@ -294,6 +298,10 @@ const handleCurrentChange = (val) => {
   load()
 }
 const EditRenewal = (row) => {
+  if (row.state != '处理中') {
+    ElMessage.warning("续约处理已结束，无需重复处理～")
+    return;
+  }
   if (user.employeeVo.workState == '离职') {
     ElMessage.warning("sorry,您已离职，无操作权限~")
     return;
@@ -325,11 +333,11 @@ const save = () => {
   //表单校检
   proxy.$refs.ruleFormRef.validate((valid) => {
     if (valid) {
-      state.formData.employeeId = user.employeeId;
       //发送后台请求
+      state.formData.director = user.employeeVo.name;
       request.post('admin/employee/renewal/save', state.formData).then(res => {
         if (res.code == '200') {
-          ElNotification.success('续约申请成功！')
+          ElNotification.success('发起续约成功！')
         } else {
           ElMessage.warning(res.msg)
         }
@@ -347,11 +355,6 @@ const update = () => {
     ElMessage.warning("sorry,您已离职，无操作权限~")
     return;
   }
-  if (user.employeeId == row.employeeId) {
-    ElMessage.warning("sorry,不允许审核自己~")
-    return;
-  }
-  state.updateData.director = user.employeeVo.name;
   request.put('admin/employee/renewal/update', state.updateData).then((res) => {
     try {
       if (res.code == 200) {
@@ -390,9 +393,6 @@ const load = () => {
       if (res.code === 200) {
         state.tableData = res.data?.records
         total.value = res.data.total - 0;
-        if (res.data.records.length == 0) {
-          ElMessage.warning('暂无待审核列表～');
-        }
       } else {
         state.tableData = [];
         total.value = 0
@@ -439,8 +439,17 @@ const selectDepartmentList = () => {
     }
   })
 }
-selectDepartmentList();
-load()
+const getEmpList = () => {
+  listEmployeeColumnValues().then((res) => {
+    state.empList = res.data;
+  })
+}
+onMounted(() => {
+  selectDepartmentList();
+  getEmpList();
+  load();
+})
+
 </script>
 
 <style scoped>

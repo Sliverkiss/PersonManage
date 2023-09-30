@@ -446,71 +446,77 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <div v-if="user.role">
-          <el-divider/>
-          <h6 class="mb-3">工作信息</h6>
-          <el-row :gutter="24">
-            <el-col :span="10">
-              <el-form-item prop="engageForm" label="合同类型:">
-                <el-select v-model="state.updateData.engageForm" placeholder="" disabled>
-                  <el-option label="劳务合同" value="劳务合同"/>
-                  <el-option label="外聘合同" value="外聘合同"/>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item prop="departmentName" label="部门:">
-                <el-select v-model="state.updateData.departmentName" style="width:220px" disabled>
-                  <el-option
-                      v-for="department in  departmentStore.departmentList"
-                      :key="department.id"
-                      :label="department.departmentName"
-                      :value="department.departmentName"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="10">
-              <el-form-item prop="post" label="岗位:">
-                <el-input v-model="state.updateData.post" disabled></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item prop="startContract" label="合同起始日期:">
-                <div class="demo-date-picker">
-                  <div class="block" style="width:50px">
-                    <el-date-picker
-                        v-model="state.updateData.startContract"
-                        type="date"
-                        disabled
-                        format="YYYY/MM/DD"
-                        value-format="YYYY-MM-DD"
-                        placeholder=""
-                        style="width:165px"
-                        :size="10"/>
-                  </div>
-                </div>
-              </el-form-item>
-            </el-col>
-            <el-col :span="10">
-              <el-form-item label="职称:" prop="level">
-                <el-input v-model="state.updateData.level"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item prop="contractTerm" label="合同年限:">
-                <el-select v-model="state.updateData.contractTerm" placeholder="Select" disabled>
-                  <el-option
-                      v-for="(item,index) in 5"
-                      :key="index"
-                      :label="item+'年'"
-                      :value="item"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </div>
+        <!--        <div v-if="user.role">-->
+        <!--          <el-divider/>-->
+        <!--          <h6 class="mb-3">工作信息</h6>-->
+        <!--          <el-row :gutter="24">-->
+        <!--            <el-col :span="10">-->
+        <!--              <el-form-item prop="engageForm" label="合同类型:">-->
+        <!--                <el-select v-model="state.updateData.engageForm" placeholder="" >-->
+        <!--                  <el-option label="劳务合同" value="劳务合同"/>-->
+        <!--                  <el-option label="外聘合同" value="外聘合同"/>-->
+        <!--                </el-select>-->
+        <!--              </el-form-item>-->
+        <!--            </el-col>-->
+        <!--            <el-col :span="12">-->
+        <!--              <el-form-item prop="departmentId" label="部门:">-->
+        <!--                <el-select v-model="state.updateData.departmentId" style="width:220px">-->
+        <!--                  <el-option-->
+        <!--                      v-for="department in departmentStore.departmentList"-->
+        <!--                      :key="department.id"-->
+        <!--                      :label="department.departmentName"-->
+        <!--                      :value="department.id"-->
+        <!--                  />-->
+        <!--                </el-select>-->
+        <!--              </el-form-item>-->
+        <!--            </el-col>-->
+        <!--            <el-col :span="10">-->
+        <!--              <el-form-item prop="post" label="岗位:">-->
+        <!--                <el-select v-model="state.updateData.post" placeholder="">-->
+        <!--                  <el-option-->
+        <!--                      v-for="post in fitUpdatePostList"-->
+        <!--                      :key="post.id"-->
+        <!--                      :label="post.name"-->
+        <!--                      :value="post.name"-->
+        <!--                  />-->
+        <!--                </el-select>-->
+        <!--              </el-form-item>-->
+        <!--            </el-col>-->
+        <!--            <el-col :span="12">-->
+        <!--              <el-form-item prop="startContract" label="合同起始日期:">-->
+        <!--                <div class="demo-date-picker">-->
+        <!--                  <div class="block" style="width:50px">-->
+        <!--                    <el-date-picker-->
+        <!--                        v-model="state.updateData.startContract"-->
+        <!--                        type="date"-->
+        <!--                        format="YYYY/MM/DD"-->
+        <!--                        value-format="YYYY-MM-DD"-->
+        <!--                        placeholder=""-->
+        <!--                        style="width:165px"-->
+        <!--                        :size="10"/>-->
+        <!--                  </div>-->
+        <!--                </div>-->
+        <!--              </el-form-item>-->
+        <!--            </el-col>-->
+        <!--            <el-col :span="10">-->
+        <!--              <el-form-item label="职称:" prop="level">-->
+        <!--                <el-input v-model="state.updateData.level"></el-input>-->
+        <!--              </el-form-item>-->
+        <!--            </el-col>-->
+        <!--            <el-col :span="12">-->
+        <!--              <el-form-item prop="contractTerm" label="合同年限:">-->
+        <!--                <el-select v-model="state.updateData.contractTerm" placeholder="Select">-->
+        <!--                  <el-option-->
+        <!--                      v-for="(item,index) in 5"-->
+        <!--                      :key="index"-->
+        <!--                      :label="item+'年'"-->
+        <!--                      :value="item"-->
+        <!--                  />-->
+        <!--                </el-select>-->
+        <!--              </el-form-item>-->
+        <!--            </el-col>-->
+        <!--          </el-row>-->
+        <!--        </div>-->
       </el-form>
 
       <template #footer>
@@ -546,62 +552,62 @@ const {proxy} = getCurrentInstance();
 const dialogFormVisible = ref(false)
 const dialogUpdateVisible = ref(false);
 const rules = reactive({
-  name: [
-    {required: true, message: '请输入姓名', trigger: 'blur'}
-  ],
-  gender: [
-    {required: true, message: '请选择性别', trigger: 'blur'}
-  ],
-  birthday: [
-    {type: 'date', required: true, message: '请输入生日', trigger: 'blur'}
-  ],
-  idCard: [
-    {required: true, message: '请输入身份证号', trigger: 'blur'},
-    {min: 18, max: 18, message: '身份证号长度必须为18位', trigger: 'blur'},
-  ],
-  wedlock: [
-    {required: true, message: '请选择婚姻状况', trigger: 'change'}
-  ],
-  nation: [
-    {required: true, message: '请输入民族', trigger: 'blur'}
-  ],
-  naticePlace: [
-    {required: true, message: '请输入籍贯', trigger: 'blur'}
-  ],
-  politic: [
-    {required: true, message: '请选择政治面貌', trigger: 'change'}
-  ],
-  phone: [
-    {type: 'number', required: true, message: '请输入联系电话', trigger: 'blur'},
-    {type: 'number', message: '联系电话只能输入数字'},
-  ],
-  email: [
-    {required: true, message: '请输入邮箱', trigger: 'blur'}
-  ],
-  address: [
-    {required: true, message: '请输入地址', trigger: 'blur'}
-  ],
-  tiptopDegree: [
-    {required: true, message: '请选择最高学历', trigger: 'change'}
-  ],
-  specialty: [
-    {required: true, message: '请输入所学专业', trigger: 'blur'}
-  ],
-  school: [
-    {required: true, message: '请输入毕业院校', trigger: 'blur'}
-  ],
-  departmentName: [
-    {required: true, message: '请输入部门名称', trigger: 'blur'}
-  ],
-  startContract: [
-    {type: 'date', required: true, message: '请选择合同起始日期', trigger: 'change'}
-  ],
-  contractTerm: [
-    {required: true, message: '请选择合同年限', trigger: 'change'}
-  ],
-  engageForm: [
-    {required: true, message: '请选择合同类型', trigger: 'change'}
-  ]
+  // name: [
+  //   {required: true, message: '请输入姓名', trigger: 'blur'}
+  // ],
+  // gender: [
+  //   {required: true, message: '请选择性别', trigger: 'blur'}
+  // ],
+  // birthday: [
+  //   {type: 'date', required: true, message: '请输入生日', trigger: 'blur'}
+  // ],
+  // idCard: [
+  //   {required: true, message: '请输入身份证号', trigger: 'blur'},
+  //   {min: 18, max: 18, message: '身份证号长度必须为18位', trigger: 'blur'},
+  // ],
+  // wedlock: [
+  //   {required: true, message: '请选择婚姻状况', trigger: 'change'}
+  // ],
+  // nation: [
+  //   {required: true, message: '请输入民族', trigger: 'blur'}
+  // ],
+  // naticePlace: [
+  //   {required: true, message: '请输入籍贯', trigger: 'blur'}
+  // ],
+  // politic: [
+  //   {required: true, message: '请选择政治面貌', trigger: 'change'}
+  // ],
+  // phone: [
+  //   {type: 'number', required: true, message: '请输入联系电话', trigger: 'blur'},
+  //   {type: 'number', message: '联系电话只能输入数字'},
+  // ],
+  // email: [
+  //   {required: true, message: '请输入邮箱', trigger: 'blur'}
+  // ],
+  // address: [
+  //   {required: true, message: '请输入地址', trigger: 'blur'}
+  // ],
+  // tiptopDegree: [
+  //   {required: true, message: '请选择最高学历', trigger: 'change'}
+  // ],
+  // specialty: [
+  //   {required: true, message: '请输入所学专业', trigger: 'blur'}
+  // ],
+  // school: [
+  //   {required: true, message: '请输入毕业院校', trigger: 'blur'}
+  // ],
+  // departmentName: [
+  //   {required: true, message: '请输入部门名称', trigger: 'blur'}
+  // ],
+  // startContract: [
+  //   {type: 'date', required: true, message: '请选择合同起始日期', trigger: 'change'}
+  // ],
+  // contractTerm: [
+  //   {required: true, message: '请选择合同年限', trigger: 'change'}
+  // ],
+  // engageForm: [
+  //   {required: true, message: '请选择合同类型', trigger: 'change'}
+  // ]
 })
 const state = reactive({
   tableData: [],
@@ -798,9 +804,14 @@ const postList = (() => {
 })
 //动态绑定生成可选岗位列表
 const fitPostList = computed(() => state.postList.filter(item => item.departmentId == state.formData.departmentId))
+
+const fitUpdatePostList = computed(() => state.postList.filter(item => item.departmentId == state.updateData.departmentId))
 //当部门列表发生变化时，清除岗位列表信息
 watch(() => state.formData.departmentId, (newValue, oldValue) => {
   state.formData.post = '';
+})
+watch(() => state.updateData.departmentId, (newValue, oldValue) => {
+  state.updateData.post = '';
 })
 //
 // const userInfo = (id) => {

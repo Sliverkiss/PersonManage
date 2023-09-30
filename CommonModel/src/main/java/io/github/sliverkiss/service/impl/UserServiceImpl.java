@@ -63,7 +63,9 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
      */
     @Override
     public ResponseResult login(User user) {
+        // md5加密验证
         String password = SecureUtil.md5 ( user.getPassword () + UserContants.MD5_SALT );
+        // 获取当前登录用户信息
         LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery ( User.class )
                 .eq ( User::getUsername, user.getUsername () )
                 .eq ( User::getPassword, password );

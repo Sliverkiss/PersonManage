@@ -1,6 +1,7 @@
 package io.github.sliverkiss.domain.entity;
 
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
@@ -46,6 +47,8 @@ public class Salary extends BaseEntity implements Serializable {
     private String payDate;
     // 发放状态
     private String status;
+    @TableField(exist = false)
+    private Employee employee;
 
     public Salary(Salary salary) {
         Optional.ofNullable ( salary ).ifPresent ( e -> {
@@ -60,6 +63,7 @@ public class Salary extends BaseEntity implements Serializable {
             this.netSalary = e.getNetSalary ();
             this.payDate = e.getPayDate ();
             this.status = e.getStatus ();
+            this.employee = e.getEmployee ();
         } );
     }
 

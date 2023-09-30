@@ -8,6 +8,7 @@ import io.github.sliverkiss.domain.entity.Employee;
 import io.github.sliverkiss.domain.entity.Renewal;
 import io.github.sliverkiss.service.EmployeeService;
 import io.github.sliverkiss.service.impl.RenewalServiceImpl;
+import io.github.sliverkiss.utils.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,6 +65,21 @@ public class RenewalController extends BaseController<RenewalServiceImpl, Renewa
         // 获取当前日期并注入renewal
         String approvedDate = new SimpleDateFormat ( "yyy-MM-dd" ).format ( new Date () );
         Optional.ofNullable ( renewal ).ifPresent ( e -> e.setApprovedDate ( approvedDate ) );
+        // 如果同意续约，则修改员工工作信息
+        if (renewal.getState ().equals ( SystemConstants.RENEWAL_STATUS_YES )) {
+            Optional.ofNullable ( renewal ).ifPresent ( e -> e.setApprovedDate ( approvedDate ) );
+            // 注入合同起始日期和终止日期
+            Employee employee = employeeService.getById ( renewal.getEmployeeId () );
+            Optional.ofNullable ( employee ).ifPresent ( e -> {
+                String startContract = e.getEndContract ();
+                String endContract = DateUtil.endContract ( e.getEndContract (), renewal.getRenewalAge () );
+                e.setStartContract ( startContract )
+                        .setContractTerm ( renewal.getRenewalAge () )
+                        .setEndContract ( endContract );
+                // 更新员工数据
+                employeeService.updateById ( employee );
+            } );
+        }
     }
 
 

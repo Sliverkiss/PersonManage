@@ -48,6 +48,11 @@
               <el-table-column label="id" prop="id" align="center"/>
               <el-table-column label="岗位名称" prop="name" align="center"/>
               <el-table-column label="所属部门" prop="department.departmentName" align="center"/>
+              <el-table-column label="在岗员工" prop="department.departmentName" align="center">
+                <template #default="scope" v-if="user.role">
+                  <el-link @click="openEmpListView(scope.row.employeeList)">查看内容</el-link>
+                </template>
+              </el-table-column>
               <el-table-column fixed="right" align="center" label="操作" width="120">
                 <template #default="scope" v-if="user.role">
                   <el-button size="small" style="background-color:#66b1ff" @click="handleUpdate(scope.row)">
@@ -141,11 +146,30 @@
       </template>
     </el-dialog>
   </div>
+  <!--  在岗员工列表-->
+  <div>
+    <el-dialog v-model="empListView" title="在岗员工列表" align-center center class="" width="500"
+               style="border-radius: 0.875rem 1rem;">
+      <el-table :data="state.empByPostList" style="width: 100%" max-height="250">
+        <el-table-column prop="id" label="UID"/>
+        <el-table-column prop="personal.name" label="名称"/>
+        <el-table-column prop="department.departmentName" label="部门"/>
+      </el-table>
+      <!--      <template #footer>-->
+      <!--      <span class="dialog-footer">-->
+      <!--        <el-button @click="submitForm" type="primary">确定</el-button>-->
+      <!--        <el-button @click="cancel" type="primary">-->
+      <!--          取消-->
+      <!--        </el-button>-->
+      <!--      </span>-->
+      <!--      </template>-->
+    </el-dialog>
+  </div>
 </template>
 
 <script setup>
 import request from "@/request.js";
-import {getCurrentInstance, onMounted, reactive, ref} from "vue";
+import {getCurrentInstance, onMounted, reactive, ref, toRaw} from "vue";
 import {ElMessage, ElNotification} from "element-plus";
 //接口api
 import {addPost, delPost, updatePost} from "@/api/department/post.js";
@@ -161,6 +185,7 @@ const {proxy} = getCurrentInstance();
 //数据
 const state = reactive({
   tableData: [],
+  empByPostList: [],
   formData: {},
   updateData: {},
   departmentList: [],
@@ -169,6 +194,13 @@ const state = reactive({
 const rules = reactive({})
 //打开新增续约视图
 const open = ref(false)
+//查看在岗员工列表
+const empListView = ref(false)
+const openEmpListView = (row) => {
+  empListView.value = true;
+  state.empByPostList = row;
+  console.log(toRaw(state.empByPostList))
+}
 //弹出窗口标题
 const title = ref('');
 //分页

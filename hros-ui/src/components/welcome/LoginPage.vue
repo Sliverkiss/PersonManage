@@ -41,14 +41,14 @@
                 <label class="form-label" for="password">密码</label>
               </div>
             </el-form-item>
-            <div class="mb-4">
-              <div class="form-check">
-                <input v-model='user.remenber' checked="" class="form-check-input" id="login-remember-me"
-                       name="login-remember-me" type="checkbox"
-                       value="">
-                <label class="form-check-label" for="login-remember-me">记住我</label>
-              </div>
-            </div>
+            <!--            <div class="mb-4">-->
+            <!--              <div class="form-check">-->
+            <!--                <input v-model='user.remenber' checked="" class="form-check-input" id="login-remember-me"-->
+            <!--                       name="login-remember-me" type="checkbox"-->
+            <!--                       value="">-->
+            <!--                <label class="form-check-label" for="login-remember-me">记住我</label>-->
+            <!--              </div>-->
+            <!--            </div>-->
             <div class="mb-4">
               <el-button class="p-4" :type="info" @click="login">
                 登录
@@ -118,6 +118,8 @@ const login = () => {
         activeRouter(permissions)
         //登录成功后进行页面跳转，跳转到主页
         router.push('/');
+      } else {
+        ElNotification.error(res.msg);
       }
     })
   }

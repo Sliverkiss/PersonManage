@@ -48,6 +48,8 @@ import static io.github.sliverkiss.utils.CheckUtil.checkStr;
 @Service("employeeService")
 @Slf4j
 public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> implements EmployeeService {
+    @Autowired
+    private EmployeeDao employeeDao;
     @Resource
     private PersonalDao personalDao;
     @Resource
@@ -194,6 +196,11 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
         employeeVo.setDepartmentName ( department.getDepartmentName () );
         Optional.ofNullable ( personal ).ifPresent ( e -> employeeVo.addPersonalInfo ( personal ) );
         return employeeVo;
+    }
+
+    @Override
+    public Employee getEmployeeById(Integer id) {
+        return employeeDao.getEmployeeById ( id );
     }
 
     /**
@@ -365,6 +372,18 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
     public List<Integer> getEmployeeIdsByDepartmentId(String departmentId) {
         return this.list ( Wrappers.lambdaQuery ( Employee.class ).eq ( Employee::getDepartmentId, departmentId ) )
                 .stream ().map ( Employee::getId ).collect ( Collectors.toList () );
+    }
+
+    /**
+     * 根据名称模糊查询下拉列表
+     *
+     * @param name
+     *
+     * @return {@link List}<{@link Employee}>
+     */
+    @Override
+    public List<Employee> selectEmployeesLikeName() {
+        return employeeDao.selectList ();
     }
 
     /**

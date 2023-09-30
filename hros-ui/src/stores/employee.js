@@ -166,10 +166,7 @@ export const useSalary = defineStore('salary', {
     state: () => {
         return {
             salaryMap: [
-                {
-                    key: 'id',
-                    value: '序号'
-                }, {
+               {
                     key: 'employeeId',
                     value: 'UID'
                 }, {

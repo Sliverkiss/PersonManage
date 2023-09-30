@@ -53,4 +53,9 @@ public class PostController extends BaseController<PostServiceImpl, Post> {
         return service.deleteEntity ( id );
     }
 
+    @RequestMapping("/post")
+    public ResponseResult getEmpByPost() {
+        return ResponseResult.okResult ( service.getEmpByPost ( "馆长" ) );
+    }
+
 }

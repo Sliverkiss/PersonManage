@@ -50,6 +50,11 @@ public class EmployeeController {
         return employeeService.saveEmployee ( employeeVo );
     }
 
+    @GetMapping("/employee/list/dasborad")
+    public ResponseResult selectEmployee() {
+        return ResponseResult.okResult ( employeeService.list () );
+    }
+
     @DeleteMapping("employee/delete/{id}")
     public ResponseResult deleteEmployee(@PathVariable Integer id) {
         return employeeService.deleteEmployee ( id );

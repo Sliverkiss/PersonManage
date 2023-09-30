@@ -19,6 +19,9 @@ public class SystemConstants {
 
     public static final String SYSTEM_STATUS_YES = "通过";
 
+    public static final String RENEWAL_STATUS_YES = "同意";
+    public static final String RENEWAL_STATUS_WAIT = "处理中";
+    public static final String RENEWAL_STATUS_NO = "未同意";
     public static final String SYSTEM_STATUS_NO = "未通过";
     /*分页*/
     public static final Integer SYSTEM_DEFAULT_CURRENTPAGE = 1;

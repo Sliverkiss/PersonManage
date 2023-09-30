@@ -224,8 +224,11 @@
           </el-col>
           <el-col :span="24">
             <el-form-item prop="manager" size="large" label="负责人：" label-width="90">
-              <el-input v-model="state.formData.manager" type="text"
-                        placeholder="请输入部门负责人名称"></el-input>
+              <el-select v-model="state.formData.manager" style="width:320px" placeholder="请输入或选择部门负责人"
+                         clearable filterable>
+                <el-option v-for="item in state.empList" :label="item.id+' '+item.personal.name"
+                           :value="item.personal.name"/>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -286,8 +289,11 @@
           </el-col>
           <el-col :span="24">
             <el-form-item prop="manager" size="large" label="负责人：" label-width="90">
-              <el-input v-model="state.updateData.manager" type="text"
-                        placeholder="请输入部门负责人名称"></el-input>
+              <el-select v-model="state.updateData.manager" style="width:320px" placeholder="请输入或选择部门负责人"
+                         clearable filterable>
+                <el-option v-for="item in state.empList" :label="item.id+' '+item.personal.name"
+                           :value="item.personal.name"/>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -313,11 +319,12 @@
 </template>
 
 <script setup>
-import {computed, getCurrentInstance, reactive, ref, toRaw} from 'vue'
+import {computed, getCurrentInstance, onMounted, reactive, ref, toRaw} from 'vue'
 import request from "@/request.js";
 import {ElMessage, ElNotification} from "element-plus";
 import {useDepartment} from "@/stores/department.js"
 import {useUser} from '@/stores/user.js'
+import {listEmployeeColumnValues} from "@/api/employee/work.js";
 
 const useStore = useUser();
 const user = useStore.getUser();
@@ -356,7 +363,9 @@ const state = reactive({
   formData: {},
   updateData: {},
   departmentList: [],
+  employeeList: [],
 })
+const lodingy = ref(false);
 
 const rules = reactive({
   departmentName: [
@@ -366,7 +375,7 @@ const rules = reactive({
     {required: true, message: '请输入部门名称', trigger: 'blur'}
   ],
   manager: [
-    {required: true, message: '请输入部门名称', trigger: 'blur'}
+    {required: true, message: '请输入负责人名称', trigger: 'blur'}
   ]
 });
 //打开视图
@@ -473,6 +482,12 @@ const selectDepartmentList = () => {
   })
 }
 
+const getEmployeeList = () => {
+  listEmployeeColumnValues().then(res => {
+    state.employeeList = res.data;
+    console.log(toRaw(state.employeeList))
+  })
+}
 
 const load = () => {
   if (user.employeeVo.workState == '离职') {
@@ -501,9 +516,19 @@ const load = () => {
     }
   })
 }
-load();
+const getEmpList = () => {
+  listEmployeeColumnValues().then((res) => {
+    state.empList = res.data;
+  })
+}
+
+onMounted(() => {
+  load();
+  getEmployeeList()
+  getEmpList();
 //数据初始化
-selectDepartmentList();
+  selectDepartmentList();
+})
 </script>
 
 <style scoped>

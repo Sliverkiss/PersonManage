@@ -454,7 +454,7 @@ const save = () => {
   proxy.$refs.ruleFormRef.validate((valid) => {
     if (valid) {
       if (!user.role) {
-        state.formData.employeeId = 1;
+        state.formData.employeeId = user.employeeId;
         state.formData.transferType = '个人申请';
       } else {
         state.formData.transferType = '调岗';
@@ -475,6 +475,7 @@ const save = () => {
     }
   })
 }
+
 const update = () => {
   state.updateData.transferRole = transferRole();
   request.put('admin/department/transfer/update', state.updateData).then((res) => {

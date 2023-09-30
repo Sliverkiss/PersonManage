@@ -54,4 +54,9 @@ public class DepartmentController extends BaseController<DepartmentServiceImpl, 
         return service.deleteEntity ( id );
     }
 
+    // @Override
+    // public void beforeSave(Department entity) throws Exception {
+    //     Employee employee = employeeService.getEmployeeById ( id );
+    // }
+
 }

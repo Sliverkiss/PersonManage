@@ -8,9 +8,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.sliverkiss.controller.DTO.PostQueryDTO;
 import io.github.sliverkiss.dao.DepartmentDao;
+import io.github.sliverkiss.dao.EmployeeDao;
 import io.github.sliverkiss.dao.PostDao;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.Department;
+import io.github.sliverkiss.domain.entity.Employee;
 import io.github.sliverkiss.domain.entity.Post;
 import io.github.sliverkiss.domain.vo.PostVo;
 import io.github.sliverkiss.enums.AppHttpCodeEnum;
@@ -34,6 +36,8 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
 
     @Autowired
     private DepartmentDao departmentDao;
+    @Autowired
+    private EmployeeDao employeeDao;
 
     @Override
     public ResponseResult selectPage(PostQueryDTO dto) {
@@ -70,9 +74,15 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
     public <T extends Post> void setTaleFiled(List<T> list) {
         list.forEach ( e -> {
             Department department = departmentDao.selectById ( e.getDepartmentId () );
-            // 注入部门属性
-            Optional.ofNullable ( department ).ifPresent ( item -> e.setDepartment ( item ) );
+            // 注入部门属性、岗位员工列表
+            Optional.ofNullable ( department ).ifPresent ( item -> {
+                e.setDepartment ( item ).setEmployeeList ( this.getEmpByPost ( e.getName () ) );
+            } );
         } );
+    }
+
+    public List<Employee> getEmpByPost(String post) {
+        return employeeDao.getEmpByPost ( post );
     }
 }
 

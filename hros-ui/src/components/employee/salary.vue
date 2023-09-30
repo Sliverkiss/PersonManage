@@ -51,9 +51,18 @@
               <div class="row">
                 <div class="col-sm-12 p-3">
                   <el-table :data="state.tableData" stripe class="text-center" height="400" max-height="400">
-                    <template v-for="(col,index) in toRaw(salaryStore.salaryMap)" :key="index">
-                      <el-table-column :prop="col.key" :label="col.value" align="center" sortable></el-table-column>
-                    </template>
+                    <el-table-column prop="employeeId" label="UID" align="center"></el-table-column>
+                    <el-table-column prop="employee.personal.name" label="姓名" align="center"></el-table-column>
+                    <el-table-column prop="employee.department.departmentName" label="所在部门"
+                                     align="center"></el-table-column>
+                    <el-table-column prop="salaryDate" label="工资月份" align="center"></el-table-column>
+                    <el-table-column prop="baseSalary" label="基础工资" align="center"></el-table-column>
+                    <el-table-column prop="performance" label="绩效奖金" align="center"></el-table-column>
+                    <el-table-column prop="deduLeave" label="请假扣款" align="center"></el-table-column>
+                    <el-table-column prop="deduLate" label="迟到扣款" align="center"></el-table-column>
+                    <el-table-column prop="insure" label="五险一金" align="center"></el-table-column>
+                    <el-table-column prop="netSalary" label="净工资" align="center"></el-table-column>
+                    <el-table-column prop="payDate" label="创建时间" align="center"></el-table-column>
                     <el-table-column prop="status" label="发放状态" align="center" sortable>
                       <template #default="scope">
                         <el-tag
@@ -120,7 +129,10 @@
         <el-row :gutter="24">
           <el-col :span="12">
             <el-form-item prop="employeeId" size="large" label="员工编号：">
-              <el-input v-model="state.formData.employeeId" placeholder="请输入员工编号"></el-input>
+              <el-select v-model="state.formData.employeeId" style="width:240px" placeholder="请输入或选择员工"
+                         clearable filterable>
+                <el-option v-for="item in state.empList" :label="item.id+' '+item.personal.name" :value="item.id"/>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -191,26 +203,6 @@
       <el-form :model="state.updateData" class="" status-icon :rules="rules" ref="ruleFormRef">
         <el-row :gutter="24">
           <el-col :span="12">
-            <el-form-item prop="employeeId" size="large" label="员工编号：">
-              <el-input v-model="state.updateData.employeeId" placeholder="请输入员工编号" disabled></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item prop="salaryDate" size="large" label="工资月份：">
-              <div class="demo-date-picker">
-                <div class="block">
-                  <el-date-picker
-                      v-model="state.updateData.salaryDate"
-                      type="month"
-                      format="YYYY/MM"
-                      value-format="YYYY-MM"
-                      placeholder=""
-                      :size="10"/>
-                </div>
-              </div>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
             <el-form-item prop="baseSalary" size="large" label="基础工资：">
               <el-input v-model.number="state.updateData.baseSalary" placeholder="请输入基础工资"></el-input>
             </el-form-item>
@@ -258,11 +250,12 @@
 </template>
 
 <script setup>
-import {getCurrentInstance, reactive, ref, toRaw} from "vue";
+import {getCurrentInstance, onMounted, reactive, ref, toRaw} from "vue";
 import request from "@/request.js";
 import {ElMessage, ElNotification} from "element-plus";
 import {useSalary} from "@/stores/employee.js";
 import {useUser} from '@/stores/user.js'
+import {listEmployeeColumnValues} from "@/api/employee/work.js";
 
 const useStore = useUser();
 const user = useStore.getUser();
@@ -272,6 +265,7 @@ const salaryStore = useSalary();
 const state = reactive({
   tableData: [],
   formData: {},
+  empList: [],
   updateData: {
     employeeId: '',
     renewalAge: '',
@@ -436,7 +430,8 @@ const load = () => {
   }).then(res => {
     try {
       if (res.code === 200) {
-        state.tableData = res.data?.records
+        state.tableData = res.data?.records;
+        console.log(toRaw(state.tableData));
         total.value = res.data.total - 0;
         if (res.data.records.length == 0) {
           ElMessage.warning('暂无薪资记录～');
@@ -451,7 +446,17 @@ const load = () => {
     }
   })
 }
-load()
+
+const getEmpList = () => {
+  listEmployeeColumnValues().then((res) => {
+    state.empList = res.data;
+  })
+}
+
+onMounted(() => {
+  load();
+  getEmpList();
+})
 </script>
 
 <style scoped>
