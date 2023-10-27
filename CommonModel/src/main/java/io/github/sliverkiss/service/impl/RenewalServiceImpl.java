@@ -14,7 +14,6 @@ import io.github.sliverkiss.dao.EmployeeDao;
 import io.github.sliverkiss.dao.PersonalDao;
 import io.github.sliverkiss.dao.RenewalDao;
 import io.github.sliverkiss.domain.ResponseResult;
-import io.github.sliverkiss.domain.entity.Department;
 import io.github.sliverkiss.domain.entity.Employee;
 import io.github.sliverkiss.domain.entity.Personal;
 import io.github.sliverkiss.domain.entity.Renewal;
@@ -28,7 +27,6 @@ import xin.altitude.cms.common.util.EntityUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -102,7 +100,7 @@ public class RenewalServiceImpl extends ServiceImpl<RenewalDao, Renewal> impleme
             Page<Renewal> renewalPage = this.page ( page, renewalWrapper );
             IPage<RenewalVo> renewalVoIPage = EntityUtils.toPage ( renewalPage, RenewalVo::new );
             // 多表联查
-            this.renewalInnerJoinEmployee ( renewalVoIPage );
+            this.renewalInnerJoinEmployee ( renewalVoIPage.getRecords () );
             // 获取员工合同列表
             return ResponseResult.okResult ( renewalVoIPage );
         } catch (Exception e) {
@@ -113,26 +111,13 @@ public class RenewalServiceImpl extends ServiceImpl<RenewalDao, Renewal> impleme
     /**
      * 续约表连接员工表，根据员工工作编号查询部门名称，根据员工信息编号查询员工姓名
      *
-     * @param renewalVoIPage 续约视图
-     *
      * @Note 查询流程：employeeIds->{departmentId->departmentName,personalId->name}
      */
-    public void renewalInnerJoinEmployee(IPage<RenewalVo> renewalVoIPage) {
-        // 获取员工编号集合
-        List<Integer> employeeIds = renewalVoIPage.getRecords ().stream ().map ( Renewal::getEmployeeId ).collect ( Collectors.toList () );
-        // 如果不为空，则将部门名称和员工姓名注入 到续约视图
-        if (!employeeIds.isEmpty ()) {
-            List<Employee> employeList = employeeDao.selectList ( Wrappers.lambdaQuery ( Employee.class )
-                    .in ( Employee::getId, employeeIds ) );
-            Map<Integer, Employee> map = EntityUtils.toMap ( employeList, Employee::getId, e -> e );
-            renewalVoIPage.getRecords ().forEach ( renewalVo -> {
-                Employee employee = map.get ( renewalVo.getEmployeeId () );
-                Personal personal = personalDao.selectById ( employee.getPersonalId () );
-                Department department = departmentDao.selectById ( employee.getDepartmentId () );
-                Optional.ofNullable ( department ).ifPresent ( e -> renewalVo.setDepartmentName ( e.getDepartmentName () ) );
-                Optional.ofNullable ( personal ).ifPresent ( e -> renewalVo.setName ( e.getName () ) );
-            } );
-        }
+    public void renewalInnerJoinEmployee(List<RenewalVo> list) {
+        list.forEach ( e -> {
+            Employee employee = employeeDao.getEmployeeById ( e.getEmployeeId () );
+            e.setEmployee ( employee );
+        } );
     }
 
     @Override

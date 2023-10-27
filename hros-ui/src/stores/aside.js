@@ -26,7 +26,7 @@ export const useAside = defineStore('aside', {
     },
     //开启数据缓存
     persist: {
-        enabled: true,
+        enabled: false,
         strategies: [{
             key: 'Aside',
             storage: localStorage,

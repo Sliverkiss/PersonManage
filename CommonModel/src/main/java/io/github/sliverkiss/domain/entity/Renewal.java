@@ -1,6 +1,7 @@
 package io.github.sliverkiss.domain.entity;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -59,6 +60,9 @@ public class Renewal extends BaseEntity implements Serializable {
     // 审核状态
     private String state;
 
+    @TableField(exist = false)
+    private Employee employee;
+
     public Renewal(Renewal renewal) {
         Optional.ofNullable ( renewal ).ifPresent ( e -> {
             this.id = e.getId ();
@@ -71,6 +75,7 @@ public class Renewal extends BaseEntity implements Serializable {
             this.approvedDate = e.getApprovedDate ();
             this.director = e.getDirector ();
             this.state = e.getState ();
+            this.employee = e.getEmployee ();
         } );
     }
 

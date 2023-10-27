@@ -8,6 +8,7 @@ import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.TrainningRecord;
 import io.github.sliverkiss.domain.vo.EmployeeVo;
 import io.github.sliverkiss.service.EmployeeService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ import java.util.List;
  * @date 2023/7/5
  */
 @RestController
+@Slf4j
 @RequestMapping("/admin")
 public class EmployeeController {
 
@@ -64,6 +66,9 @@ public class EmployeeController {
     public ResponseResult updateEmployee(@RequestBody JSONObject jsonObject) {
         // 将json对象转换成员工资料视图
         EmployeeVo employeeVo = JSONObject.parseObject ( jsonObject.toJSONString (), EmployeeVo.class );
+        log.warn ( "开始打印" );
+        System.out.println ( employeeVo );
+        log.warn ( "结束打印" );
         return employeeService.updateEmployee ( employeeVo );
     }
 

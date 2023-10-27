@@ -1,0 +1,15 @@
+
+Q
+java:S3740u"/Provide the parametrized type for this generic.(óÛšªûÿÿÿÿ8™„Êô¦1
+{
+java:S1488@"^Immediately return this expression instead of assigning it to the temporary variable "result".(“ùÈ8š„Êô¦1
+€
+java:S1488N"^Immediately return this expression instead of assigning it to the temporary variable "result".(ƒ¾Û¦ûÿÿÿÿ8š„Êô¦1
+]	java:S125>"<This block of commented-out lines of code should be removed.(ÈêÄõúÿÿÿÿ8½„Êô¦1
+]	java:S125L"<This block of commented-out lines of code should be removed.(ÈêÄõúÿÿÿÿ8¾„Êô¦1
+c
+java:S1854m"ARemove this useless assignment to local variable "finalAssessId".(Ïý€¼üÿÿÿÿ8È„Êô¦1
+Z	java:S106k"9Replace this use of System.out or System.err by a logger.(…â—•þÿÿÿÿ8É„Êô¦1
+T
+java:S1481m"2Remove this unused "finalAssessId" local variable.(Ïý€¼üÿÿÿÿ8É„Êô¦1
+X	java:S125{"<This block of commented-out lines of code should be removed.(½Õç8Ë„Êô¦1

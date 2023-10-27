@@ -101,17 +101,20 @@
       <el-form :model="state.formData" class="" status-icon :rules="rules" ref="ruleFormRef">
         <el-row :gutter="24">
           <el-col :span="24">
-            <el-form-item prop="username" size="large" label="用户名：" label-width="100">
+            <el-form-item prop="username" size="large" label="用户名：" label-width="110">
               <el-input v-model="state.formData.username" placeholder="请输入用户名"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item prop="employeeId" size="large" label="员工编号：" label-width="100">
-              <el-input v-model="state.formData.employeeId" placeholder="请输入员工编号"></el-input>
+            <el-form-item prop="employeeId" size="large" label="员工编号：" label-width="110">
+              <el-select v-model="state.formData.employeeId" style="width:240px" placeholder="请输入或选择员工"
+                         clearable filterable>
+                <el-option v-for="item in state.empList" :label="item.id+' '+item.personal.name" :value="item.id"/>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item prop="role" size="large" label="角色：" label-width="100">
+            <el-form-item prop="role" size="large" label="角色：" label-width="110">
               <el-radio-group v-model="state.formData.role" class="ml-4">
                 <el-radio label="0" size="large">普通员工</el-radio>
                 <el-radio label="1" size="large">管理员</el-radio>
@@ -140,6 +143,7 @@ import {ElMessage, ElNotification} from "element-plus";
 import {addUser, delUser, updateUser} from "@/api/system/user.js";
 //引入用户
 import {useUser} from '@/stores/user.js'
+import {listEmployeeColumnValues} from "@/api/employee/work.js";
 
 const useStore = useUser();
 const user = useStore.getUser();
@@ -150,6 +154,7 @@ const {proxy} = getCurrentInstance();
 //数据
 const state = reactive({
   tableData: [],
+  empList: [],
   formData: {},
   updateData: {},
 })
@@ -161,7 +166,7 @@ const open = ref(false)
 const title = ref('');
 //分页
 const currentPage = ref(1);//当前页
-const pageSize = ref(15);//页码展示数量
+const pageSize = ref(5);//页码展示数量
 const total = ref(10);//页码总数
 const handleSizeChange = (val) => {
   pageSize.value = val;
@@ -276,9 +281,15 @@ const handleDelete = (id) => {
     load();
   });
 }
-//生命周期钩子
+//
+const getEmpList = () => {
+  listEmployeeColumnValues().then((res) => {
+    state.empList = res.data;
+  })
+}
 onMounted(() => {
   load();
+  getEmpList()
 })
 </script>
 

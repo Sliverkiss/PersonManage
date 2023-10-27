@@ -1,5 +1,6 @@
 package io.github.sliverkiss.utils;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -102,13 +103,30 @@ public class DateUtil {
      */
     public static String endContract(String startContract, Integer contractTerm) {
         // 设置时间格式
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyy-MM-dd");
-        Date startDate=strToDate(startContract);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(startDate);
-        calendar.add(Calendar.YEAR, contractTerm);
-        Date endDate=calendar.getTime();
-        String endContract=simpleDateFormat.format(endDate);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat ( "yyy-MM-dd" );
+        Date startDate = strToDate ( startContract );
+        Calendar calendar = Calendar.getInstance ();
+        calendar.setTime ( startDate );
+        calendar.add ( Calendar.YEAR, contractTerm );
+        Date endDate = calendar.getTime ();
+        String endContract = simpleDateFormat.format ( endDate );
         return endContract;
+    }
+
+    public static Integer dayCompare(String contractDay) throws ParseException {
+        String nowDay = currentDateFormat ();
+        DateFormat dft = new SimpleDateFormat ( "yyyy-MM-dd" );
+        try {
+            Date StartDate = dft.parse ( nowDay );
+            Date endDate = dft.parse ( contractDay );
+            Long startTime = StartDate.getTime ();
+            Long endTime = endDate.getTime ();
+            Long numberOfDays = endTime - startTime;
+            Integer result = Math.toIntExact ( numberOfDays / 24 / 60 / 60 / 1000 );
+            return result;
+        } catch (ParseException e) {
+            e.printStackTrace ();
+        }
+        return null;
     }
 }

@@ -1,0 +1,9 @@
+
+v
+java:S2293<"YReplace the type specification in this constructor call with the diamond operator ("<>").(‰×¯ã8Í˜‰¦§1
+r	java:S117,"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(†àíœúÿÿÿÿ8Í˜‰¦§1
+m	java:S117-"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(­è¢8Í˜‰¦§1
+€
+java:S1488>"^Immediately return this expression instead of assigning it to the temporary variable "result".(í™Ñòıÿÿÿÿ8Î˜‰¦§1
+t
+java:S27371"WAdd logic to this catch clause or eliminate it and rethrow the exception automatically.(ö™û8å˜‰¦§1

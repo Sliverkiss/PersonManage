@@ -11,6 +11,7 @@ import io.github.sliverkiss.dao.DepartmentDao;
 import io.github.sliverkiss.dao.EmployeeDao;
 import io.github.sliverkiss.domain.ResponseResult;
 import io.github.sliverkiss.domain.entity.Department;
+import io.github.sliverkiss.domain.entity.Employee;
 import io.github.sliverkiss.domain.entity.Post;
 import io.github.sliverkiss.domain.vo.DepartmentVo;
 import io.github.sliverkiss.service.DepartmentService;
@@ -64,9 +65,11 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentDao, Department
     public <T extends DepartmentVo> void setTableFiled(List<T> list) {
         list.forEach ( e -> {
             Department department = this.getById ( e.getParentId () );
+            Employee employee = employeeDao.getEmployeeById ( e.getManager () );
             List<Post> postList = departmentDao.getPostList ( e.getId () );
             e.setPostList ( postList );
             e.setParentDepartment ( department );
+            e.setManagerName ( employee.getPersonal ().getName () );
         } );
     }
 

@@ -16,7 +16,7 @@ import java.util.List;
 @CacheNamespace(flushInterval = 5 * 60 * 1000, eviction = ScheduledCache.class, blocking = true)
 public interface AssessApprovalDao extends ICrudDao<AssessApproval> {
 
-    @Select("select * from hros.assess_approval")
+    @Select("select * from hros.assess_approval where del_flag=0")
     @Results({
             @Result(property = "declare", column = "declare_id", one = @One(select = "io.github.sliverkiss.dao.AssessDeclareDao.getById")),
             @Result(property = "employee", column = "employee_id", one = @One(select = "io.github.sliverkiss.dao.PersonalDao.getById"))

@@ -60,15 +60,14 @@
               </el-table-column>
               <el-table-column fixed="right" align="center" label="操作" width="120">
                 <template #default="scope">
-                  <el-link type="primary" @click="Reviewed(scope.row)" v-if="user.role==0">
-                    申报
-                  </el-link>
-                  <div v-else>
-                    <el-link type="primary" @click="Approval(scope.row)"
-                    >
+                  <div>
+                    <el-link type="primary" @click="Reviewed(scope.row)" v-if="user.employeeId==scope.row.employeeId">
+                      申报
+                    </el-link>
+                    <el-link type="primary" @click="Approval(scope.row)" v-if="user.employeeId!=scope.row.employeeId">
                       审批
                     </el-link>
-                    <el-popconfirm @confirm="Del(scope.row.id)" title="确认删除?"
+                    <el-popconfirm @confirm="Del(scope.row)" title="确认删除?" v-if="user.role"
                                    confirm-button-text="确认"
                                    cancel-button-text="取消">
                       <template #reference>
@@ -328,6 +327,10 @@ const Approval = (row) => {
     ElMessage.warning("sorry,您已离职，无操作权限~")
     return;
   }
+  if (user.employeeId == row.employeeId) {
+    ElMessage.warning("不允许审批自己~")
+    return;
+  }
   if (row.status == '未申报') {
     ElMessage.warning("该记录未申报，无法审批")
   } else {
@@ -392,12 +395,16 @@ const getAssessList = () => {
     }
   })
 }
-const Del = (id) => {
+const Del = (row) => {
   if (user.employeeVo.workState == '离职') {
     ElMessage.warning("sorry,您已离职，无操作权限~")
     return;
   }
-  request.delete('/admin/assess/declare/delete/' + id).then((res) => {
+  if (user.employeeId == row.employeeId) {
+    ElMessage.warning("不允许重置自己~")
+    return;
+  }
+  request.delete('/admin/assess/declare/delete/' + row.id).then((res) => {
     try {
       if (res.code == 200) {
         ElNotification.success(res.msg);

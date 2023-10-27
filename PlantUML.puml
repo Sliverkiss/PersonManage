@@ -1,0 +1,31 @@
+@startuml
+!define Table(name,desc) class name as "desc" << (T,#FFAAAA) >>
+!define Info(name) class name << (I,#8CEA00) >>
+!define column_type(x) <color:green>x</color>
+!define column_is_not_null(x) <color:blue>x</color>
+!define column_default_val(x) <color:hotpink>x</color>
+!define column(x) <b>x</b>
+hide methods
+hide stereotypes
+Info(Note){
+    -Primary key
+    +index
+    <b>Column name</b>
+    <color:green>Data type</color>
+    <color:hotpink>Default value</color>
+    <color:blue>Is Null</color>
+    Comment
+}
+
+Table(department, "department  (部门)") {
+    -+{field} column(id) column_type(int) column_default_val( Null) column_is_not_null(Not Null) 部门编号
+    {field} column(department_name) column_type(varchar(32)) column_default_val( Null)  column_is_not_null(Null) 部门名称
+    {field} column(contect) column_type(varchar(255)) column_default_val( Null)  column_is_not_null(Null) 部门职能
+    {field} column(parent_id) column_type(int) column_default_val( Null)  column_is_not_null(Null) 上级部门编号
+    {field} column(location) column_type(varchar(255)) column_default_val( Null)  column_is_not_null(Null) 部门位置
+    {field} column(manager) column_type(varchar(25)) column_default_val( Null) column_is_not_null(Not Null) 负责人
+    {field} column(phone) column_type(varchar(11)) column_default_val( Null)  column_is_not_null(Null) 部门电话
+    {field} column(del_flag) column_type(int) column_default_val(0)  column_is_not_null(Null) 删除标志（0代表未删除）
+}
+
+@enduml

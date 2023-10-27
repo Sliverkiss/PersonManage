@@ -13,9 +13,7 @@ import io.github.sliverkiss.dao.EmployeeDao;
 import io.github.sliverkiss.dao.PersonalDao;
 import io.github.sliverkiss.dao.ResignationDao;
 import io.github.sliverkiss.domain.ResponseResult;
-import io.github.sliverkiss.domain.entity.Department;
 import io.github.sliverkiss.domain.entity.Employee;
-import io.github.sliverkiss.domain.entity.Personal;
 import io.github.sliverkiss.domain.entity.Resignation;
 import io.github.sliverkiss.domain.vo.ResignationVo;
 import io.github.sliverkiss.enums.AppHttpCodeEnum;
@@ -27,8 +25,6 @@ import org.springframework.stereotype.Service;
 import xin.altitude.cms.common.util.EntityUtils;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * 离职记录表(Resignation)表服务实现类
@@ -66,16 +62,18 @@ public class ResignationServiceImpl extends ServiceImpl<ResignationDao, Resignat
         Page<Resignation> page = toPage ( resignationDTO );
         try {
             // 查询条件
-            LambdaQueryWrapper<Resignation> wrapper = Wrappers.lambdaQuery ( Resignation.class )
-                    .like ( StringUtils.isNotBlank ( employeeId ), Resignation::getEmployeeId, employeeId )
-                    .eq ( StringUtils.isNotBlank ( state ), Resignation::getState, state )
-                    .orderByDesc ( Resignation::getReviewDate )
-                    .orderByDesc ( Resignation::getApplyDate );
+            LambdaQueryWrapper<Resignation> wrapper = Wrappers.lambdaQuery ( Resignation.class );
+            if (StringUtils.isNotBlank ( employeeId )) {
+                wrapper.like ( Resignation::getEmployeeId, employeeId );
+            }
+            if (StringUtils.isNotBlank ( state )) {
+                wrapper.eq ( Resignation::getState, state );
+            }
+            wrapper.orderByDesc ( Resignation::getReviewDate ).orderByDesc ( Resignation::getApplyDate );
             // 模糊查询员工姓名
             if (StringUtils.isNotBlank ( employeeName )) {
                 List<Integer> employeeIds = employeeService.getEmployeeIdsLikeName ( employeeName );
-                System.out.println ( employeeIds );
-                if (employeeIds.size () > 0 && employeeName != null) {
+                if (employeeIds.size () > 0) {
                     wrapper.in ( Resignation::getEmployeeId, employeeIds );
                 } else {
                     return ResponseResult.errorResult ( AppHttpCodeEnum.FIND_NOT_FOUND );
@@ -101,19 +99,11 @@ public class ResignationServiceImpl extends ServiceImpl<ResignationDao, Resignat
      * @param resignationVoIPage 签证官ipage辞职
      */
     public void resignationInnerJoinEmployee(IPage<ResignationVo> resignationVoIPage) {
-        if (resignationVoIPage.getRecords ().size () > 0) {
-            List<Integer> employeeIds = resignationVoIPage.getRecords ().stream ().map ( Resignation::getEmployeeId ).collect ( Collectors.toList () );
-            if (!employeeIds.isEmpty ()) {
-                Map<Integer, Employee> map = getEmployeeMap ( employeeDao, employeeIds );
-                resignationVoIPage.getRecords ().forEach ( resignationVo -> {
-                    Employee employee = map.get ( resignationVo.getEmployeeId () );
-                    Personal personal = personalDao.selectById ( employee.getPersonalId () );
-                    Department department = departmentDao.selectById ( employee.getDepartmentId () );
-                    resignationVo.setEmployeeName ( personal.getName () )
-                            .setDepartmentName ( department.getDepartmentName () );
-                } );
-            }
-        }
+        resignationVoIPage.getRecords ().forEach ( e -> {
+            Employee employee = employeeDao.getEmployeeById ( e.getEmployeeId () );
+            e.setEmployeeName ( employee.getPersonal ().getName () )
+                    .setDepartmentName ( employee.getDepartment ().getDepartmentName () );
+        } );
     }
 
 }

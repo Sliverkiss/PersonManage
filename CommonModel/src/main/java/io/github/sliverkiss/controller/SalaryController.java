@@ -52,7 +52,11 @@ public class SalaryController extends BaseController<SalaryServiceImpl, Salary> 
      * @return {@link Double}
      */
     public Double netSalary(Salary salary) {
-        return salary.getBaseSalary () + salary.getPerformance () - salary.getDeduLeave () - salary.getDeduLate () - salary.getInsure ();
+        return salary.getBaseSalary ()
+                + salary.getPerformance ()
+                - salary.getDeduLeave ()
+                - salary.getDeduLate ()
+                - salary.getInsure ();
     }
 
     public void updateSalaryDate(Salary salary) {

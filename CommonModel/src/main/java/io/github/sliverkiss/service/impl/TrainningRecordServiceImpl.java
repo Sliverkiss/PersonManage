@@ -62,11 +62,13 @@ public class TrainningRecordServiceImpl extends ServiceImpl<TrainningRecordDao, 
             LambdaQueryWrapper<TrainningRecord> wrapper = Wrappers.lambdaQuery ( TrainningRecord.class );
             if (planIds.size () > 0 && planName != null) {
                 wrapper.in ( planIds.size () > 0, TrainningRecord::getPlanId, planIds );
-
             }
             if (StringUtils.isNotBlank ( planState )) {
-                wrapper.like ( StringUtils.isNotBlank ( planState ), TrainningRecord::getPlanState, planState );
+                wrapper.like ( TrainningRecord::getPlanState, planState );
             }
+            // if (StringUtils.isNotBlank ( employeeId )) {
+            //     wrapper.like (TrainningRecord::getEmployeeId, employeeId );
+            // }
             // 如果等于普通用户，进行数据过滤
             if (UserContants.ROLE_USER.equals ( trainningRecordDTO.getUserRole () )) {
                 wrapper.eq ( TrainningRecord::getEmployeeId, employeeId );

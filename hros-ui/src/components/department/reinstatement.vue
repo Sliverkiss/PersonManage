@@ -17,10 +17,10 @@
         <div class="text-muted fw-bold mt-2 mb-2" style="display:flex">
           <div class="row">
             <div class="col-sm-12 col-md-12">
-              <el-input v-model="employeeId" style="width:120px" placeholder="请输入员工编号"
-                        v-if="user.role"></el-input>
-              <el-input v-model="employeeName" style="width:100px;margin-left:10px" placeholder="请输入姓名"
-                        v-if="user.role"></el-input>
+              <el-select v-model="employeeId" style="width:160px;margin-left:10px" placeholder="请输入或选择员工"
+                         clearable filterable>
+                <el-option v-for="item in state.empList" :label="item.id+' '+item.personal.name" :value="item.id"/>
+              </el-select>
               <el-select v-model="status" style="width:160px;margin-left:10px" placeholder="请选择审核状态"
                          clearable>
                 <el-option label="通过" value="通过"/>
@@ -46,7 +46,7 @@
         </div>
         <div class="row">
           <div class="col-sm-12 p-3 ">
-            <el-table :data="state.tableData" stripe class="text-center"
+            <el-table :data="state.tableData" stripe class="text-center" height="400" max-height="400"
                       element-loading-text="拼命加载中">
               <el-table-column label="UID" prop="employeeId" align="center"/>
               <el-table-column label="姓名" prop="employeeName" align="center"/>
@@ -231,7 +231,7 @@
 <script setup>
 //请求方法
 import request from "@/request.js";
-import {getCurrentInstance, reactive, ref} from "vue";
+import {getCurrentInstance, onMounted, reactive, ref} from "vue";
 //复职组件
 import Resignation from "@/components/department/Resignation.vue"
 //部门信息
@@ -240,6 +240,7 @@ import {useDepartment} from "@/stores/department.js"
 import {ElMessage, ElNotification} from "element-plus";
 //获取用户信息
 import {useUser} from '@/stores/user.js'
+import {listEmployeeColumnValues} from "@/api/employee/work.js";
 
 const departmentStore = useDepartment();
 const {proxy} = getCurrentInstance();
@@ -399,7 +400,17 @@ const DelEntity = (id) => {
     }
   })
 }
-load()
+
+const getEmpList = () => {
+  listEmployeeColumnValues().then((res) => {
+    state.empList = res.data;
+  })
+}
+
+onMounted(() => {
+  getEmpList();
+  load();
+})
 </script>
 
 <style scoped>

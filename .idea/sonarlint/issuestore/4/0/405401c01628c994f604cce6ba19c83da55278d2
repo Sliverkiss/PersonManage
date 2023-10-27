@@ -1,0 +1,15 @@
+
+Q
+java:S3740+"/Provide the parametrized type for this generic.(ýˆÏÄûÿÿÿÿ8ýÆò×¦1
+m
+java:S2259["KA "NullPointerException" could be thrown; "reinstatement" is nullable here.(‹…¨ºýÿÿÿÿ8‰Çò×¦1
+I
+java:S16023",Remove useless curly braces around statement(Íéà‘8ŽÇò×¦1
+[
+java:S1155D">Use isEmpty() to check whether the collection is empty or not.(¼ÄÒ”8Çò×¦1
+c
+java:S1126M"AReplace this if-then-else statement by a single return statement.(á‡Ÿüþÿÿÿÿ8‘Çò×¦1
+`
+java:S1155M">Use isEmpty() to check whether the collection is empty or not.(á‡Ÿüþÿÿÿÿ8‘Çò×¦1
+I
+java:S1602W",Remove useless curly braces around statement(Íéà‘8‘Çò×¦1

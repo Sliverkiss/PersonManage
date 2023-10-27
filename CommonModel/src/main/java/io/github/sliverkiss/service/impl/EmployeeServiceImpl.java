@@ -247,12 +247,11 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
     public ResponseResult updateEmployee(EmployeeVo employeeVo) {
         Employee employee = BeanCopyUtils.copyBean ( employeeVo, Employee.class );
         Personal personal = BeanCopyUtils.copyBean ( employeeVo, Personal.class );
-        Department department = departmentDao.selectOne ( Wrappers.<Department>lambdaQuery ().eq ( Department::getDepartmentName, employeeVo.getDepartmentName () ) );
-        employee.setDepartmentId ( department.getId () );
+        //  Department department = departmentDao.selectOne ( Wrappers.<Department>lambdaQuery ().eq ( Department::getDepartmentName, employeeVo.getDepartmentName () ) );
+        //  employee.setDepartmentId ( employeeVo.getDepartmentId () );
         // 计算合同截止日期
         Optional.ofNullable ( employee ).ifPresent ( e -> {
-            e.setDepartmentId ( department.getId () )
-                    .setEndContract ( DateUtil.endContract ( e.getStartContract (), e.getContractTerm () ) );
+            e.setEndContract ( DateUtil.endContract ( e.getStartContract (), e.getContractTerm () ) );
         } );
         try {
             personalDao.update ( personal, Wrappers.lambdaQuery ( Personal.class ).eq ( Personal::getId, employee.getPersonalId () ) );
@@ -350,8 +349,9 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
             return null;
         }
         try {
-            List<Integer> personalIds = personalDao.selectList (
-                            Wrappers.lambdaQuery ( Personal.class ).like ( Personal::getName, employeeName ) )
+            LambdaQueryWrapper<Personal> wrapper = Wrappers.lambdaQuery ( Personal.class );
+            wrapper.like ( Personal::getName, employeeName );
+            List<Integer> personalIds = personalDao.selectList ( wrapper )
                     .stream ().map ( Personal::getId ).collect ( Collectors.toList () );
             List<Integer> employeeIds = this.list ( Wrappers.lambdaQuery ( Employee.class )
                     .in ( Employee::getPersonalId, personalIds ) ).stream ().map ( Employee::getId ).collect ( Collectors.toList () );
@@ -373,11 +373,9 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
         return this.list ( Wrappers.lambdaQuery ( Employee.class ).eq ( Employee::getDepartmentId, departmentId ) )
                 .stream ().map ( Employee::getId ).collect ( Collectors.toList () );
     }
-
     /**
      * 根据名称模糊查询下拉列表
      *
-     * @param name
      *
      * @return {@link List}<{@link Employee}>
      */

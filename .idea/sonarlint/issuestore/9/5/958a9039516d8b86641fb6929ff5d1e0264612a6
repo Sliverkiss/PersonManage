@@ -1,0 +1,15 @@
+
+Y
+java:S1854-"<Remove this useless assignment to local variable "userRole".(¶ß»ˆ8ƒœ²Å 1
+_
+java:S1854,"=Remove this useless assignment to local variable "userEmpId".(§¨Œ€úÿÿÿÿ8…œ²Å 1
+P
+java:S1481,".Remove this unused "userEmpId" local variable.(§¨Œ€úÿÿÿÿ8‹œ²Å 1
+J
+java:S1481-"-Remove this unused "userRole" local variable.(¶ß»ˆ8œ²Å 1
+t
+java:S2737:"WAdd logic to this catch clause or eliminate it and rethrow the exception automatically.(ö™û8œ²Å 1
+N
+java:S1602?",Remove useless curly braces around statement(Ë•†Ñşÿÿÿÿ8Ÿœ²Å 1
+b
+java:S1612?"@Replace this lambda with method reference 'this::getItemsBySet'.(Ë•†Ñşÿÿÿÿ8ø½Å 1

@@ -17,7 +17,7 @@ import org.apache.ibatis.cache.decorators.ScheduledCache;
 public interface AssessDeclareDao extends ICrudDao<AssessDeclare> {
 
     // 根据assessId获取delcare
-    @Select("select * from hros.assess_declare where id=#{id}")
+    @Select("select * from hros.assess_declare where id=#{id} and del_flag=0")
     AssessDeclare getById(Integer id);
 }
 

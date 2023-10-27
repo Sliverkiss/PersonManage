@@ -85,7 +85,7 @@
                                   负责人
                                 </div>
                               </template>
-                              {{ department.manager }}
+                              {{ department.managerName }}
                             </el-descriptions-item>
                             <el-descriptions-item>
                               <template #label>
@@ -227,7 +227,7 @@
               <el-select v-model="state.formData.manager" style="width:320px" placeholder="请输入或选择部门负责人"
                          clearable filterable>
                 <el-option v-for="item in state.empList" :label="item.id+' '+item.personal.name"
-                           :value="item.personal.name"/>
+                           :value="item.id"/>
               </el-select>
             </el-form-item>
           </el-col>

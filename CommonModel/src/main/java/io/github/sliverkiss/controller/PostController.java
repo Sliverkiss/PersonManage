@@ -8,6 +8,7 @@ import io.github.sliverkiss.domain.entity.Post;
 import io.github.sliverkiss.enums.AppHttpCodeEnum;
 import io.github.sliverkiss.service.EmployeeService;
 import io.github.sliverkiss.service.impl.PostServiceImpl;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -56,6 +57,28 @@ public class PostController extends BaseController<PostServiceImpl, Post> {
     @RequestMapping("/post")
     public ResponseResult getEmpByPost() {
         return ResponseResult.okResult ( service.getEmpByPost ( "馆长" ) );
+    }
+
+    @PostMapping("/save")
+    @ApiOperation(value = "保存", notes = "ID存在修改，不存在添加")
+    public ResponseResult save(@RequestBody Post entity) throws Exception {
+        try {
+            beforeSave ( entity );
+            return service.saveEntity ( entity );
+        } catch (Exception e) {
+            throw new Exception ( "该岗位已经存在，请勿重复添加" );
+        }
+    }
+
+    @PutMapping("/update")
+    @ApiOperation(value = "修改", notes = "ID存在修改，不存在添加")
+    public ResponseResult update(@RequestBody Post entity) throws Exception {
+        try {
+            beforeUpdate ( entity );
+            return service.updateEntity ( entity );
+        } catch (Exception e) {
+            throw new Exception ( "该岗位已经存在，请勿重复添加" );
+        }
     }
 
 }

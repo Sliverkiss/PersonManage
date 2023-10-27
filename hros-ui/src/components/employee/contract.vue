@@ -12,19 +12,10 @@
         <div class="text-muted fw-bold mt-2 mb-2" style="display:flex">
           <div class="row">
             <div class="col-sm-12 col-md-12">
-              <el-input v-model="employeeId" style="width:120px" placeholder="请输入员工编号" v-if="user.role"
-                        clearable></el-input>
-              <el-input v-model="name" style="width:100px;margin-left:10px" placeholder="请输入姓名" v-if="user.role"
-                        clearable></el-input>
-              <!--              <el-select v-model="DepartmentId" style="width:120px;margin-left:10px" placeholder="请选择部门"-->
-              <!--                         clearable>-->
-              <!--                <el-option-->
-              <!--                    v-for="department in departmentStore.departmentList"-->
-              <!--                    :key="department.id"-->
-              <!--                    :label="department.departmentName"-->
-              <!--                    :value="department.id"-->
-              <!--                />-->
-              <!--              </el-select>-->
+              <el-select v-model="employeeId" style="width:160px;margin-left:10px" placeholder="请输入或选择员工"
+                         clearable filterable>
+                <el-option v-for="item in state.empList" :label="item.id+' '+item.personal.name" :value="item.id"/>
+              </el-select>
               <el-select v-model="status" style="width:150px;;margin-left: 10px" placeholder="请选择续约状态"
                          clearable>
                 <el-option label="处理中" value="处理中"/>
@@ -40,6 +31,13 @@
             </div>
           </div>
           <div style="flex:1"></div>
+          <div class="" style="width:150px" v-if="user.role">
+            <el-button type="primary" plain @click="handleContractChange">
+              <el-icon>
+                <Plus/>
+              </el-icon>
+              <span>临期员工列表</span></el-button>
+          </div>
           <div class="" style="width:120px" v-if="user.role">
             <el-button type="success" plain @click="dialogFormVisible= true">
               <el-icon>
@@ -53,8 +51,8 @@
             <el-table :data="state.tableData" stripe class="text-center" height="400" max-height="400"
                       element-loading-text="拼命加载中">
               <el-table-column label="UID" prop="employeeId" align="center"/>
-              <el-table-column label="姓名" prop="name" align="center"/>
-              <el-table-column label="所在部门" prop="departmentName" align="center"/>
+              <el-table-column label="姓名" prop="employee.personal.name" align="center"/>
+              <el-table-column label="所在部门" prop="employee.department.departmentName" align="center"/>
               <el-table-column label="合同起始日期" prop="startContract" align="center" width="120"/>
               <el-table-column label="合同终止日期" prop="endContract" align="center" width="120"/>
               <el-table-column label="续约年数" prop="renewalAge" align="center"/>
@@ -74,10 +72,11 @@
                   <el-link @click="handleMordChange(scope.row)" type="primary"> 查看详情</el-link>
                 </template>
               </el-table-column>
-              <el-table-column fixed="right" align="center" label="操作" width="120" v-if="!user.role">
+              <el-table-column fixed="right" align="center" label="操作" width="120">
                 <template #default="scope">
                   <div>
-                    <el-button size="small" style="background-color:#66b1ff" @click="EditRenewal(scope.row)">
+                    <el-button size="small" style="background-color:#66b1ff" @click="EditRenewal(scope.row)"
+                               v-if="user.role==0">
                       <el-icon>
                         <Edit style="color:#213d5b"/>
                       </el-icon>
@@ -229,12 +228,31 @@
       </template>
     </el-dialog>
   </div>
+  <!--  临期员工列表-->
+  <div>
+    <el-dialog v-model="empListView" title="临期员工列表" align-center center class="" width="650"
+               style="border-radius: 0.875rem 1rem;">
+      <el-table :data="state.empByContractList" style="width: 100%" max-height="250">
+        <el-table-column prop="id" label="UID"/>
+        <el-table-column prop="personal.name" label="名称"/>
+        <el-table-column prop="department.departmentName" label="部门"/>
+        <el-table-column prop="endContract" label="合同到期时间"/>
+        <el-table-column fixed="right" align="center" label="操作" width="120">
+          <template #default="scope">
+            <div>
+              <el-link @click="openRenewal(scope.row)">发起续约</el-link>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+  </div>
 </template>
 
 <script setup>
 //加载后端合同数据
 import request from "@/request.js";
-import {getCurrentInstance, onMounted, reactive, ref} from "vue";
+import {getCurrentInstance, onMounted, reactive, ref, toRaw} from "vue";
 import {useContract} from "@/stores/employee.js";
 import {ElMessage, ElNotification} from "element-plus";
 import {useUser} from '@/stores/user.js'
@@ -242,6 +260,7 @@ import {useRouter} from "vue-router";
 //部门列表
 import {useDepartment} from "@/stores/department.js"
 import {listEmployeeColumnValues} from "@/api/employee/work.js";
+import {getEmpListByNearRenewal} from "@/api/employee/contract.js";
 
 const departmentStore = useDepartment();
 const {proxy} = getCurrentInstance();
@@ -253,6 +272,7 @@ const activeName = ref('first')
 const state = reactive({
   tableData: [],
   formData: {},
+  empByContractList: [],
   updateData: {
     employeeId: '',
     renewalAge: '',
@@ -262,21 +282,22 @@ const state = reactive({
 })
 
 const rules = reactive({
-  employeeId: [
-    {required: true, message: '请输入员工编号', trigger: 'blur'},
-    {min: 1, max: 11, message: '员工编号范围在1～11位之间', trigger: 'blur'}
-  ],
-  renewalAge: [
-    {required: true, message: '请选择续约年数', trigger: 'blur'},
-  ],
-  state: [
-    {required: true, message: '请选择审核结果', trigger: 'blur'},
-  ]
+  // employeeId: [
+  //   {required: true, message: '请输入员工编号', trigger: 'blur'},
+  //   {min: 1, max: 11, message: '员工编号范围在1～11位之间', trigger: 'blur'}
+  // ],
+  // renewalAge: [
+  //   {required: true, message: '请选择续约年数', trigger: 'blur'},
+  // ],
+  // state: [
+  //   {required: true, message: '请选择审核结果', trigger: 'blur'},
+  // ]
 })
 //打开新增续约视图
 const dialogFormVisible = ref(false)
 const dialogUpdateVisible = ref(false)
 const dialogMoreVisible = ref(false);
+const empListView = ref(false)
 //模糊查询条件
 const currentPage = ref(1);//当前页
 const pageSize = ref(5);//页码展示数量
@@ -308,6 +329,15 @@ const EditRenewal = (row) => {
   }
   dialogUpdateVisible.value = true;
   state.updateData = JSON.parse(JSON.stringify(row));
+}
+const handleContractChange = () => {
+  getEmpContractList();
+  console.log(toRaw(state.tableData))
+  empListView.value = true;
+}
+const openRenewal = (row) => {
+  state.formData.employeeId = row.id;
+  dialogFormVisible.value = true;
 }
 const handleMordChange = (row) => {
   if (user.employeeVo.workState == '离职') {
@@ -393,6 +423,7 @@ const load = () => {
       if (res.code === 200) {
         state.tableData = res.data?.records
         total.value = res.data.total - 0;
+        console.log(toRaw(state.tableData));
       } else {
         state.tableData = [];
         total.value = 0
@@ -444,9 +475,17 @@ const getEmpList = () => {
     state.empList = res.data;
   })
 }
+//获取临期员工列表
+const getEmpContractList = () => {
+  getEmpListByNearRenewal().then((res) => {
+    state.empByContractList = res.data;
+  })
+}
+
 onMounted(() => {
   selectDepartmentList();
   getEmpList();
+  getEmpContractList();
   load();
 })
 

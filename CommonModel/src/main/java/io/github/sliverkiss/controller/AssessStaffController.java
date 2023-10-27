@@ -33,13 +33,16 @@ public class AssessStaffController extends BaseController<AssessStaffServiceImpl
     @Override
     @PostMapping("/save")
     public ResponseResult save(@RequestBody AssessStaff staff) {
-        return service.saveStaffAndDeclare ( staff );
+        service.saveStaffAndDeclare ( staff );
+        return ResponseResult.okResult ();
     }
 
     @Override
     @DeleteMapping("/delete/{id}")
     public ResponseResult delete(@PathVariable Integer id) {
+        log.warn ( "开始" );
         AssessStaff staff = service.getById ( id );
+        System.out.println ( staff );
         Integer assessId = staff.getAssessId ();
         Integer employeeId = staff.getEmployeeId ();
         AssessDeclare declare = declareService.getOne ( Wrappers.lambdaQuery ( AssessDeclare.class )

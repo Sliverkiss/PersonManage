@@ -227,7 +227,7 @@ const open = ref(false)
 const title = ref('');
 //分页
 const currentPage = ref(1);//当前页
-const pageSize = ref(15);//页码展示数量
+const pageSize = ref(5);//页码展示数量
 const total = ref(10);//页码总数
 //抽屉
 const tableDialog = ref(false);

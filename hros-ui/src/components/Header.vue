@@ -36,9 +36,17 @@
 import {useUser} from '@/stores/user.js'
 import {useRouter} from "vue-router";
 import {toRaw} from "vue";
+import {useAside} from "@/stores/aside.js";
+import {useDepartment} from "@/stores/department.js";
+import {useContract, useEmployee, useSalary} from "@/stores/employee.js";
 
 const router = useRouter();
 const userStore = useUser();
+const asideStore = useAside();
+const departmentStore = useDepartment();
+const useEmployeeStore = useEmployee();
+const contractStore = useContract();
+const salaryStore = useSalary();
 const user = userStore.getUser();
 console.log(toRaw(user));
 const logout = () => {

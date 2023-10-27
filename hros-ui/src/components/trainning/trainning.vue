@@ -339,7 +339,7 @@ const dialogFormVisible = ref(false)
 const dialogUpdateVisible = ref(false)
 //模糊查询条件
 const currentPage = ref(1);//当前页
-const pageSize = ref(10);//页码展示数量
+const pageSize = ref(5);//页码展示数量
 const total = ref(10);//页码总数
 const planName = ref('');
 const status = ref('');

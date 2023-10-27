@@ -1,0 +1,21 @@
+
+g	java:S112&"FDefine and throw a dedicated exception instead of using a generic one.(ÆŸï¸úÿÿÿÿ8“Ï¢£1
+g	java:S112U"FDefine and throw a dedicated exception instead of using a generic one.(’›¤şÿÿÿÿ8”Ï¢£1
+b	java:S112X"FDefine and throw a dedicated exception instead of using a generic one.(÷ü§‘8”Ï¢£1
+b	java:S112n"FDefine and throw a dedicated exception instead of using a generic one.(«”©µ8…ÅÅñ¤1
+L
+java:S3740."/Provide the parametrized type for this generic.(×å“¢8•Ï¢£1
+K
+java:S3740="/Provide the parametrized type for this generic.(åè®+8•Ï¢£1
+Q
+java:S3740J"/Provide the parametrized type for this generic.( ”‹îúÿÿÿÿ8•Ï¢£1
+
+java:S1130&"lRemove the declaration of thrown exception 'java.lang.Exception', as it cannot be thrown from method's body.(ÆŸï¸úÿÿÿÿ8ªÏ¢£1
+t
+java:S27377"WAdd logic to this catch clause or eliminate it and rethrow the exception automatically.(ö™û8¬Ï¢£1
+t
+java:S2737E"WAdd logic to this catch clause or eliminate it and rethrow the exception automatically.(ö™û8®Ï¢£1
+J
+java:S1172X"-Remove this unused method parameter "entity".(÷ü§‘8¶Ï¢£1
+O
+java:S1172"-Remove this unused method parameter "entity".( ãÌ†ıÿÿÿÿ8©ÆÅñ¤1

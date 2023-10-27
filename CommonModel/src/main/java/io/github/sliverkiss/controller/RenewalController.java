@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author SliverKiss
@@ -39,11 +41,11 @@ public class RenewalController extends BaseController<RenewalServiceImpl, Renewa
     @Override
     public boolean beforeSaveCheck(Renewal renewal) {
         List<Renewal> list = service.list ( Wrappers.lambdaQuery ( Renewal.class ).eq ( Renewal::getEmployeeId, renewal.getEmployeeId () )
-                .eq ( Renewal::getState, SystemConstants.SYSTEM_STATUS_NONE ) );
-        if (list.size () == 0) {
+                .eq ( Renewal::getState, SystemConstants.RENEWAL_STATUS_WAIT ) );
+        if (list.isEmpty ()) {
             return true;
         }
-        return false;
+        throw new RuntimeException ( "该员工已存在发起续约记录，请勿重复添加～" );
     }
 
     @Override
@@ -80,6 +82,21 @@ public class RenewalController extends BaseController<RenewalServiceImpl, Renewa
                 employeeService.updateById ( employee );
             } );
         }
+    }
+
+    @GetMapping("/nearRenewalList")
+    public ResponseResult getEmpListByNearRenewal() {
+        List<Employee> employeeList = employeeService.list ();
+        List<Employee> result = employeeList.stream ()
+                .filter ( e -> {
+                    try {
+                        return DateUtil.dayCompare ( e.getEndContract () ) <= 30;
+                    } catch (ParseException ex) {
+                        throw new RuntimeException ( ex );
+                    }
+                } )
+                .collect ( Collectors.toList () );
+        return ResponseResult.okResult ( result );
     }
 
 

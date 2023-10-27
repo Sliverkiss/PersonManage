@@ -257,6 +257,7 @@ const save = () => {
         } else {
           ElMessage.error('系统服务异常，请稍后再试~')
         }
+        console.log(res);
         clearFormData();
         load();
       })

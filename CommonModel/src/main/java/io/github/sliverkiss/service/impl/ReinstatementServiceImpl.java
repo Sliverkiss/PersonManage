@@ -13,9 +13,7 @@ import io.github.sliverkiss.dao.EmployeeDao;
 import io.github.sliverkiss.dao.PersonalDao;
 import io.github.sliverkiss.dao.ReinstatementDao;
 import io.github.sliverkiss.domain.ResponseResult;
-import io.github.sliverkiss.domain.entity.Department;
 import io.github.sliverkiss.domain.entity.Employee;
-import io.github.sliverkiss.domain.entity.Personal;
 import io.github.sliverkiss.domain.entity.Reinstatement;
 import io.github.sliverkiss.domain.vo.ReinstatementVo;
 import io.github.sliverkiss.enums.AppHttpCodeEnum;
@@ -27,8 +25,6 @@ import org.springframework.stereotype.Service;
 import xin.altitude.cms.common.util.EntityUtils;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * 复职记录表(Reinstatement)表服务实现类
@@ -61,14 +57,17 @@ public class ReinstatementServiceImpl extends ServiceImpl<ReinstatementDao, Rein
         try {
             // 查询条件
             // List<Integer> employeeIds=employeeService.getEmployeeIdsByDepartmentId ( departmentId );
-            LambdaQueryWrapper<Reinstatement> wrapper = Wrappers.lambdaQuery ( Reinstatement.class )
-                    .like ( StringUtils.isNotBlank ( employeeId ), Reinstatement::getEmployeeId, employeeId )
-                    .eq ( StringUtils.isNotBlank ( state ), Reinstatement::getState, state )
-                    .orderByDesc ( Reinstatement::getApplyDate )
-                    .orderByDesc ( Reinstatement::getReinDate );
+            LambdaQueryWrapper<Reinstatement> wrapper = Wrappers.lambdaQuery ( Reinstatement.class );
+            wrapper.orderByDesc ( Reinstatement::getApplyDate ).orderByDesc ( Reinstatement::getReinDate );
             if (StringUtils.isNotBlank ( employeeName )) {
                 List<Integer> employeeIds = employeeService.getEmployeeIdsLikeName ( employeeName );
                 wrapper.in ( employeeIds.size () > 0, Reinstatement::getEmployeeId, employeeIds );
+            }
+            if (StringUtils.isNotBlank ( employeeId )) {
+                wrapper.like ( Reinstatement::getEmployeeId, employeeId );
+            }
+            if (StringUtils.isNotBlank ( state )) {
+                wrapper.eq ( Reinstatement::getState, state );
             }
             // 数据隔离
             if (userRole.equals ( UserContants.ROLE_USER )) {
@@ -85,18 +84,10 @@ public class ReinstatementServiceImpl extends ServiceImpl<ReinstatementDao, Rein
     }
 
     public void getEmployeeNameAndDepartment(IPage<ReinstatementVo> resIPage) {
-        if (resIPage.getRecords ().size () > 0) {
-            List<Integer> employeeIds = resIPage.getRecords ().stream ().map ( Reinstatement::getEmployeeId ).collect ( Collectors.toList () );
-            if (!employeeIds.isEmpty ()) {
-                Map<Integer, Employee> map = getEmployeeMap ( employeeDao, employeeIds );
-                resIPage.getRecords ().forEach ( vo -> {
-                    Employee employee = map.get ( vo.getEmployeeId () );
-                    Personal personal = personalDao.selectById ( employee.getPersonalId () );
-                    Department department = departmentDao.selectById ( employee.getDepartmentId () );
-                    vo.setEmployeeName ( personal.getName () ).setDepartmentName ( department.getDepartmentName () );
-                } );
-            }
-        }
+        resIPage.getRecords ().forEach ( e -> {
+            Employee employee = employeeDao.getEmployeeById ( e.getEmployeeId () );
+            e.setEmployeeName ( employee.getPersonal ().getName () ).setDepartmentName ( employee.getDepartment ().getDepartmentName () );
+        } );
     }
 }
 

@@ -85,7 +85,7 @@ onMounted(() => {
 </script>
 <style scoped>
 .chart {
-  height: 800px;
+  height: 500px;
   width: 1050px;
 }
 

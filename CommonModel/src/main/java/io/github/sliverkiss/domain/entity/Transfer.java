@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -42,27 +43,17 @@ public class Transfer extends BaseEntity implements Serializable {
     private String kind;
     // 申请日期
     private String applyDate;
-    // 调出部门意见
-    private String beforeComment;
-    // 调出部门结果
-    private String beforeState;
-    // 调出部门审核日期
-    private String beforeDate;
-    // 调入部门意见
-    private String afterComment;
-    // 调入部门结果
-    private String afterState;
-    // 调入部门审核日期
-    private String afterDate;
-    // 人事处意见
-    private String personalComment;
-    // 人事处结果
-    private String personalState;
-    // 人事处审核日期
-    private String personalDate;
+    private Integer declareType;
     // 总审核状态
     private String state;
-
+    @TableField(exist = false)
+    private Employee employee;
+    @TableField(exist = false)
+    private Department startDepartment;
+    @TableField(exist = false)
+    private Department endDepartment;
+    @TableField(exist = false)
+    private List<TransferItem> itemList;
     @TableField(exist = false)
     private Integer transferRole;// 调岗审核权限，1为调出部门，2为调入部门，3为人事处，0为普通员工
 
@@ -77,15 +68,11 @@ public class Transfer extends BaseEntity implements Serializable {
             this.transferType = e.getTransferType ();
             this.kind = e.getKind ();
             this.applyDate = e.getApplyDate ();
-            this.beforeComment = e.getBeforeComment ();
-            this.beforeState = e.getBeforeState ();
-            this.beforeDate = e.getBeforeDate ();
-            this.afterComment = e.getAfterComment ();
-            this.afterState = e.getAfterState ();
-            this.afterDate = e.getAfterDate ();
-            this.personalComment = getPersonalComment ();
-            this.personalState = getPersonalState ();
-            this.personalDate = e.getPersonalDate ();
+            this.declareType = e.getDeclareType ();
+            this.itemList = e.getItemList ();
+            this.startDepartment = e.getStartDepartment ();
+            this.endDepartment = e.getEndDepartment ();
+            this.employee = e.getEmployee ();
             this.state = e.getState ();
             this.transferRole = e.getTransferRole ();
         } );

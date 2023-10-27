@@ -31,9 +31,14 @@
             <div id="usersList_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
               <div v-if="user.role" class="row">
                 <div class="col-sm-12 col-md-12">
-                  <el-input v-model="employeeId" style="width:120px" placeholder="请输入员工编号" clearable></el-input>
+                  <!--                  <el-input v-model="employeeId" style="width:120px" placeholder="请输入员工编号" clearable></el-input>-->
+                  <el-select v-model="employeeId" style="width:160px;margin-left:10px" placeholder="请输入或选择员工"
+                             clearable filterable>
+                    <el-option v-for="item in state.empList" :label="item.id+' '+item.personal.name" :value="item.id"/>
+                  </el-select>
                   <el-input v-model="name" style="width:120px;margin-left:10px" placeholder="请输入姓名"
                             clearable></el-input>
+
                   <el-select v-model="DepartmentId" style="width:120px;margin-left:10px" placeholder="请选择部门"
                              clearable>
                     <el-option
@@ -123,18 +128,18 @@
   </div>
   <!--  入职登记表单-->
   <div>
-    <el-dialog v-model="dialogFormVisible" title="入职登记" align-center center class="" width=650
+    <el-dialog v-model="dialogFormVisible" title="入职登记" align-center center class="" width=850
                style="border-radius: 0.875rem 1rem;">
       <h6 class="mb-3">基本信息</h6>
       <el-form :model="state.formData" class="" status-icon :rules="rules" ref="ruleFormRef">
         <el-row :gutter="24">
           <el-col :span="8">
-            <el-form-item prop="name" label="姓名:">
+            <el-form-item prop="name" label="姓名:" label-width="80">
               <el-input v-model="state.formData.name"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item prop="gender" label="性别:">
+            <el-form-item prop="gender" label="性别:" label-width="60">
               <el-select v-model="state.formData.gender" placeholder="">
                 <el-option label="男" value="男"/>
                 <el-option label="女" value="女"/>
@@ -143,7 +148,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item prop="tiptopDegree" label="最高学历">
+            <el-form-item prop="tiptopDegree" label="最高学历" label-width="80">
               <el-select v-model="state.formData.tiptopDegree" placeholder="">
                 <el-option label="博士" value="博士"/>
                 <el-option label="硕士" value="硕士"/>
@@ -159,17 +164,17 @@
         </el-row>
         <el-row :gutter="24">
           <el-col :span="8">
-            <el-form-item prop="nation" label="民族:">
+            <el-form-item prop="nation" label="民族:" label-width="80">
               <el-input v-model="state.formData.nation"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item prop="naticePlace" label="籍贯:">
+            <el-form-item prop="naticePlace" label="籍贯:" label-width="60">
               <el-input v-model="state.formData.naticePlace"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item prop="wedlock" label="婚姻状况:">
+            <el-form-item prop="wedlock" label="婚姻状况:" label-width="80">
               <el-select v-model="state.formData.wedlock" placeholder="">
                 <el-option label="已婚" value="已婚"/>
                 <el-option label="未婚" value="未婚"/>
@@ -180,7 +185,7 @@
         </el-row>
         <el-row :gutter="24">
           <el-col :span="10">
-            <el-form-item prop="politic" label="政治面貌:">
+            <el-form-item prop="politic" label="政治面貌:" label-width="80">
               <el-select v-model="state.formData.politic" placeholder="">
                 <el-option label="中共党员" value="中共党员"/>
                 <el-option label="中共预备党员" value="中共预备党员"/>
@@ -191,7 +196,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="14">
-            <el-form-item prop="birthday" label="出生日期:">
+            <el-form-item prop="birthday" label="出生日期:" label-width="80">
               <div class="demo-date-picker">
                 <div class="block">
                   <el-date-picker
@@ -209,36 +214,36 @@
         </el-row>
         <el-row :gutter="24">
           <el-col :span="10">
-            <el-form-item prop="school" label="毕业院校:">
+            <el-form-item prop="school" label="毕业院校:" label-width="80">
               <el-input v-model="state.formData.school"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="14">
-            <el-form-item prop="phone" label="联系电话:">
+            <el-form-item prop="phone" label="联系电话:" label-width="80">
               <el-input v-model.number="state.formData.phone"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter=24>
           <el-col :span="10">
-            <el-form-item prop="specialty" label="所学专业:">
+            <el-form-item prop="specialty" label="所学专业:" label-width="80">
               <el-input v-model="state.formData.specialty"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="14">
-            <el-form-item prop="email" label="邮箱:">
+            <el-form-item prop="email" label="邮箱:" label-width="80">
               <el-input v-model="state.formData.email"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="24">
           <el-col :span="10">
-            <el-form-item prop="idCard" label="身份证号:">
+            <el-form-item prop="idCard" label="身份证号:" label-width="80">
               <el-input v-model="state.formData.idCard"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="14">
-            <el-form-item prop="address" label="地址:">
+            <el-form-item prop="address" label="地址:" label-width="80">
               <el-input v-model="state.formData.address"></el-input>
             </el-form-item>
           </el-col>
@@ -247,7 +252,7 @@
         <h6 class="mb-3">工作信息</h6>
         <el-row :gutter="24">
           <el-col :span="10">
-            <el-form-item prop="engageForm" label="合同类型:">
+            <el-form-item prop="engageForm" label="合同类型:" label-width="80">
               <el-select v-model="state.formData.engageForm" placeholder="">
                 <el-option label="劳务合同" value="劳务合同"/>
                 <el-option label="外聘合同" value="外聘合同"/>
@@ -255,7 +260,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item prop="departmentId" label="部门:">
+            <el-form-item prop="departmentId" label="部门:" label-width="100">
               <el-select v-model="state.formData.departmentId" style="width:220px">
                 <el-option
                     v-for="department in departmentStore.departmentList"
@@ -267,7 +272,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item prop="post" label="岗位:">
+            <el-form-item prop="post" label="岗位:" label-width="80">
               <el-select v-model="state.formData.post" placeholder="">
                 <el-option
                     v-for="post in fitPostList"
@@ -279,7 +284,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item prop="startContract" label="合同起始日期:">
+            <el-form-item prop="startContract" label="合同起始日期:" label-width="100">
               <div class="demo-date-picker">
                 <div class="block" style=" width:50px">
                   <el-date-picker
@@ -295,12 +300,12 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="职称:" prop="level">
+            <el-form-item label="职称:" prop="level" label-width="80">
               <el-input v-model="state.formData.level"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item prop="contractTerm" label="合同年限:">
+            <el-form-item prop="contractTerm" label="合同年限:" label-width="100">
               <el-select v-model="state.formData.contractTerm" placeholder="Select">
                 <el-option
                     v-for="(item,index) in 5"
@@ -446,77 +451,86 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <!--        <div v-if="user.role">-->
-        <!--          <el-divider/>-->
-        <!--          <h6 class="mb-3">工作信息</h6>-->
-        <!--          <el-row :gutter="24">-->
-        <!--            <el-col :span="10">-->
-        <!--              <el-form-item prop="engageForm" label="合同类型:">-->
-        <!--                <el-select v-model="state.updateData.engageForm" placeholder="" >-->
-        <!--                  <el-option label="劳务合同" value="劳务合同"/>-->
-        <!--                  <el-option label="外聘合同" value="外聘合同"/>-->
-        <!--                </el-select>-->
-        <!--              </el-form-item>-->
-        <!--            </el-col>-->
-        <!--            <el-col :span="12">-->
-        <!--              <el-form-item prop="departmentId" label="部门:">-->
-        <!--                <el-select v-model="state.updateData.departmentId" style="width:220px">-->
-        <!--                  <el-option-->
-        <!--                      v-for="department in departmentStore.departmentList"-->
-        <!--                      :key="department.id"-->
-        <!--                      :label="department.departmentName"-->
-        <!--                      :value="department.id"-->
-        <!--                  />-->
-        <!--                </el-select>-->
-        <!--              </el-form-item>-->
-        <!--            </el-col>-->
-        <!--            <el-col :span="10">-->
-        <!--              <el-form-item prop="post" label="岗位:">-->
-        <!--                <el-select v-model="state.updateData.post" placeholder="">-->
-        <!--                  <el-option-->
-        <!--                      v-for="post in fitUpdatePostList"-->
-        <!--                      :key="post.id"-->
-        <!--                      :label="post.name"-->
-        <!--                      :value="post.name"-->
-        <!--                  />-->
-        <!--                </el-select>-->
-        <!--              </el-form-item>-->
-        <!--            </el-col>-->
-        <!--            <el-col :span="12">-->
-        <!--              <el-form-item prop="startContract" label="合同起始日期:">-->
-        <!--                <div class="demo-date-picker">-->
-        <!--                  <div class="block" style="width:50px">-->
-        <!--                    <el-date-picker-->
-        <!--                        v-model="state.updateData.startContract"-->
-        <!--                        type="date"-->
-        <!--                        format="YYYY/MM/DD"-->
-        <!--                        value-format="YYYY-MM-DD"-->
-        <!--                        placeholder=""-->
-        <!--                        style="width:165px"-->
-        <!--                        :size="10"/>-->
-        <!--                  </div>-->
-        <!--                </div>-->
-        <!--              </el-form-item>-->
-        <!--            </el-col>-->
-        <!--            <el-col :span="10">-->
-        <!--              <el-form-item label="职称:" prop="level">-->
-        <!--                <el-input v-model="state.updateData.level"></el-input>-->
-        <!--              </el-form-item>-->
-        <!--            </el-col>-->
-        <!--            <el-col :span="12">-->
-        <!--              <el-form-item prop="contractTerm" label="合同年限:">-->
-        <!--                <el-select v-model="state.updateData.contractTerm" placeholder="Select">-->
-        <!--                  <el-option-->
-        <!--                      v-for="(item,index) in 5"-->
-        <!--                      :key="index"-->
-        <!--                      :label="item+'年'"-->
-        <!--                      :value="item"-->
-        <!--                  />-->
-        <!--                </el-select>-->
-        <!--              </el-form-item>-->
-        <!--            </el-col>-->
-        <!--          </el-row>-->
-        <!--        </div>-->
+        <div v-if="user.role">
+          <el-divider/>
+          <h6 class="mb-3">工作信息</h6>
+          <el-row :gutter="24">
+            <el-col :span="10">
+              <el-form-item prop="engageForm" label="合同类型:">
+                <el-select v-model="state.updateData.engageForm" placeholder="">
+                  <el-option label="劳务合同" value="劳务合同"/>
+                  <el-option label="外聘合同" value="外聘合同"/>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item prop="departmentId" label="部门:">
+                <el-select v-model="state.updateData.departmentId" style="width:220px">
+                  <el-option
+                      v-for="department in departmentStore.departmentList"
+                      :key="department.id"
+                      :label="department.departmentName"
+                      :value="department.id"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="10">
+              <el-form-item prop="post" label="岗位:">
+                <el-select v-model="state.updateData.post" placeholder="">
+                  <el-option
+                      v-for="post in fitUpdatePostList"
+                      :key="post.id"
+                      :label="post.name"
+                      :value="post.name"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item prop="startContract" label="合同起始日期:">
+                <div class="demo-date-picker">
+                  <div class="block" style="width:50px">
+                    <el-date-picker
+                        v-model="state.updateData.startContract"
+                        type="date"
+                        format="YYYY/MM/DD"
+                        value-format="YYYY-MM-DD"
+                        placeholder=""
+                        style="width:165px"
+                        :size="10"/>
+                  </div>
+                </div>
+              </el-form-item>
+            </el-col>
+            <el-col :span="10">
+              <el-form-item label="职称:" prop="level">
+                <el-input v-model="state.updateData.level"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item prop="contractTerm" label="合同年限:">
+                <el-select v-model="state.updateData.contractTerm" placeholder="Select">
+                  <el-option
+                      v-for="(item,index) in 5"
+                      :key="index"
+                      :label="item+'年'"
+                      :value="item"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item prop="workState" label="在职状态:">
+                <el-select v-model="state.updateData.workState" placeholder="Select">
+                  <el-option label="在职" value="在职"/>
+                  <el-option label="离职" value="离职"/>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+        </div>
       </el-form>
 
       <template #footer>
@@ -542,6 +556,7 @@ import {useUser} from '@/stores/user.js'
 //部门列表
 import {useDepartment} from "@/stores/department.js"
 import {getPostList} from "@/api/department/post.js";
+import {listEmployeeColumnValues} from "@/api/employee/work.js";
 
 const useStore = useUser();
 const user = useStore.getUser();
@@ -613,13 +628,14 @@ const state = reactive({
   tableData: [],
   //入职登记信息
   formData: {},
+  empList: [],
   updateData: {},
   departmentList: [],
   postList: []
 })
 //分页数据
 const currentPage = ref(1);
-const pageSize = ref(10);
+const pageSize = ref(5);
 const total = ref(10);
 const employeeId = ref('');
 const name = ref('');
@@ -819,9 +835,15 @@ watch(() => state.updateData.departmentId, (newValue, oldValue) => {
 //     useStore.setUser(res.data);
 //   });
 // }
+const getEmpList = () => {
+  listEmployeeColumnValues().then((res) => {
+    state.empList = res.data;
+  })
+}
 //数据初始化
 onMounted(() => {
   selectDepartmentList();
+  getEmpList();
   postList();
   // userInfo();
   load();

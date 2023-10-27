@@ -95,28 +95,37 @@ public class AssessStaffServiceImpl extends ServiceImpl<AssessStaffDao, AssessSt
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ResponseResult saveStaffAndDeclare(AssessStaff staff) {
-        log.warn ( "开始" );
+        // 更新日期
         staff.setCreateDate ( DateUtil.currentDateFormat () );
         Integer deptId = staff.getDeptId ();
+        log.warn ( "开说" );
         System.out.println ( staff );
-        log.warn ( "结束" );
         // 1.获取部门下所有员工
-        List<Employee> employeeList = employeeDao.selectList ( Wrappers.lambdaQuery ( Employee.class )
-                .in ( Employee::getDepartmentId, deptId ) );
+        List<Employee> employeeList = employeeDao.getEmpListByDeptId ( staff.getDeptId () );
         Integer assessId = staff.getAssessId ();
         for (Employee employee : employeeList) {
             Integer employeeId = employee.getId ();
+            // 获取该考核计划所有的员工信息
             List<AssessStaff> list = this.getByAssessId ( assessId, employeeId );
+            System.out.println ( list );
+            log.warn ( "结束" );
+            System.out.println ( list );
+            // 如果该员工已经存在于考核名单
             if (list.size () > 0) {
+                // 获取该考核名单项
                 AssessStaff s = list.get ( 0 );
                 String type = s.getType ();
                 if (type.equals ( SystemConstants.ASSESSSTAF_TYPE_REVIEWED )) {
                     continue;
                 }
             }
+            log.warn ( "开始插入语句" );
             staff.setEmployeeId ( employeeId );
-            this.saveOrUpdate ( staff );
+            // 判断保存或更新
+            this.save ( staff );
+            // 添加绩效申报信息
             this.saveDeclare ( staff.getId (), assessId, employeeId );
+            log.warn ( "完成插入语句" );
         }
         return ResponseResult.okResult ();
     }

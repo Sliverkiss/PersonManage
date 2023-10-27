@@ -38,6 +38,5 @@ public class TrainningRecordController extends BaseController<TrainningRecordSer
     public String getLevel(TrainningRecord trainningRecord) {
         Double score = trainningRecord.getScore ();
         return score >= 80 ? "优秀" : score >= 60 ? "合格" : "不合格";
-
     }
 }

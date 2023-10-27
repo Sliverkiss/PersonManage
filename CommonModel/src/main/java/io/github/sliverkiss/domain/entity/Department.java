@@ -1,6 +1,7 @@
 package io.github.sliverkiss.domain.entity;
 
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
@@ -35,10 +36,13 @@ public class Department extends BaseEntity implements Serializable {
     private Integer parentId;
     // 部门位置
     private String location;
-    // 负责人
-    private String manager;
+    // 负责人职工编号
+    private Integer manager;
     // 部门电话
     private String phone;
+    // 负责人名称
+    @TableField(exist = false)
+    private String managerName;
 
     public Department(Department department) {
         Optional.ofNullable ( department ).ifPresent ( e -> {
@@ -46,9 +50,10 @@ public class Department extends BaseEntity implements Serializable {
             this.departmentName = e.getDepartmentName ();
             this.contect = e.getContect ();
             this.parentId = e.getParentId ();
-            this.location = e.getLocation();
-            this.manager = e.getManager();
-            this.phone = e.getPhone();
+            this.location = e.getLocation ();
+            this.manager = e.getManager ();
+            this.phone = e.getPhone ();
+            this.managerName = e.getManagerName ();
         } );
     }
 

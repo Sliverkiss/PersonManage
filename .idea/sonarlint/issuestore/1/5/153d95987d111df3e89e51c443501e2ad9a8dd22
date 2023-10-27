@@ -1,0 +1,7 @@
+
+c
+java:S11267"AReplace this if-then-else statement by a single return statement.(ν΅ύϋÿÿÿÿÿ8ϋψ¥1
+t
+java:S2737a"WAdd logic to this catch clause or eliminate it and rethrow the exception automatically.(φ™ϋ8ϋψ¥1
+Z
+java:S1155Q">Use isEmpty() to check whether the collection is empty or not.(΅ιαf8΅ϋψ¥1

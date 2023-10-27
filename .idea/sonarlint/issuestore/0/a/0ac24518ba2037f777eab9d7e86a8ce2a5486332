@@ -1,0 +1,17 @@
+
+g	java:S112@"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8çø­Â¦1
+g	java:S112d"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8çø­Â¦1
+Q
+java:S3740"/Provide the parametrized type for this generic.(Ñèœ§ûÿÿÿÿ8èø­Â¦1
+Q
+java:S3740%"/Provide the parametrized type for this generic.(ü›İÿÿÿÿÿ8èø­Â¦1
+h
+java:S22590"FA "NullPointerException" could be thrown; "filename" is nullable here.(ãØ•Åÿÿÿÿÿ8ù­Â¦1
+h
+java:S2259T"FA "NullPointerException" could be thrown; "filename" is nullable here.(ãØ•Åÿÿÿÿÿ8ù­Â¦1
+U	java:S1061"9Replace this use of System.out or System.err by a logger.(ÌÅ‚è8‡ù­Â¦1
+c
+java:S10753"ARefactor your code to get this URI from a customizable parameter.(¤¯ˆÕüÿÿÿÿ8ˆù­Â¦1
+U	java:S106U"9Replace this use of System.out or System.err by a logger.(ÌÅ‚è8‘ù­Â¦1
+c
+java:S1075W"ARefactor your code to get this URI from a customizable parameter.(‡ËÚŞùÿÿÿÿ8‘ù­Â¦1

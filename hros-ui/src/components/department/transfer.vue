@@ -7,17 +7,18 @@
           <span>调岗审核</span>
         </span>
         <!--显示消息数量提示-->
-        <div class="oversee">
-          <el-badge :value="state.tableData.length" :hidden="isHidden" :max="99" class="item">
-          </el-badge>
-        </div>
+        <!--        <div class="oversee">-->
+        <!--          <el-badge :value="state.tableData.length" :hidden="isHidden" :max="99" class="item">-->
+        <!--          </el-badge>-->
+        <!--        </div>-->
       </template>
       <div class="text-muted fw-bold mt-2 mb-2" style="display:flex">
         <div class="row">
           <div class="col-sm-12 col-md-12">
-            <el-input v-model="employeeId" style="width:120px" placeholder="请输入员工编号" clearable></el-input>
-            <!--            <el-input v-model="employeeName" style="width:120px;margin-left:10px" placeholder="请输入员工姓名"-->
-            <!--                      clearable></el-input>-->
+            <el-select v-model="employeeId" style="width:160px;margin-left:10px" placeholder="请输入或选择员工"
+                       clearable filterable>
+              <el-option v-for="item in state.empList" :label="item.id+' '+item.personal.name" :value="item.id"/>
+            </el-select>
             <el-button type="primary" class="ms-2" @click="load">
               <el-icon>
                 <Search/>
@@ -39,13 +40,19 @@
       <div class="row">
         <div class="col-sm-12 p-3 ">
           <el-auto-resizer>
-            <el-table :data="state.tableData" stripe
+            <el-table :data="state.tableData" stripe height="400" max-height="400"
                       class="text-center">
-              <template v-for="(col,index) in departmentStore.transferMap" :key="index">
-                <el-table-column :prop="col.key" :label="col.value" align="center"
-                                 :width="flexWidth(col.key,state.tableData,col.value)"
-                ></el-table-column>
-              </template>
+              <el-table-column prop="employeeId" label="UID" align="center"></el-table-column>
+              <el-table-column prop="employee.personal.name" label="员工姓名" align="center"></el-table-column>
+              <el-table-column prop="startDepartment.departmentName" label="调出部门" width="120px"
+                               align="center"></el-table-column>
+              <el-table-column prop="endDepartment.departmentName" label="调入部门" width="120px"
+                               align="center"></el-table-column>
+              <el-table-column prop="transferPost" label="调动岗位" width="120px" align="center"></el-table-column>
+              <el-table-column prop="reason" label="调动理由" align="center"></el-table-column>
+              <el-table-column prop="transferType" label="调动类型" align="center"></el-table-column>
+              <el-table-column prop="kind" label="调动种类" align="center"></el-table-column>
+              <el-table-column prop="applyDate" label="申请日期" width="120px" align="center"></el-table-column>
               <el-table-column prop="state" label="审核状态" align="center" sortable width="110">
                 <template #default="scope">
                   <el-tag
@@ -56,11 +63,20 @@
                   >
                 </template>
               </el-table-column>
+              <el-table-column fixed="right" align="center" label="流程" width="120">
+                <template #default="scope">
+                  <el-link size="small" type="primary" @click="handleMordChange(scope.row)">
+                    查看详情
+                  </el-link>
+                </template>
+              </el-table-column>
               <el-table-column fixed="right" align="center" label="操作" width="120">
                 <template #default="scope" v-if="user.role">
-                  <el-link size="small" type="primary" @click="EditEntity(scope.row)">
-                    审核
-                  </el-link>
+                  <el-button type="primary" size="small" @click="EditEntity(scope.row)">
+                    <el-icon>
+                      <Edit style="color:#582e2e"/>
+                    </el-icon>
+                  </el-button>
                   <el-popconfirm @confirm="DeleteEntity(scope.row.id)" title="确认删除?"
                                  confirm-button-text="确认"
                                  cancel-button-text="取消">
@@ -72,18 +88,6 @@
                       </el-button>
                     </template>
                   </el-popconfirm>
-                </template>
-                <template #default="scope" v-else>
-                  <el-link size="small" type="primary" @click="openUserDialog(scope.row)">
-                    查看详情
-                  </el-link>
-                </template>
-              </el-table-column>
-              <el-table-column fixed="right" align="center" label="流程" width="120">
-                <template #default="scope">
-                  <el-link size="small" type="primary" @click="handleMordChange(scope.row)">
-                    查看详情
-                  </el-link>
                 </template>
               </el-table-column>
             </el-table>
@@ -110,6 +114,15 @@
         </div>
       </div>
     </el-tab-pane>
+    <!--    <el-tab-pane name="second" v-if="user.role">-->
+    <!--      <template #label>-->
+    <!--        <span class="custom-tabs-label">-->
+    <!--          <el-icon><calendar/></el-icon>-->
+    <!--          <span>调岗记录</span>-->
+    <!--        </span>-->
+    <!--      </template>-->
+    <!--      <TransferList/>-->
+    <!--    </el-tab-pane>-->
   </el-tabs>
   <!--  新增调岗表单-->
   <div>
@@ -118,8 +131,11 @@
       <el-form :model="state.formData" class="" status-icon :rules="rules" ref="ruleFormRef">
         <el-row :gutter="24">
           <el-col :span="12" v-if="user.role">
-            <el-form-item prop="employeeId" size="large" label="员工编号：" label-width="120" v-if="user.role">
-              <el-input v-model="state.formData.employeeId" placeholder="请输入员工编号"></el-input>
+            <el-form-item prop="employeeId" size="large" label="员工编号：" label-width="100" v-if="user.role">
+              <el-select v-model="state.formData.employeeId" style="width:320px" placeholder="请输入或选择员工"
+                         clearable filterable>
+                <el-option v-for="item in state.empList" :label="item.id+' '+item.personal.name" :value="item.id"/>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -153,7 +169,7 @@
                 <el-option value="升职" label="升职"></el-option>
                 <el-option value="降职" label="降职"></el-option>
                 <el-option value="调职" label="调职"></el-option>
-                <el-option value="复职" label="复职"></el-option>
+                <!--                <el-option value="复职" label="复职"></el-option>-->
               </el-select>
             </el-form-item>
           </el-col>
@@ -220,16 +236,16 @@
     <el-dialog v-model="dialogUpdateVisible" title="调岗审核" align-center center class="" width="450"
                style="border-radius: 0.875rem 1rem;">
       <el-form :model="state.updateData" class="" status-icon :rules="rules" ref="ruleFormRef">
-        <el-row :gutter="24" v-if="(user.employeeVo.departmentId==state.updateData.beforeDepartment)">
+        <el-row :gutter="24">
           <el-col :span="24">
-            <el-form-item prop="beforeComment" size="large" label="调出部门意见：" label-width="120">
-              <el-input v-model="state.updateData.beforeComment" type="textarea" clearable
-                        placeholder="请输入调出部门意见"></el-input>
+            <el-form-item prop="beforeComment" size="large" label="部门意见：" label-width="120">
+              <el-input v-model="state.transferItem.reason" type="textarea" clearable
+                        placeholder="请输入部门意见"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item prop="state" size="large" label="审核结果：" label-width="120">
-              <el-select v-model="state.updateData.beforeState" placeholder="请选择审核结果" style="width:2250px"
+              <el-select v-model="state.transferItem.status" placeholder="请选择审核结果" style="width:2250px"
                          clearable>
                 <el-option label="通过" value="通过"/>
                 <el-option label="审核中" value="审核中"/>
@@ -238,46 +254,11 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row :gutter="24" v-if="user.employeeVo.departmentId==state.updateData.afterDepartment">
-          <el-col :span="24">
-            <el-form-item prop="afterComment" size="large" label="调入部门意见：" label-width="120">
-              <el-input v-model="state.updateData.afterComment" type="textarea" clearable
-                        placeholder="请输入调入部门意见"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item prop="afterState" size="large" label="审核结果：" label-width="120">
-              <el-select v-model="state.updateData.afterState" placeholder="请选择审核结果" style="width:2250px"
-                         clearable>
-                <el-option label="通过" value="通过"/>
-                <el-option label="审核中" value="审核中"/>
-                <el-option label="未通过" value="未通过"/>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="24" v-if="(user.employeeVo.departmentId==10)">
-          <el-col :span="24">
-            <el-form-item prop="personalComment" size="large" label="人事处意见：" label-width="120">
-              <el-input v-model="state.updateData.personalComment" type="textarea" clearable
-                        placeholder="请输入人事处意见"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item prop="personalState" size="large" label="审核结果：" label-width="120">
-              <el-select v-model="state.updateData.personalState" placeholder="请选择审核结果" style="width:2250px"
-                         clearable>
-                <el-option label="通过" value="通过"/>
-                <el-option label="审核中" value="审核中"/>
-                <el-option label="未通过" value="未通过"/>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
+
       </el-form>
       <template #footer>
       <span class="dialog-footer">
-        <el-button @click="update" type="primary">修改</el-button>
+        <el-button @click="approved" type="primary">修改</el-button>
         <el-button @click="clearFormData">
           取消
         </el-button>
@@ -290,55 +271,56 @@
   <div>
     <el-dialog v-model="dialogMoreVisible" title="审核详情" align-center center class="" width="650"
                style="border-radius: 0.875rem 1rem;">
-      <el-form :model="state.updateData" class="" status-icon :rules="rules"
-               label-position="top" ref="ruleFormRef">
-        <el-timeline>
-          <el-timeline-item icon="MoreFilled" type="primary" size="large" :timestamp="state.updateData.applyDate">
-            提交审核
-          </el-timeline-item>
-          <el-timeline-item :icon="state.updateData.beforeState=='通过'?'check' :'未通过'?'MoreFilled':'close'"
-                            :type="state.updateData.beforeState=='通过'?'success' :'未通过'?'warning':'danger'"
-                            size="large" :timestamp="state.updateData.beforeDate"
-                            v-if="state.updateData.beforeDate">
-            调出部门审核
-            <el-form-item prop="departmentComment" size="large" label="部门意见："
-                          v-if="!(state.updateData.beforeState)=='审核中'">
-              <el-input v-model="state.updateData.beforeComment"
-                        :autosize="{ minRows: 4, maxRows: 8 }"
-                        type="textarea" disabled></el-input>
-            </el-form-item>
-          </el-timeline-item>
-          <el-timeline-item :icon="state.updateData.beforeState=='通过'?'check' :'未通过'?'MoreFilled':'close'"
-                            :type="state.updateData.afterState=='通过'?'success' :'未通过'?'warning':'danger'"
-                            size="large" :timestamp="state.updateData.afterDate">
-            调入部门审核
-            <el-form-item prop="afterComment" size="large" label="部门意见："
-                          v-if="!(state.updateData.afterState)=='审核中'">
-              <el-input v-model="state.updateData.afterComment"
-                        :autosize="{ minRows: 4, maxRows: 8 }"
-                        type="textarea" disabled></el-input>
-            </el-form-item>
-          </el-timeline-item>
-          <el-timeline-item :icon="state.updateData.beforeState=='通过'?'check' :'未通过'?'MoreFilled':'close'"
-                            :type="state.updateData.afterState=='通过'?'success' :'未通过'?'warning':'danger'"
-                            size="large" :timestamp="state.updateData.afterDate"
-                            v-if="!(state.updateData.afterState=='审核中')">
-            人事处审核
-            <el-form-item prop="departmentComment" size="large" label="部门意见：">
-              <el-input v-model="state.updateData.afterComment"
-                        :autosize="{ minRows: 4, maxRows: 8 }"
-                        type="textarea" disabled></el-input>
-            </el-form-item>
-          </el-timeline-item>
-          <el-timeline-item :icon="state.updateData.beforeState=='通过'?'check' :'未通过'?'MoreFilled':'close'"
-                            :type="state.updateData.afterState=='通过'?'success' :'未通过'?'warning':'danger'"
-                            size="large" :timestamp="state.updateData.afterDate"
-                            v-if="(state.updateData.afterState=='审核中')">
-            人事处审核中
-          </el-timeline-item>
-
-        </el-timeline>
-      </el-form>
+      <el-scrollbar max-height="350px" height="350px">
+        <el-form :model="state.updateData" class="" status-icon :rules="rules"
+                 label-position="top" ref="ruleFormRef">
+          <el-timeline>
+            <el-timeline-item icon="MoreFilled" type="primary" size="large" :timestamp="state.transferData.applyDate">
+              提交审核
+              <div class="m-0 p-0">{{ state.transferData.employee.personal.name }}</div>
+            </el-timeline-item>
+            <el-timeline-item
+                :icon="state.transferData.itemList[0].status=='通过'?'check' :'未通过'?'MoreFilled':'close'"
+                :type="state.transferData.itemList[0].status=='通过'?'success' :'未通过'?'warning':'danger'"
+                size="large" :timestamp="state.transferData.itemList[0].approveDate"
+                v-if="state.transferData.itemList[0]">
+              调出部门审核
+              <el-form-item prop="departmentComment" size="large" label="部门意见："
+                            v-if="state.transferData.itemList[0].status!='审核中'">
+                <el-input v-model="state.transferData.itemList[0].reason"
+                          :autosize="{ minRows: 4, maxRows: 8 }"
+                          type="textarea" disabled></el-input>
+              </el-form-item>
+            </el-timeline-item>
+            <el-timeline-item
+                :icon="state.transferData.itemList[1].status=='通过'?'check' :'未通过'?'MoreFilled':'close'"
+                :type="state.transferData.itemList[1].status=='通过'?'success' :'未通过'?'warning':'danger'"
+                size="large" :timestamp="state.transferData.itemList[0].approveDate"
+                v-if="state.transferData.itemList[1]">
+              调入部门审核
+              <el-form-item prop="departmentComment" size="large" label="部门意见："
+                            v-if="state.transferData.itemList[1].status!='审核中'">
+                <el-input v-model="state.transferData.itemList[1].reason"
+                          :autosize="{ minRows: 4, maxRows: 8 }"
+                          type="textarea" disabled></el-input>
+              </el-form-item>
+            </el-timeline-item>
+            <el-timeline-item
+                :icon="state.transferData.itemList[2].status=='通过'?'check' :'未通过'?'MoreFilled':'close'"
+                :type="state.transferData.itemList[2].status=='通过'?'success' :'未通过'?'warning':'danger'"
+                size="large" :timestamp="state.transferData.itemList[0].approveDate"
+                v-if="state.transferData.itemList[2]">
+              人事处审核
+              <el-form-item prop="departmentComment" size="large" label="部门意见："
+                            v-if="state.transferData.itemList[2].status!='审核中'">
+                <el-input v-model="state.transferData.itemList[2].reason"
+                          :autosize="{ minRows: 4, maxRows: 8 }"
+                          type="textarea" disabled></el-input>
+              </el-form-item>
+            </el-timeline-item>
+          </el-timeline>
+        </el-form>
+      </el-scrollbar>
       <template #footer>
       <span class="dialog-footer">
         <el-button @click="clearFormData" type="primary">确认</el-button>
@@ -356,9 +338,10 @@ import {computed, getCurrentInstance, onMounted, reactive, ref, toRaw, watch} fr
 import {useDepartment} from "@/stores/department.js"
 import request from "@/request.js";
 import {ElMessage, ElNotification} from "element-plus";
-import {flexWidth} from '@/utils/tableUtils.js'
 import {useUser} from '@/stores/user.js'
 import {getPostList} from "@/api/department/post.js";
+import {addOrUpdateTransferItem} from "@/api/department/transfer.js";
+import {listEmployeeColumnValues} from "@/api/employee/work.js";
 
 const useStore = useUser();
 const user = useStore.getUser();
@@ -372,7 +355,12 @@ const state = reactive({
   departmentList: [],
   postList: [],
   formData: {},
-  updateData: {},
+  transferData: {},
+  transferItem: {
+    reason: '',
+    status: '',
+    transferId: ''
+  }
 })
 
 const rules = reactive({
@@ -406,8 +394,17 @@ const dialogFormVisible = ref(false)
 const dialogUpdateVisible = ref(false)
 const dialogMoreVisible = ref(false)
 const EditEntity = (row) => {
+  console.log(user)
+  if (user.employeeId == row.employeeId) {
+    ElNotification.warning("不允许审核自己哦～")
+    return;
+  }
+
   dialogUpdateVisible.value = true;
   state.updateData = JSON.parse(JSON.stringify(row));
+  state.transferItem.transferId = row.id
+  state.transferItem.beforeDepartment = row.beforeDepartment
+  state.transferItem.afterDepartment = row.afterDepartment
 }
 //换页
 const handleSizeChange = (val) => {
@@ -427,7 +424,7 @@ const clearFormData = () => {
 }
 const handleMordChange = (row) => {
   dialogMoreVisible.value = true;
-  state.updateData = JSON.parse(JSON.stringify(row));
+  state.transferData = JSON.parse(JSON.stringify(row));
 }
 const personalTransfer = () => {
   if (state.updateData.beforeState == "通过" && state.updateData.afterState == "通过") {
@@ -479,6 +476,31 @@ const save = () => {
 const update = () => {
   state.updateData.transferRole = transferRole();
   request.put('admin/department/transfer/update', state.updateData).then((res) => {
+    try {
+      if (res.code == 200) {
+        ElNotification.success(res.msg);
+      } else {
+        ElMessage.error(res.msg);
+      }
+    } catch {
+      ElMessage.error(res.msg);
+    } finally {
+      clearFormData();
+      load();
+    }
+  })
+}
+
+const approved = () => {
+  if (user.employeeVo.departmentId == state.transferItem.beforeDepartment) {
+    state.transferItem.approveType = 0;
+  } else if (user.employeeVo.departmentId == state.transferItem.afterDepartment) {
+    state.transferItem.approveType = 1;
+  } else {
+    state.transferItem.approveType = 2;
+  }
+  state.transferItem.director = user.employeeVo.name;
+  addOrUpdateTransferItem(state.transferItem).then((res) => {
     try {
       if (res.code == 200) {
         ElNotification.success(res.msg);
@@ -547,6 +569,11 @@ const selectDepartmentList = () => {
     }
   })
 }
+const getEmpList = () => {
+  listEmployeeColumnValues().then((res) => {
+    state.empList = res.data;
+  })
+}
 //获取岗位信息
 const postList = (() => {
   getPostList().then((res) => {
@@ -562,6 +589,7 @@ watch(() => state.formData.afterDepartment, (newValue, oldValue) => {
 onMounted(() => {
   load();
   postList();
+  getEmpList();
   selectDepartmentList();
 })
 </script>

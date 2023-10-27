@@ -21,9 +21,9 @@
               <el-input v-model="planName" style="width:180px" clearable
                         placeholder="请输入培训计划名称">
               </el-input>
-              <el-input v-model="employeeId" style="width:140px;margin-left: 10px" placeholder="请输入员工编号"
-                        v-if="user.role"
-                        clearable></el-input>
+              <!--              <el-input v-model="employeeId" style="width:140px;margin-left: 10px" placeholder="请输入员工编号"-->
+              <!--                        v-if="user.role"-->
+              <!--                        clearable></el-input>-->
               <el-select v-model="planState" style="width:150px;margin-left: 10px" placeholder="请选择培训状态"
                          clearable>
                 <el-option label="已报名" value="已报名"/>
@@ -149,7 +149,7 @@
   </div>
   <!--  审核表单-->
   <div>
-    <el-dialog v-model="dialogUpdateVisible" title="修改计划" align-center center class="" width="400"
+    <el-dialog v-model="dialogUpdateVisible" title="录入成绩" align-center center class="" width="400"
                style="border-radius: 0.875rem 1rem;">
       <el-form :model="state.updateData" class="" status-icon :rules="rules" ref="ruleFormRef">
         <el-row :gutter="24">

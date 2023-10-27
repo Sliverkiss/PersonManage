@@ -32,9 +32,10 @@
                       value-format="YYYY-MM"
                       placeholder="请选择工资月份"
                       :size="10"/>
-                  <el-input v-model="employeeId" style="width:160px;margin-left:10px"
-                            v-if="user.role"
-                            placeholder="请输入员工编号"></el-input>
+                  <el-select v-model="employeeId" style="width:160px;margin-left:10px" placeholder="请输入或选择员工"
+                             clearable filterable>
+                    <el-option v-for="item in state.empList" :label="item.id+' '+item.personal.name" :value="item.id"/>
+                  </el-select>
                   <el-select v-model="status" style="width:140px;margin-left:10px" placeholder="请选择发放状态"
                              clearable>
                     <el-option label="已发放" value="已发放"/>
@@ -53,16 +54,16 @@
                   <el-table :data="state.tableData" stripe class="text-center" height="400" max-height="400">
                     <el-table-column prop="employeeId" label="UID" align="center"></el-table-column>
                     <el-table-column prop="employee.personal.name" label="姓名" align="center"></el-table-column>
-                    <el-table-column prop="employee.department.departmentName" label="所在部门"
+                    <el-table-column prop="employee.department.departmentName" label="所在部门" width="110"
                                      align="center"></el-table-column>
-                    <el-table-column prop="salaryDate" label="工资月份" align="center"></el-table-column>
-                    <el-table-column prop="baseSalary" label="基础工资" align="center"></el-table-column>
-                    <el-table-column prop="performance" label="绩效奖金" align="center"></el-table-column>
-                    <el-table-column prop="deduLeave" label="请假扣款" align="center"></el-table-column>
-                    <el-table-column prop="deduLate" label="迟到扣款" align="center"></el-table-column>
-                    <el-table-column prop="insure" label="五险一金" align="center"></el-table-column>
-                    <el-table-column prop="netSalary" label="净工资" align="center"></el-table-column>
-                    <el-table-column prop="payDate" label="创建时间" align="center"></el-table-column>
+                    <el-table-column prop="salaryDate" label="工资月份" align="center" width="90"></el-table-column>
+                    <el-table-column prop="baseSalary" label="基础工资" align="center" width="90"></el-table-column>
+                    <el-table-column prop="performance" label="绩效奖金" align="center" width="90"></el-table-column>
+                    <el-table-column prop="deduLeave" label="请假扣款" align="center" width="90"></el-table-column>
+                    <el-table-column prop="deduLate" label="迟到扣款" align="center" width="90"></el-table-column>
+                    <el-table-column prop="insure" label="五险一金" align="center" width="90"></el-table-column>
+                    <el-table-column prop="netSalary" label="净工资" align="center" width="90"></el-table-column>
+                    <!--                    <el-table-column prop="payDate" label="创建时间" align="center"  width="110"></el-table-column>-->
                     <el-table-column prop="status" label="发放状态" align="center" sortable>
                       <template #default="scope">
                         <el-tag
@@ -277,7 +278,6 @@ const state = reactive({
 const rules = reactive({
   employeeId: [
     {required: true, message: '请输入员工编号', trigger: 'blur'},
-    {min: 1, max: 11, message: '员工编号范围在1～11位之间', trigger: 'blur'},
   ],
   status: [
     {required: true, message: '请选择发放状态', trigger: 'blur'},

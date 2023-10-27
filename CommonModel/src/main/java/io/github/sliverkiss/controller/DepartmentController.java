@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author SliverKiss
@@ -38,10 +39,9 @@ public class DepartmentController extends BaseController<DepartmentServiceImpl, 
 
     @DeleteMapping("/delete/{id}")
     public ResponseResult delete(@PathVariable Integer id) {
-        // 获取正在使用该部门的员工
-        LambdaQueryWrapper<Employee> wrapper = Wrappers.lambdaQuery ( Employee.class );
-        wrapper.eq ( Employee::getDepartmentId, id );
-        List<Employee> employeeList = employeeService.list ( wrapper );
+        // stream流获取该部门下所有员工
+        List<Employee> employeeList = employeeService.list ().stream ()
+                .filter ( e -> e.getDepartment ().getId ().equals ( id ) ).collect ( Collectors.toList () );
         if (employeeList.size () > 0) {
             return ResponseResult.errorResult ( AppHttpCodeEnum.SYSTEM_ERROR, "该部门已被使用，无法删除" );
         }
@@ -53,10 +53,4 @@ public class DepartmentController extends BaseController<DepartmentServiceImpl, 
         }
         return service.deleteEntity ( id );
     }
-
-    // @Override
-    // public void beforeSave(Department entity) throws Exception {
-    //     Employee employee = employeeService.getEmployeeById ( id );
-    // }
-
 }

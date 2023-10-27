@@ -169,7 +169,7 @@
 
 <script setup>
 import request from "@/request.js";
-import {getCurrentInstance, onMounted, reactive, ref, toRaw} from "vue";
+import {getCurrentInstance, onMounted, reactive, ref} from "vue";
 import {ElMessage, ElNotification} from "element-plus";
 //接口api
 import {addPost, delPost, updatePost} from "@/api/department/post.js";
@@ -199,13 +199,12 @@ const empListView = ref(false)
 const openEmpListView = (row) => {
   empListView.value = true;
   state.empByPostList = row;
-  console.log(toRaw(state.empByPostList))
 }
 //弹出窗口标题
 const title = ref('');
 //分页
 const currentPage = ref(1);//当前页
-const pageSize = ref(15);//页码展示数量
+const pageSize = ref(5);//页码展示数量
 const total = ref(10);//页码总数
 const handleSizeChange = (val) => {
   pageSize.value = val;

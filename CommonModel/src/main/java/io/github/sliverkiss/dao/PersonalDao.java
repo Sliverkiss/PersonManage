@@ -16,10 +16,10 @@ import org.apache.ibatis.cache.decorators.ScheduledCache;
 @CacheNamespace(flushInterval = 5 * 60 * 1000, eviction = ScheduledCache.class, blocking = true)
 public interface PersonalDao extends BaseMapper<Personal> {
 
-    @Select("select * from employee_info where id=#{personalId}")
+    @Select("select * from employee_info where id=#{personalId} and del_flag=0")
     Personal getByEmployeeId(Integer personalId);
 
-    @Select("select * from employee_work where id=#{employeeId}")
+    @Select("select * from employee_work where id=#{employeeId} and del_flag=0")
     @Results({
             @Result(property = "personal", column = "personal_id", one = @One(select = "getByEmployeeId")),
             @Result(property = "department", column = "department_id", one = @One(select = "io.github.sliverkiss.dao.DepartmentDao.getById"))

@@ -13,5 +13,11 @@ import io.github.sliverkiss.domain.entity.Transfer;
 public interface TransferService extends ICrudService<Transfer> {
 
     ResponseResult selectPage(TransferQueryDTO transferQueryDTO);
+
+    ResponseResult transferListPage(TransferQueryDTO transferQueryDTO);
+
+    ResponseResult test();
+
+    Transfer getById(Integer id);
 }
 
